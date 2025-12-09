@@ -718,7 +718,7 @@
     async function loadBangwen() {
       const container = document.getElementById('bangwenList');
       try {
-        const res = await fetch('http://localhost:3000/api/announcements?limit=20');
+        const res = await fetch('https://galaxycobblemon-api.onrender.com/api/announcements?limit=20');
         const data = await res.json();
         
         if (data.announcements && data.announcements.length > 0) {
@@ -806,7 +806,7 @@
     // 显示公告详情
     async function showBangwenDetail(id) {
       try {
-        const res = await fetch(`http://localhost:3000/api/announcements/${id}`);
+        const res = await fetch(`https://galaxycobblemon-api.onrender.com/api/announcements/${id}`);
         const a = await res.json();
         
         // 动态创建模态框

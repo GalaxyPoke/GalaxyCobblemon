@@ -1268,7 +1268,7 @@
       try {
         showToast('上传中...', 'info');
         
-        const res = await fetch('http://localhost:3000/api/upload/image', {
+        const res = await fetch('https://galaxycobblemon-api.onrender.com/api/upload/image', {
           method: 'POST',
           headers: { 'Authorization': `Bearer ${token}` },
           body: formData
@@ -1302,7 +1302,7 @@
       
       container.innerHTML = uploadedImages.map((url, i) => `
         <div class="image-preview-item">
-          <img src="http://localhost:3000${url}" alt="">
+          <img src="https://galaxycobblemon-api.onrender.com${url}" alt="">
           <button class="remove-btn" onclick="removeImage(${i})">&times;</button>
         </div>
       `).join('');
@@ -1355,7 +1355,7 @@
       }
       
       try {
-        const res = await fetch('http://localhost:3000/api/forum/posts', {
+        const res = await fetch('https://galaxycobblemon-api.onrender.com/api/forum/posts', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -1384,7 +1384,7 @@
     // 加载帖子列表
     async function loadPosts(category = 'all', sort = 'new') {
       try {
-        let url = 'http://localhost:3000/api/forum/posts?';
+        let url = 'https://galaxycobblemon-api.onrender.com/api/forum/posts?';
         if (category !== 'all') url += `category=${category}&`;
         if (sort === 'hot') url += 'sort=hot&';
         if (sort === 'likes') url += 'sort=likes&';
@@ -1483,7 +1483,7 @@
     
     async function updateStats() {
       try {
-        const res = await fetch('http://localhost:3000/api/forum/stats');
+        const res = await fetch('https://galaxycobblemon-api.onrender.com/api/forum/stats');
         const stats = await res.json();
         totalPosts = stats.totalPosts;
         document.querySelectorAll('.category-item').forEach(item => {
@@ -1532,7 +1532,7 @@
     // 加载活跃用户
     async function loadTopUsers() {
       try {
-        const res = await fetch('http://localhost:3000/api/forum/top-users');
+        const res = await fetch('https://galaxycobblemon-api.onrender.com/api/forum/top-users');
         const users = await res.json();
         const container = document.getElementById('hotUserList');
         

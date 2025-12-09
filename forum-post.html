@@ -791,7 +791,7 @@
   <script>
     AOS.init({ duration: 800, once: true });
 
-    const API_URL = 'http://localhost:3000/api/forum';
+    const API_URL = 'https://galaxycobblemon-api.onrender.com/api/forum';
     const urlParams = new URLSearchParams(window.location.search);
     const postId = urlParams.get('id');
     let currentPost = null;
@@ -1372,7 +1372,7 @@
     function renderContent(text) {
       let html = escapeHtml(text);
       // 将 [图片](url) 转换为 img 标签
-      html = html.replace(/\[图片\]\(([^)]+)\)/g, '<img src="http://localhost:3000$1" class="post-image" alt="帖子图片">');
+      html = html.replace(/\[图片\]\(([^)]+)\)/g, '<img src="https://galaxycobblemon-api.onrender.com$1" class="post-image" alt="帖子图片">');
       return html;
     }
 
