@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>对战模拟器 - GalaxyPokemon</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/fonts/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: '中华薪火体', 'Noto Sans SC', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+      line-height: 1.8;
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s, visibility 0.5s;
+    }
+    
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .loader-content {
+      text-align: center;
+    }
+    
+    .loader-icon {
+      font-size: 3rem;
+      color: #e74c3c;
+      animation: pulse 1s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+    }
+    
+    .loader-text {
+      color: #888;
+      margin-top: 1rem;
+    }
+    
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(231, 76, 60, 0.2);
+      border-radius: 3px;
+      margin-top: 1rem;
+      overflow: hidden;
+    }
+    
+    .loader-progress {
+      height: 100%;
+      background: linear-gradient(90deg, #e74c3c, #c0392b);
+      animation: loading 1.5s infinite;
+    }
+    
+    @keyframes loading {
+      0% { width: 0; margin-left: 0; }
+      50% { width: 100%; margin-left: 0; }
+      100% { width: 0; margin-left: 100%; }
+    }
+    
+    /* 页面头部 */
+    .page-header {
+      background: linear-gradient(180deg, #2a2420 0%, #1c1814 100%);
+      padding: 120px 0 60px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="rgba(231,76,60,0.05)" stroke-width="2"/><line x1="10" y1="50" x2="90" y2="50" stroke="rgba(231,76,60,0.05)" stroke-width="2"/></svg>') center/200px repeat;
+      opacity: 0.5;
+    }
+    
+    .page-title {
+      font-size: 3rem;
+      color: #e74c3c;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 20px rgba(231, 76, 60, 0.3);
+      letter-spacing: 0.15em;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .page-subtitle {
+      color: #999;
+      font-size: 1.2rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* 区块样式 */
+    .section {
+      padding: 60px 0;
+    }
+    
+    .section-dark {
+      background: #1c1814;
+    }
+    
+    .section-light {
+      background: linear-gradient(180deg, #201c18 0%, #1c1814 100%);
+    }
+    
+    .section-title {
+      font-size: 1.8rem;
+      color: #e74c3c;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 2rem;
+    }
+    
+    /* 对战区域 */
+    .battle-arena {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 2rem;
+      align-items: start;
+      margin-bottom: 2rem;
+    }
+    
+    .pokemon-panel {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.9), rgba(30, 25, 20, 0.95));
+      border: 1px solid rgba(231, 76, 60, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+    }
+    
+    .panel-title {
+      text-align: center;
+      color: #e74c3c;
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(231, 76, 60, 0.2);
+    }
+    
+    .panel-title.blue {
+      color: #3498db;
+      border-color: rgba(52, 152, 219, 0.2);
+    }
+    
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+    
+    .form-label {
+      display: block;
+      color: #aaa;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .form-control {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      color: #e0e0e0;
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+      outline: none;
+      border-color: rgba(231, 76, 60, 0.5);
+      box-shadow: 0 0 10px rgba(231, 76, 60, 0.2);
+    }
+    
+    .form-control option {
+      background: #1c1814;
+      color: #e0e0e0;
+    }
+    
+    .stat-inputs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+    }
+    
+    .stat-input {
+      text-align: center;
+    }
+    
+    .stat-input label {
+      display: block;
+      color: #888;
+      font-size: 0.75rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .stat-input input {
+      width: 100%;
+      padding: 0.5rem;
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      color: #e0e0e0;
+      font-family: inherit;
+      text-align: center;
+    }
+    
+    /* VS 区域 */
+    .vs-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+    }
+    
+    .vs-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #fff;
+      box-shadow: 0 0 30px rgba(231, 76, 60, 0.4);
+    }
+    
+    .calculate-btn {
+      margin-top: 2rem;
+      padding: 1rem 2.5rem;
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      border: none;
+      border-radius: 30px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 1.1rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .calculate-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(231, 76, 60, 0.4);
+    }
+    
+    /* 结果区域 */
+    .result-panel {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.9), rgba(30, 25, 20, 0.95));
+      border: 1px solid rgba(231, 76, 60, 0.2);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+    
+    .damage-result {
+      text-align: center;
+      padding: 2rem;
+    }
+    
+    .damage-number {
+      font-size: 4rem;
+      color: #e74c3c;
+      font-weight: bold;
+      text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+    }
+    
+    .damage-label {
+      color: #888;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+    }
+    
+    .damage-range {
+      color: #aaa;
+      font-size: 1.2rem;
+      margin-top: 1rem;
+    }
+    
+    .effectiveness {
+      display: inline-block;
+      padding: 0.5rem 1.5rem;
+      border-radius: 20px;
+      font-size: 1rem;
+      margin-top: 1rem;
+    }
+    
+    .effectiveness.super {
+      background: rgba(46, 204, 113, 0.2);
+      color: #2ecc71;
+      border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+    
+    .effectiveness.normal {
+      background: rgba(255, 255, 255, 0.1);
+      color: #aaa;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .effectiveness.not-very {
+      background: rgba(231, 76, 60, 0.2);
+      color: #e74c3c;
+      border: 1px solid rgba(231, 76, 60, 0.3);
+    }
+    
+    .effectiveness.immune {
+      background: rgba(100, 100, 100, 0.2);
+      color: #666;
+      border: 1px solid rgba(100, 100, 100, 0.3);
+    }
+    
+    /* 属性克制表 */
+    .type-chart {
+      margin-top: 3rem;
+    }
+    
+    .type-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 0.8rem;
+    }
+    
+    .type-badge {
+      padding: 0.6rem 1rem;
+      border-radius: 20px;
+      text-align: center;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .type-badge:hover {
+      transform: scale(1.05);
+    }
+    
+    /* 属性颜色 */
+    .type-normal { background: #A8A878; color: #fff; }
+    .type-fire { background: #F08030; color: #fff; }
+    .type-water { background: #6890F0; color: #fff; }
+    .type-electric { background: #F8D030; color: #333; }
+    .type-grass { background: #78C850; color: #fff; }
+    .type-ice { background: #98D8D8; color: #333; }
+    .type-fighting { background: #C03028; color: #fff; }
+    .type-poison { background: #A040A0; color: #fff; }
+    .type-ground { background: #E0C068; color: #333; }
+    .type-flying { background: #A890F0; color: #fff; }
+    .type-psychic { background: #F85888; color: #fff; }
+    .type-bug { background: #A8B820; color: #fff; }
+    .type-rock { background: #B8A038; color: #fff; }
+    .type-ghost { background: #705898; color: #fff; }
+    .type-dragon { background: #7038F8; color: #fff; }
+    .type-dark { background: #705848; color: #fff; }
+    .type-steel { background: #B8B8D0; color: #333; }
+    .type-fairy { background: #EE99AC; color: #333; }
+    
+    /* 页脚 */
+    footer {
+      background: #151210;
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid rgba(231, 76, 60, 0.1);
+    }
+    
+    footer p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    /* 响应式 */
+    @media (max-width: 992px) {
+      .battle-arena {
+        grid-template-columns: 1fr;
+      }
+      
+      .vs-section {
+        padding: 1rem;
+      }
+      
+      .vs-icon {
+        width: 60px;
+        height: 60px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .stat-inputs {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+      <div class="loader-text">加载对战系统中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 页面头部 -->
+  <header class="page-header">
+    <div class="container" style="position: relative; z-index: 1;">
+      <h1 class="page-title" data-aos="fade-up">对 战 模 拟 器</h1>
+      <p class="page-subtitle" data-aos="fade-up" data-aos-delay="100">计算伤害，了解属性克制，成为对战大师</p>
+    </div>
+  </header>
+
+  <!-- 对战计算器 -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-calculator"></i>
+        伤害计算器
+      </div>
+      <p class="section-subtitle" data-aos="fade-up">输入双方宝可梦信息，计算技能伤害</p>
+      
+      <div class="battle-arena" data-aos="fade-up">
+        <!-- 攻击方 -->
+        <div class="pokemon-panel">
+          <div class="panel-title">
+            <i class="bi bi-sword"></i> 攻击方
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">宝可梦</label>
+            <select class="form-control" id="attackerPokemon">
+              <option value="">选择宝可梦</option>
+              <option value="pikachu">皮卡丘</option>
+              <option value="charizard">喷火龙</option>
+              <option value="blastoise">水箭龟</option>
+              <option value="venusaur">妙蛙花</option>
+              <option value="gengar">耿鬼</option>
+              <option value="alakazam">胡地</option>
+              <option value="machamp">怪力</option>
+              <option value="gyarados">暴鲤龙</option>
+              <option value="dragonite">快龙</option>
+              <option value="mewtwo">超梦</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">属性</label>
+            <select class="form-control" id="attackerType">
+              <option value="normal">一般</option>
+              <option value="fire">火</option>
+              <option value="water">水</option>
+              <option value="electric">电</option>
+              <option value="grass">草</option>
+              <option value="ice">冰</option>
+              <option value="fighting">格斗</option>
+              <option value="poison">毒</option>
+              <option value="ground">地面</option>
+              <option value="flying">飞行</option>
+              <option value="psychic">超能力</option>
+              <option value="bug">虫</option>
+              <option value="rock">岩石</option>
+              <option value="ghost">幽灵</option>
+              <option value="dragon">龙</option>
+              <option value="dark">恶</option>
+              <option value="steel">钢</option>
+              <option value="fairy">妖精</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">技能</label>
+            <input type="text" class="form-control" id="moveName" placeholder="输入技能名称">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">技能属性</label>
+            <select class="form-control" id="moveType">
+              <option value="normal">一般</option>
+              <option value="fire">火</option>
+              <option value="water">水</option>
+              <option value="electric">电</option>
+              <option value="grass">草</option>
+              <option value="ice">冰</option>
+              <option value="fighting">格斗</option>
+              <option value="poison">毒</option>
+              <option value="ground">地面</option>
+              <option value="flying">飞行</option>
+              <option value="psychic">超能力</option>
+              <option value="bug">虫</option>
+              <option value="rock">岩石</option>
+              <option value="ghost">幽灵</option>
+              <option value="dragon">龙</option>
+              <option value="dark">恶</option>
+              <option value="steel">钢</option>
+              <option value="fairy">妖精</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">技能威力</label>
+            <input type="number" class="form-control" id="movePower" value="80" min="0" max="300">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">技能分类</label>
+            <select class="form-control" id="moveCategory">
+              <option value="physical">物理</option>
+              <option value="special">特殊</option>
+            </select>
+          </div>
+          
+          <div class="stat-inputs">
+            <div class="stat-input">
+              <label>等级</label>
+              <input type="number" id="attackerLevel" value="50" min="1" max="100">
+            </div>
+            <div class="stat-input">
+              <label>攻击</label>
+              <input type="number" id="attackerAtk" value="100" min="1">
+            </div>
+            <div class="stat-input">
+              <label>特攻</label>
+              <input type="number" id="attackerSpAtk" value="100" min="1">
+            </div>
+          </div>
+        </div>
+        
+        <!-- VS -->
+        <div class="vs-section">
+          <div class="vs-icon">VS</div>
+          <button class="calculate-btn" onclick="calculateDamage()">
+            <i class="bi bi-lightning-charge-fill"></i>
+            计算伤害
+          </button>
+        </div>
+        
+        <!-- 防御方 -->
+        <div class="pokemon-panel">
+          <div class="panel-title blue">
+            <i class="bi bi-shield"></i> 防御方
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">宝可梦</label>
+            <select class="form-control" id="defenderPokemon">
+              <option value="">选择宝可梦</option>
+              <option value="pikachu">皮卡丘</option>
+              <option value="charizard">喷火龙</option>
+              <option value="blastoise">水箭龟</option>
+              <option value="venusaur">妙蛙花</option>
+              <option value="gengar">耿鬼</option>
+              <option value="alakazam">胡地</option>
+              <option value="machamp">怪力</option>
+              <option value="gyarados">暴鲤龙</option>
+              <option value="dragonite">快龙</option>
+              <option value="mewtwo">超梦</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">属性1</label>
+            <select class="form-control" id="defenderType1">
+              <option value="normal">一般</option>
+              <option value="fire">火</option>
+              <option value="water">水</option>
+              <option value="electric">电</option>
+              <option value="grass">草</option>
+              <option value="ice">冰</option>
+              <option value="fighting">格斗</option>
+              <option value="poison">毒</option>
+              <option value="ground">地面</option>
+              <option value="flying">飞行</option>
+              <option value="psychic">超能力</option>
+              <option value="bug">虫</option>
+              <option value="rock">岩石</option>
+              <option value="ghost">幽灵</option>
+              <option value="dragon">龙</option>
+              <option value="dark">恶</option>
+              <option value="steel">钢</option>
+              <option value="fairy">妖精</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">属性2（可选）</label>
+            <select class="form-control" id="defenderType2">
+              <option value="">无</option>
+              <option value="normal">一般</option>
+              <option value="fire">火</option>
+              <option value="water">水</option>
+              <option value="electric">电</option>
+              <option value="grass">草</option>
+              <option value="ice">冰</option>
+              <option value="fighting">格斗</option>
+              <option value="poison">毒</option>
+              <option value="ground">地面</option>
+              <option value="flying">飞行</option>
+              <option value="psychic">超能力</option>
+              <option value="bug">虫</option>
+              <option value="rock">岩石</option>
+              <option value="ghost">幽灵</option>
+              <option value="dragon">龙</option>
+              <option value="dark">恶</option>
+              <option value="steel">钢</option>
+              <option value="fairy">妖精</option>
+            </select>
+          </div>
+          
+          <div class="stat-inputs" style="margin-top: 2rem;">
+            <div class="stat-input">
+              <label>HP</label>
+              <input type="number" id="defenderHP" value="200" min="1">
+            </div>
+            <div class="stat-input">
+              <label>防御</label>
+              <input type="number" id="defenderDef" value="100" min="1">
+            </div>
+            <div class="stat-input">
+              <label>特防</label>
+              <input type="number" id="defenderSpDef" value="100" min="1">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 计算结果 -->
+      <div class="result-panel" id="resultPanel" style="display: none;" data-aos="fade-up">
+        <div class="damage-result">
+          <div class="damage-number" id="damageNumber">0</div>
+          <div class="damage-label">预计伤害</div>
+          <div class="damage-range" id="damageRange">伤害范围: 0 - 0</div>
+          <div class="effectiveness" id="effectiveness">效果一般</div>
+          <div style="margin-top: 1.5rem; color: #888;" id="hpPercent">
+            约造成 0% HP 伤害
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 属性克制表 -->
+  <section class="section section-light">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-grid-3x3"></i>
+        属性克制速查
+      </div>
+      <p class="section-subtitle" data-aos="fade-up">点击属性查看克制关系</p>
+      
+      <div class="type-grid" data-aos="fade-up">
+        <div class="type-badge type-normal" onclick="showTypeInfo('normal')">一般</div>
+        <div class="type-badge type-fire" onclick="showTypeInfo('fire')">火</div>
+        <div class="type-badge type-water" onclick="showTypeInfo('water')">水</div>
+        <div class="type-badge type-electric" onclick="showTypeInfo('electric')">电</div>
+        <div class="type-badge type-grass" onclick="showTypeInfo('grass')">草</div>
+        <div class="type-badge type-ice" onclick="showTypeInfo('ice')">冰</div>
+        <div class="type-badge type-fighting" onclick="showTypeInfo('fighting')">格斗</div>
+        <div class="type-badge type-poison" onclick="showTypeInfo('poison')">毒</div>
+        <div class="type-badge type-ground" onclick="showTypeInfo('ground')">地面</div>
+        <div class="type-badge type-flying" onclick="showTypeInfo('flying')">飞行</div>
+        <div class="type-badge type-psychic" onclick="showTypeInfo('psychic')">超能力</div>
+        <div class="type-badge type-bug" onclick="showTypeInfo('bug')">虫</div>
+        <div class="type-badge type-rock" onclick="showTypeInfo('rock')">岩石</div>
+        <div class="type-badge type-ghost" onclick="showTypeInfo('ghost')">幽灵</div>
+        <div class="type-badge type-dragon" onclick="showTypeInfo('dragon')">龙</div>
+        <div class="type-badge type-dark" onclick="showTypeInfo('dark')">恶</div>
+        <div class="type-badge type-steel" onclick="showTypeInfo('steel')">钢</div>
+        <div class="type-badge type-fairy" onclick="showTypeInfo('fairy')">妖精</div>
+      </div>
+      
+      <div id="typeInfo" style="margin-top: 2rem; display: none;">
+        <div style="background: rgba(40, 35, 30, 0.8); border-radius: 16px; padding: 1.5rem;">
+          <h4 style="color: #e74c3c; margin-bottom: 1rem;" id="typeInfoTitle">属性信息</h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div>
+              <p style="color: #2ecc71; margin-bottom: 0.5rem;"><i class="bi bi-arrow-up-circle"></i> 效果绝佳</p>
+              <p style="color: #aaa; font-size: 0.9rem;" id="superEffective">-</p>
+            </div>
+            <div>
+              <p style="color: #e74c3c; margin-bottom: 0.5rem;"><i class="bi bi-arrow-down-circle"></i> 效果不佳</p>
+              <p style="color: #aaa; font-size: 0.9rem;" id="notVeryEffective">-</p>
+            </div>
+            <div>
+              <p style="color: #666; margin-bottom: 0.5rem;"><i class="bi bi-x-circle"></i> 没有效果</p>
+              <p style="color: #aaa; font-size: 0.9rem;" id="noEffect">-</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container">
+      <p>© 2024 GalaxyPokemon. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // 页面加载完成后隐藏加载动画
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 50
+    });
+    
+    // 属性克制表
+    const typeChart = {
+      normal: { superEffective: [], notVeryEffective: ['rock', 'steel'], noEffect: ['ghost'] },
+      fire: { superEffective: ['grass', 'ice', 'bug', 'steel'], notVeryEffective: ['fire', 'water', 'rock', 'dragon'], noEffect: [] },
+      water: { superEffective: ['fire', 'ground', 'rock'], notVeryEffective: ['water', 'grass', 'dragon'], noEffect: [] },
+      electric: { superEffective: ['water', 'flying'], notVeryEffective: ['electric', 'grass', 'dragon'], noEffect: ['ground'] },
+      grass: { superEffective: ['water', 'ground', 'rock'], notVeryEffective: ['fire', 'grass', 'poison', 'flying', 'bug', 'dragon', 'steel'], noEffect: [] },
+      ice: { superEffective: ['grass', 'ground', 'flying', 'dragon'], notVeryEffective: ['fire', 'water', 'ice', 'steel'], noEffect: [] },
+      fighting: { superEffective: ['normal', 'ice', 'rock', 'dark', 'steel'], notVeryEffective: ['poison', 'flying', 'psychic', 'bug', 'fairy'], noEffect: ['ghost'] },
+      poison: { superEffective: ['grass', 'fairy'], notVeryEffective: ['poison', 'ground', 'rock', 'ghost'], noEffect: ['steel'] },
+      ground: { superEffective: ['fire', 'electric', 'poison', 'rock', 'steel'], notVeryEffective: ['grass', 'bug'], noEffect: ['flying'] },
+      flying: { superEffective: ['grass', 'fighting', 'bug'], notVeryEffective: ['electric', 'rock', 'steel'], noEffect: [] },
+      psychic: { superEffective: ['fighting', 'poison'], notVeryEffective: ['psychic', 'steel'], noEffect: ['dark'] },
+      bug: { superEffective: ['grass', 'psychic', 'dark'], notVeryEffective: ['fire', 'fighting', 'poison', 'flying', 'ghost', 'steel', 'fairy'], noEffect: [] },
+      rock: { superEffective: ['fire', 'ice', 'flying', 'bug'], notVeryEffective: ['fighting', 'ground', 'steel'], noEffect: [] },
+      ghost: { superEffective: ['psychic', 'ghost'], notVeryEffective: ['dark'], noEffect: ['normal'] },
+      dragon: { superEffective: ['dragon'], notVeryEffective: ['steel'], noEffect: ['fairy'] },
+      dark: { superEffective: ['psychic', 'ghost'], notVeryEffective: ['fighting', 'dark', 'fairy'], noEffect: [] },
+      steel: { superEffective: ['ice', 'rock', 'fairy'], notVeryEffective: ['fire', 'water', 'electric', 'steel'], noEffect: [] },
+      fairy: { superEffective: ['fighting', 'dragon', 'dark'], notVeryEffective: ['fire', 'poison', 'steel'], noEffect: [] }
+    };
+    
+    const typeNames = {
+      normal: '一般', fire: '火', water: '水', electric: '电', grass: '草', ice: '冰',
+      fighting: '格斗', poison: '毒', ground: '地面', flying: '飞行', psychic: '超能力',
+      bug: '虫', rock: '岩石', ghost: '幽灵', dragon: '龙', dark: '恶', steel: '钢', fairy: '妖精'
+    };
+    
+    // 计算伤害
+    function calculateDamage() {
+      const level = parseInt(document.getElementById('attackerLevel').value) || 50;
+      const power = parseInt(document.getElementById('movePower').value) || 80;
+      const category = document.getElementById('moveCategory').value;
+      const moveType = document.getElementById('moveType').value;
+      const attackerType = document.getElementById('attackerType').value;
+      const defenderType1 = document.getElementById('defenderType1').value;
+      const defenderType2 = document.getElementById('defenderType2').value;
+      const defenderHP = parseInt(document.getElementById('defenderHP').value) || 200;
+      
+      let attack, defense;
+      if (category === 'physical') {
+        attack = parseInt(document.getElementById('attackerAtk').value) || 100;
+        defense = parseInt(document.getElementById('defenderDef').value) || 100;
+      } else {
+        attack = parseInt(document.getElementById('attackerSpAtk').value) || 100;
+        defense = parseInt(document.getElementById('defenderSpDef').value) || 100;
+      }
+      
+      // 计算属性克制倍率
+      let effectiveness = 1;
+      const chart = typeChart[moveType];
+      
+      if (chart.superEffective.includes(defenderType1)) effectiveness *= 2;
+      else if (chart.notVeryEffective.includes(defenderType1)) effectiveness *= 0.5;
+      else if (chart.noEffect.includes(defenderType1)) effectiveness *= 0;
+      
+      if (defenderType2) {
+        if (chart.superEffective.includes(defenderType2)) effectiveness *= 2;
+        else if (chart.notVeryEffective.includes(defenderType2)) effectiveness *= 0.5;
+        else if (chart.noEffect.includes(defenderType2)) effectiveness *= 0;
+      }
+      
+      // STAB加成
+      const stab = (moveType === attackerType) ? 1.5 : 1;
+      
+      // 伤害公式
+      const baseDamage = Math.floor(((2 * level / 5 + 2) * power * attack / defense) / 50 + 2);
+      const minDamage = Math.floor(baseDamage * 0.85 * stab * effectiveness);
+      const maxDamage = Math.floor(baseDamage * stab * effectiveness);
+      const avgDamage = Math.floor((minDamage + maxDamage) / 2);
+      
+      // 显示结果
+      document.getElementById('resultPanel').style.display = 'block';
+      document.getElementById('damageNumber').textContent = avgDamage;
+      document.getElementById('damageRange').textContent = `伤害范围: ${minDamage} - ${maxDamage}`;
+      
+      const hpPercent = Math.min(100, Math.round(avgDamage / defenderHP * 100));
+      document.getElementById('hpPercent').textContent = `约造成 ${hpPercent}% HP 伤害`;
+      
+      // 效果文字
+      const effEl = document.getElementById('effectiveness');
+      if (effectiveness === 0) {
+        effEl.textContent = '没有效果...';
+        effEl.className = 'effectiveness immune';
+      } else if (effectiveness >= 2) {
+        effEl.textContent = '效果绝佳！';
+        effEl.className = 'effectiveness super';
+      } else if (effectiveness < 1) {
+        effEl.textContent = '效果不佳...';
+        effEl.className = 'effectiveness not-very';
+      } else {
+        effEl.textContent = '效果一般';
+        effEl.className = 'effectiveness normal';
+      }
+      
+      // 滚动到结果
+      document.getElementById('resultPanel').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    
+    // 显示属性信息
+    function showTypeInfo(type) {
+      const info = typeChart[type];
+      document.getElementById('typeInfo').style.display = 'block';
+      document.getElementById('typeInfoTitle').textContent = `${typeNames[type]}属性`;
+      
+      document.getElementById('superEffective').textContent = 
+        info.superEffective.length ? info.superEffective.map(t => typeNames[t]).join('、') : '无';
+      document.getElementById('notVeryEffective').textContent = 
+        info.notVeryEffective.length ? info.notVeryEffective.map(t => typeNames[t]).join('、') : '无';
+      document.getElementById('noEffect').textContent = 
+        info.noEffect.length ? info.noEffect.map(t => typeNames[t]).join('、') : '无';
+    }
+  </script>
+</body>
+</html>

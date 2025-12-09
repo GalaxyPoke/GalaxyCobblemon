@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>热门宝可梦 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/carousel.css" rel="stylesheet">
+  <style>
+    .trending-page {
+      min-height: 100vh;
+      padding: 120px 0 60px;
+      background: var(--gradient-dark);
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .page-title {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 3rem;
+      color: var(--primary-light);
+      margin-bottom: 0.5rem;
+      letter-spacing: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .page-title i {
+      color: #ff6b6b;
+      animation: flame 1s ease-in-out infinite alternate;
+    }
+
+    @keyframes flame {
+      from { transform: scale(1); filter: brightness(1); }
+      to { transform: scale(1.1); filter: brightness(1.2); }
+    }
+
+    .page-subtitle {
+      color: var(--gray-light);
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+    }
+
+    /* 数据来源信息 */
+    .data-source {
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid rgba(212, 165, 116, 0.3);
+      border-radius: 8px;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .data-source-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .data-source-logo {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #fff;
+    }
+
+    .data-source-text h4 {
+      color: var(--white);
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .data-source-text p {
+      color: var(--gray);
+      font-size: 0.85rem;
+      margin: 0;
+    }
+
+    .data-source-link {
+      background: var(--gradient-primary);
+      color: var(--white);
+      padding: 0.5rem 1.5rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .data-source-link:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+      color: var(--white);
+    }
+
+    /* 格式选择 */
+    .format-tabs {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .format-tab {
+      padding: 0.6rem 1.5rem;
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid rgba(212, 165, 116, 0.3);
+      border-radius: 20px;
+      color: var(--gray-light);
+      cursor: pointer;
+      transition: all 0.3s;
+      font-size: 0.9rem;
+    }
+
+    .format-tab:hover {
+      border-color: var(--primary);
+      color: var(--white);
+    }
+
+    .format-tab.active {
+      background: var(--gradient-primary);
+      border-color: var(--primary);
+      color: var(--white);
+    }
+
+    /* 排行榜 */
+    .ranking-section {
+      margin-bottom: 3rem;
+    }
+
+    .ranking-title {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 1.5rem;
+      color: var(--primary-light);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Top 3 特殊展示 */
+    .top-three {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      align-items: end;
+    }
+
+    @media (max-width: 768px) {
+      .top-three {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .top-card {
+      background: rgba(28, 24, 20, 0.9);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+      transition: all 0.3s;
+      overflow: hidden;
+    }
+
+    .top-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .top-card.gold {
+      border: 1px solid rgba(255, 215, 0, 0.5);
+      order: 2;
+    }
+
+    .top-card.gold::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #ffd700, transparent);
+    }
+
+    .top-card.silver {
+      border: 1px solid rgba(192, 192, 192, 0.5);
+      order: 1;
+    }
+
+    .top-card.silver::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #c0c0c0, transparent);
+    }
+
+    .top-card.bronze {
+      border: 1px solid rgba(205, 127, 50, 0.5);
+      order: 3;
+    }
+
+    .top-card.bronze::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #cd7f32, transparent);
+    }
+
+    .top-rank {
+      position: absolute;
+      top: 1rem;
+      left: 1rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .top-card.gold .top-rank {
+      background: linear-gradient(135deg, #ffd700, #ffec8b);
+      color: #1c1814;
+    }
+
+    .top-card.silver .top-rank {
+      background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+      color: #1c1814;
+    }
+
+    .top-card.bronze .top-rank {
+      background: linear-gradient(135deg, #cd7f32, #daa06d);
+      color: #1c1814;
+    }
+
+    .top-usage {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0, 0, 0, 0.6);
+      color: #4ade80;
+      padding: 0.25rem 0.75rem;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .top-img {
+      width: 140px;
+      height: 140px;
+      object-fit: contain;
+      margin: 1rem auto;
+      transition: transform 0.3s;
+    }
+
+    .top-card.gold .top-img {
+      width: 180px;
+      height: 180px;
+    }
+
+    .top-card:hover .top-img {
+      transform: scale(1.1);
+    }
+
+    .top-name {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 1.4rem;
+      color: var(--white);
+      margin-bottom: 0.25rem;
+    }
+
+    .top-card.gold .top-name {
+      font-size: 1.6rem;
+    }
+
+    .top-name-en {
+      color: var(--gray);
+      font-size: 0.85rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .top-types {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .top-types img {
+      height: 20px;
+    }
+
+    .top-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(212, 165, 116, 0.2);
+    }
+
+    .top-stat {
+      text-align: center;
+    }
+
+    .top-stat-value {
+      color: var(--primary-light);
+      font-size: 1.1rem;
+      font-weight: bold;
+    }
+
+    .top-stat-label {
+      color: var(--gray);
+      font-size: 0.7rem;
+    }
+
+    /* 排行列表 */
+    .ranking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .ranking-item {
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .ranking-item:hover {
+      border-color: var(--primary);
+      transform: translateX(10px);
+      box-shadow: 0 5px 20px rgba(139, 115, 85, 0.2);
+    }
+
+    .ranking-number {
+      width: 32px;
+      height: 32px;
+      background: rgba(139, 115, 85, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--primary-light);
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .ranking-pokemon {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      flex: 1;
+    }
+
+    .ranking-img {
+      width: 60px;
+      height: 60px;
+      object-fit: contain;
+    }
+
+    .ranking-info h4 {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      color: var(--white);
+      font-size: 1.1rem;
+      margin: 0 0 0.25rem;
+    }
+
+    .ranking-info p {
+      color: var(--gray);
+      font-size: 0.8rem;
+      margin: 0;
+    }
+
+    .ranking-types {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .ranking-types img {
+      height: 16px;
+    }
+
+    .ranking-usage {
+      background: rgba(74, 222, 128, 0.1);
+      color: #4ade80;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .ranking-trend {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.85rem;
+    }
+
+    .ranking-trend.up {
+      color: #4ade80;
+    }
+
+    .ranking-trend.down {
+      color: #f87171;
+    }
+
+    .ranking-trend.same {
+      color: var(--gray);
+    }
+
+    /* 详情模态框 */
+    .pokemon-modal .modal-content {
+      background: rgba(28, 24, 20, 0.98);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+    }
+
+    .pokemon-modal .modal-header {
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1.5rem 2rem;
+    }
+
+    .pokemon-modal .modal-title {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 1.8rem;
+      color: var(--primary-light);
+      letter-spacing: 4px;
+    }
+
+    .pokemon-modal .modal-body {
+      padding: 2rem;
+    }
+
+    .pokemon-modal .btn-close {
+      filter: invert(1);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .detail-image {
+      text-align: center;
+    }
+
+    .detail-img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+    }
+
+    .detail-types {
+      display: flex;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1rem;
+    }
+
+    .detail-types img {
+      height: 24px;
+    }
+
+    .detail-section {
+      margin-bottom: 1.5rem;
+    }
+
+    .detail-section h5 {
+      color: var(--primary-light);
+      font-size: 1rem;
+      margin-bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .stat-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-name {
+      width: 60px;
+      color: var(--gray-light);
+      font-size: 0.85rem;
+    }
+
+    .stat-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: rgba(139, 115, 85, 0.2);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .stat-bar-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .stat-value {
+      width: 35px;
+      text-align: right;
+      color: var(--white);
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .move-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.5rem;
+    }
+
+    .move-item {
+      background: rgba(139, 115, 85, 0.2);
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .move-item img {
+      height: 14px;
+    }
+
+    .teammate-list {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+
+    .teammate-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .teammate-img {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+
+    .teammate-name {
+      font-size: 0.75rem;
+      color: var(--gray-light);
+    }
+  </style>
+</head>
+<body style="background:#1c1814;">
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-fire"></i></div>
+      <div class="loader-text">加载热门数据...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <div id="particles-js"></div>
+
+  <!-- 导航栏（由navbar.js自动生成） -->
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 热门宝可梦页面 -->
+  <section class="trending-page">
+    <div class="container">
+      <div class="page-header" data-aos="fade-up">
+        <h1 class="page-title"><i class="bi bi-fire"></i> 热门宝可梦</h1>
+        <p class="page-subtitle">VGC 对战使用率排行 · 实时更新</p>
+      </div>
+
+      <!-- 数据来源 -->
+      <div class="data-source" data-aos="fade-up" data-aos-delay="50">
+        <div class="data-source-info">
+          <div class="data-source-logo">P</div>
+          <div class="data-source-text">
+            <h4>Pikalytics</h4>
+            <p>VGC 2025 Regulation H · 更新于 2025年1月</p>
+          </div>
+        </div>
+        <a href="https://pikalytics.com" target="_blank" class="data-source-link">
+          <i class="bi bi-box-arrow-up-right"></i> 查看完整数据
+        </a>
+      </div>
+
+      <!-- 格式选择 -->
+      <div class="format-tabs" data-aos="fade-up" data-aos-delay="100">
+        <button class="format-tab active" data-format="vgc">VGC 双打</button>
+        <button class="format-tab" data-format="ou">OU 单打</button>
+        <button class="format-tab" data-format="uu">UU 单打</button>
+        <button class="format-tab" data-format="monotype">单属性</button>
+      </div>
+
+      <!-- Top 3 展示 -->
+      <div class="ranking-section" data-aos="fade-up" data-aos-delay="150">
+        <h3 class="ranking-title"><i class="bi bi-trophy"></i> 使用率 Top 3</h3>
+        <div class="top-three" id="topThree">
+          <!-- 动态加载 -->
+        </div>
+      </div>
+
+      <!-- 完整排行 -->
+      <div class="ranking-section" data-aos="fade-up" data-aos-delay="200">
+        <h3 class="ranking-title"><i class="bi bi-list-ol"></i> 完整排行榜</h3>
+        <div class="ranking-list" id="rankingList">
+          <!-- 动态加载 -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 详情模态框 -->
+  <div class="modal fade pokemon-modal" id="pokemonModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">宝可梦详情</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- 动态内容 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>对战精彩瞬间</h2>
+        <p>VGC赛场上的高光时刻</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>对战截图 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>VGC 对战</h4>
+                <p>顶尖训练师的巅峰对决</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>对战截图 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>战术配合</h4>
+                <p>精妙的双打配合</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>对战截图 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>冠军时刻</h4>
+                <p>荣耀加冕的瞬间</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer-section">
+    <div class="container">
+      <div class="footer-bottom">
+        <p class="footer-copyright">&copy; 2024 GalaxyPokemon. All Rights Reserved.</p>
+        <p class="footer-note">本站与 Mojang Studios 和 The Pokémon Company 无关。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="static/js/carousel.js"></script>
+  
+  <script>
+    // 初始化 AOS
+    AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true });
+
+    // 初始化粒子背景
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 30, density: { enable: true, value_area: 1000 } },
+        color: { value: '#d4a574' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.2, random: true },
+        size: { value: 2, random: true },
+        line_linked: { enable: true, distance: 200, color: '#8b7355', opacity: 0.15, width: 1 },
+        move: { enable: true, speed: 1, direction: 'none', random: true, out_mode: 'out' }
+      }
+    });
+
+    // 页面加载
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+
+    // 属性中文名和颜色
+    const typeNames = {
+      normal: '一般', fire: '火', water: '水', electric: '电', grass: '草',
+      ice: '冰', fighting: '格斗', poison: '毒', ground: '地面', flying: '飞行',
+      psychic: '超能', bug: '虫', rock: '岩石', ghost: '幽灵', dragon: '龙',
+      dark: '恶', steel: '钢', fairy: '妖精'
+    };
+
+    const typeColors = {
+      normal: '#A8A878', fire: '#F08030', water: '#6890F0', electric: '#F8D030', grass: '#78C850',
+      ice: '#98D8D8', fighting: '#C03028', poison: '#A040A0', ground: '#E0C068', flying: '#A890F0',
+      psychic: '#F85888', bug: '#A8B820', rock: '#B8A038', ghost: '#705898', dragon: '#7038F8',
+      dark: '#705848', steel: '#B8B8D0', fairy: '#EE99AC'
+    };
+
+    // 生成属性标签HTML
+    function getTypeHtml(types) {
+      return types.map(t => 
+        `<img src="static/image/types/${t}.png" alt="${typeNames[t]}" style="height:20px;">`
+      ).join('');
+    }
+
+    // VGC 热门宝可梦数据 (基于 Pikalytics VGC 2025 Regulation H)
+    const trendingData = {
+      vgc: [
+        { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', usage: 43.84, trend: 'up', types: ['steel', 'ghost'], 
+          moves: ['赚大钱', '暗影球', '守住', '诡计'],
+          teammatesDetail: [
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '多重鳞片提供生存力，神速收割残血，黑雾清除对手强化' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '血月高伤害输出，地面系打击赛富豪弱点的火系' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '威吓削弱物攻，击掌奇袭控场，蜻蜓回转灵活换场' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复HP，击掌奇袭控场，青草滑梯先制' }
+          ],
+          stats: { hp: 87, attack: 60, defense: 95, spAtk: 133, spDef: 91, speed: 84 },
+          ability: '黄金之躯', item: '生命宝珠', nature: '冷静',
+          reason: '赛富豪凭借独特的"黄金之躯"特性成为VGC 2025的霸主。该特性完全免疫所有变化招式(包括蘑菇孢子、鬼火、电磁波等)，让它在面对辅助型宝可梦时几乎无敌。133特攻配合钢+幽灵的优秀属性组合，既有输出又有抗性。',
+          strengths: ['黄金之躯免疫变化招式', '特攻极高', '属性抗性优秀(9个抗性/免疫)'],
+          weaknesses: ['速度中等', '火/地/幽灵/恶弱点', '物防一般'] },
+        { id: 149, name: '快龙', nameEn: 'Dragonite', usage: 35.55, trend: 'up', types: ['dragon', 'flying'], 
+          moves: ['鳞射', '守住', '黑雾', '神速'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '黄金之躯免疫变化招式，高特攻输出，属性互补' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '血月高伤害，地面系覆盖快龙打不到的钢系' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '威吓保护快龙，击掌奇袭争取强化回合' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地持续回复，弥补多重鳞片破后的脆弱' }
+          ],
+          stats: { hp: 91, attack: 134, defense: 95, spAtk: 100, spDef: 100, speed: 80 },
+          ability: '多重鳞片', item: '加载骰子', nature: '爽朗',
+          reason: '快龙在Reg H中迎来复兴！"多重鳞片"特性在满HP时伤害减半，配合加载骰子让"鳞射"稳定打出4-5次。黑雾可以清除对手的强化，神速提供+2优先度的收割能力。全面的种族值让它攻防兼备。',
+          strengths: ['多重鳞片生存力强', '鳞射+加载骰子输出稳定', '神速先制收割'],
+          weaknesses: ['4倍冰弱点', '速度偏慢', '岩石/龙/仙弱点'] },
+        { id: 901, name: '月月熊(赫月)', nameEn: 'Ursaluna-Bloodmoon', usage: 34.91, trend: 'same', types: ['ground', 'normal'], 
+          moves: ['大地之力', '血月', '破坏光线', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '钢系抵抗月月熊的仙系弱点，高速输出互补' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '飞行系免疫地震，神速收割月月熊打残的目标' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '威吓弥补月月熊特防低的问题，火系打草系' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复HP，击掌奇袭为月月熊争取输出机会' }
+          ],
+          stats: { hp: 113, attack: 70, defense: 120, spAtk: 135, spDef: 65, speed: 52 },
+          ability: '心眼', item: '突击背心', nature: '冷静',
+          reason: '赫月月月熊是当前环境最强的特攻手之一。专属招式"血月"威力140且必中，虽然不能连续使用但伤害惊人。135特攻配合地面+一般的打击面，可以对大部分宝可梦造成巨大压力。心眼特性让招式必中。',
+          strengths: ['血月威力惊人', '心眼特性必中', '物防优秀'],
+          weaknesses: ['速度极慢', '特防较低', '水/草/冰/格斗弱点多'] },
+        { id: 998, name: '铝钢龙', nameEn: 'Archaludon', usage: 33.17, trend: 'up', types: ['steel', 'dragon'], 
+          moves: ['电光炮', '闪光加农炮', '流星群', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '双钢系核心，属性抗性互补，特攻双输出' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '飞行系免疫地面，威吓保护铝钢龙的特防' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '地面系打击铝钢龙弱点的火系' },
+            { id: 279, name: '大嘴鸥', nameEn: 'Pelipper', reason: '降雨触发电光炮，顺风提速' }
+          ],
+          stats: { hp: 90, attack: 105, defense: 130, spAtk: 125, spDef: 65, speed: 85 },
+          ability: '结实', item: '强力香草', nature: '冷静',
+          reason: '铝钢龙是Reg H的新星！钢+龙的属性组合提供了惊人的10个抗性。"结实"特性让它在满HP时必定能承受一击，配合强力香草可以一回合发动电光炮。125特攻的输出不容小觑。',
+          strengths: ['10个属性抗性', '结实特性保命', '电光炮一回合发动'],
+          weaknesses: ['特防极低', '格斗/地面弱点', '依赖强力香草'] },
+        { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', usage: 30.84, trend: 'same', types: ['fire', 'dark'], 
+          moves: ['击掌奇袭', '拍落', '闪焰冲锋', '蜻蜓回转'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '威吓保护赛富豪，拍落移除对手道具' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '威吓+多重鳞片双重保护，击掌奇袭争取回合' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '威吓弥补月月熊特防，火系打草系威胁' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '双击掌奇袭控场，青草场地回复' }
+          ],
+          stats: { hp: 95, attack: 115, defense: 90, spAtk: 80, spDef: 90, speed: 60 },
+          ability: '威吓', item: '防护眼镜', nature: '慎重',
+          reason: '炽焰咆哮虎是VGC历史上使用率最高的宝可梦之一！"威吓"特性上场削弱双方物攻，击掌奇袭提供控场能力，蜻蜓回转可以反复触发威吓。全能的辅助+输出能力让它成为队伍的万金油。',
+          strengths: ['威吓特性极其强力', '击掌奇袭控场', '蜻蜓回转灵活换场'],
+          weaknesses: ['速度偏慢', '水/格斗/地面/岩石弱点', '4倍格斗弱点'] },
+        { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', usage: 29.47, trend: 'up', types: ['grass'], 
+          moves: ['青草滑梯', '击掌奇袭', '木槌', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '青草场地回复赛富豪HP，先制技互补' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '青草场地持续回复，弥补多重鳞片破后脆弱' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '击掌奇袭为月月熊争取输出机会' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '双击掌奇袭控场，火系打虫系威胁' }
+          ],
+          stats: { hp: 100, attack: 125, defense: 90, spAtk: 60, spDef: 70, speed: 85 },
+          ability: '青草制造者', item: '突击背心', nature: '固执',
+          reason: '轰擂金刚猩的"青草制造者"特性上场自动展开青草场地，让"青草滑梯"成为+1优先度的强力先制技能。击掌奇袭提供控场，125攻击的木槌在青草场地下威力惊人。场地还能每回合回复HP。',
+          strengths: ['青草滑梯先制攻击', '击掌奇袭控场', '青草场地回复HP'],
+          weaknesses: ['特防较低', '火/冰/毒/飞/虫弱点多', '依赖青草场地'] },
+        { id: 903, name: '大狃拉(洗翠)', nameEn: 'Sneasler', usage: 27.47, trend: 'up', types: ['fighting', 'poison'], 
+          moves: ['近身战', '暗袭要害', '守住', '击掌奇袭'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '毒系打击仙系，保护赛富豪' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '击掌奇袭为快龙争取输出机会' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复HP，双击掌奇袭' },
+            { id: 279, name: '大嘴鸥', nameEn: 'Pelipper', reason: '顺风弥补速度，雨天队核心' }
+          ],
+          stats: { hp: 80, attack: 130, defense: 60, spAtk: 40, spDef: 80, speed: 120 },
+          ability: '轻装', item: '精神种子', nature: '爽朗',
+          reason: '洗翠大狃拉凭借120速度和130攻击成为顶级物攻手。"轻装"特性在消耗道具后速度翻倍，配合精神种子在精神场地下触发后速度惊人。格斗+毒的属性可以有效打击仙系。',
+          strengths: ['轻装后速度翻倍', '高攻高速', '击掌奇袭控场'],
+          weaknesses: ['物防极低', '超能/地面/飞行弱点', '依赖场地触发'] },
+        { id: 979, name: '弃世猴', nameEn: 'Annihilape', usage: 25.02, trend: 'same', types: ['fighting', 'ghost'], 
+          moves: ['愤怒之拳', '近身战', '守住', '挑衅'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '属性互补，双幽灵打击面广' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '飞行系覆盖弃世猴打不到的目标' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '双输出核心，压力巨大' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复，击掌奇袭控场' }
+          ],
+          stats: { hp: 110, attack: 115, defense: 80, spAtk: 50, spDef: 90, speed: 90 },
+          ability: '不服输', item: '防护眼镜', nature: '固执',
+          reason: '弃世猴的专属招式"愤怒之拳"每次受到攻击威力+50，最高可达350！格斗+幽灵的独特属性组合让它免疫一般和格斗系招式。"不服输"特性在被威吓时攻击+2，完美克制威吓队伍。',
+          strengths: ['愤怒之拳越打越强', '免疫一般和格斗', '不服输克制威吓'],
+          weaknesses: ['需要时间叠加伤害', '幽灵/飞行/仙系弱点', '被一击必杀威胁'] },
+        { id: 279, name: '大嘴鸥', nameEn: 'Pelipper', usage: 20.76, trend: 'up', types: ['water', 'flying'], 
+          moves: ['暴风', '气象球', '顺风', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '顺风提速赛富豪，雨天增强输出' },
+            { id: 998, name: '铝钢龙', nameEn: 'Archaludon', reason: '雨天触发电光炮，完美配合' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '顺风弥补快龙速度，暴风必中' },
+            { id: 903, name: '大狃拉', nameEn: 'Sneasler', reason: '顺风+轻装速度爆炸' }
+          ],
+          stats: { hp: 60, attack: 50, defense: 100, spAtk: 95, spDef: 70, speed: 65 },
+          ability: '降雨', item: '讲究围巾', nature: '冷静',
+          reason: '大嘴鸥是雨天队伍的核心开场手！"降雨"特性上场自动召唤雨天，让水系招式威力提升50%，气象球变成威力100的水系招式。顺风可以为队伍提供速度支援，是天气队的首选。',
+          strengths: ['自动召唤雨天', '顺风支援队伍', '气象球雨天威力大'],
+          weaknesses: ['种族值较低', '4倍电弱点', '岩石弱点'] },
+        { id: 591, name: '败露球菇', nameEn: 'Amoonguss', usage: 17.23, trend: 'down', types: ['grass', 'poison'], 
+          moves: ['蘑菇孢子', '愤怒粉', '花粉团', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '愤怒粉保护赛富豪输出(但被黄金之躯克制)' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '愤怒粉保护快龙，蘑菇孢子控场' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '保护月月熊安全输出' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '双辅助核心，控场能力强' }
+          ],
+          stats: { hp: 114, attack: 85, defense: 70, spAtk: 85, spDef: 80, speed: 30 },
+          ability: '再生力', item: '气势披带', nature: '悠闲',
+          reason: '败露球菇是VGC历史上最成功的辅助宝可梦！"蘑菇孢子"是唯一100%命中的催眠招式，"愤怒粉"吸引攻击保护队友。再生力特性让它可以反复上场。但赛富豪的流行让它使用率下降。',
+          strengths: ['蘑菇孢子100%催眠', '愤怒粉保护队友', '再生力持久作战'],
+          weaknesses: ['被赛富豪完克', '输出能力弱', '飞行4倍弱点'] },
+        { id: 38, name: '九尾(阿罗拉)', nameEn: 'Ninetales-Alola', usage: 16.85, trend: 'up', types: ['ice', 'fairy'], 
+          moves: ['暴风雪', '月亮之力', '极光幕', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '极光幕保护赛富豪，冰系打龙' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '极光幕+多重鳞片双重保护' },
+            { id: 998, name: '铝钢龙', nameEn: 'Archaludon', reason: '极光幕弥补铝钢龙特防' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '极光幕保护月月熊' }
+          ],
+          stats: { hp: 73, attack: 67, defense: 75, spAtk: 81, spDef: 100, speed: 109 },
+          ability: '降雪', item: '光之粘土', nature: '胆小',
+          reason: '阿罗拉九尾是冰雹/雪天队伍的核心！"降雪"特性上场召唤雪天，让暴风雪必中且冰系宝可梦防御提升。极光幕在雪天下同时展开反射壁和光墙，为队伍提供5回合的双重保护。',
+          strengths: ['降雪让暴风雪必中', '极光幕双重保护', '冰+仙打击龙系'],
+          weaknesses: ['种族值一般', '钢/火/岩石/毒弱点', '输出偏低'] },
+        { id: 373, name: '暴飞龙', nameEn: 'Salamence', usage: 15.42, trend: 'same', types: ['dragon', 'flying'], 
+          moves: ['流星群', '暴风', '火焰放射', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '威吓保护赛富豪，属性互补' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '威吓弥补月月熊特防' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '双威吓削弱物攻' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复HP' }
+          ],
+          stats: { hp: 95, attack: 135, defense: 80, spAtk: 110, spDef: 80, speed: 100 },
+          ability: '威吓', item: '生命宝珠', nature: '胆小',
+          reason: '暴飞龙的"威吓"特性在双打中价值极高，可以削弱对手双方的物攻。100速度档位优秀，双攻种族值都很高，可以走物攻或特攻路线。飞行+龙的属性组合打击面广，是经典的VGC常客。',
+          strengths: ['威吓特性削弱对手', '双攻优秀可物可特', '速度档位好'],
+          weaknesses: ['4倍冰弱点', '岩石系威胁', '仙系克制'] },
+        { id: 134, name: '水伊布', nameEn: 'Vaporeon', usage: 14.28, trend: 'up', types: ['water'], 
+          moves: ['冲浪', '冷冻光束', '帮助', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '帮助提升赛富豪伤害50%' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '帮助提升快龙伤害' },
+            { id: 279, name: '大嘴鸥', nameEn: 'Pelipper', reason: '雨天队核心，储水吸收水系' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复HP' }
+          ],
+          stats: { hp: 130, attack: 65, defense: 60, spAtk: 110, spDef: 95, speed: 65 },
+          ability: '储水', item: '剩饭', nature: '冷静',
+          reason: '水伊布在雨天队伍中表现出色！130HP配合储水特性可以吸收水系攻击回复HP，在雨天队镜像对局中极其有利。"帮助"可以让队友伤害提升50%，是优秀的辅助+输出混合型宝可梦。',
+          strengths: ['储水吸收水系攻击', 'HP极高很耐打', '帮助提升队友伤害'],
+          weaknesses: ['速度很慢', '草/电弱点', '物防较低'] },
+        { id: 887, name: '多龙巴鲁托', nameEn: 'Dragapult', usage: 13.65, trend: 'same', types: ['dragon', 'ghost'], 
+          moves: ['流星群', '暗影球', '火焰放射', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '双幽灵打击面广，速度压制' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '威吓保护多龙巴鲁托' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复HP' },
+            { id: 591, name: '败露球菇', nameEn: 'Amoonguss', reason: '愤怒粉保护多龙巴鲁托' }
+          ],
+          stats: { hp: 88, attack: 120, defense: 75, spAtk: 100, spDef: 75, speed: 142 },
+          ability: '穿透', item: '讲究眼镜', nature: '胆小',
+          reason: '多龙巴鲁托拥有全游戏第二快的速度(142)，龙+幽灵的属性组合攻击面极佳。穿透特性可以无视对手的替身和跟随我等保护效果，直接命中目标。既可以做物攻手也可以做特攻手，灵活性极高。',
+          strengths: ['超高速度压制', '穿透特性无视保护', '攻击面优秀'],
+          weaknesses: ['耐久偏脆', '恶/冰/龙/仙弱点多', '被先制技能威胁'] },
+        { id: 423, name: '海兔兽(东海)', nameEn: 'Gastrodon', usage: 12.89, trend: 'up', types: ['water', 'ground'], 
+          moves: ['大地之力', '冲浪', '冷冻光束', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '引水保护赛富豪免受水系攻击' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '地面系覆盖快龙打不到的钢系' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '威吓保护海兔兽' },
+            { id: 998, name: '铝钢龙', nameEn: 'Archaludon', reason: '引水克制雨天队' }
+          ],
+          stats: { hp: 111, attack: 83, defense: 68, spAtk: 92, spDef: 82, speed: 39 },
+          ability: '引水', item: '剩饭', nature: '冷静',
+          reason: '海兔兽的"引水"特性可以吸引并免疫所有水系攻击，同时特攻+1。水+地的属性组合只有草系一个弱点(4倍)。在雨天队伍横行的环境中，海兔兽是完美的反制选择。',
+          strengths: ['引水免疫水系攻击', '只有草系弱点', '克制雨天队'],
+          weaknesses: ['4倍草弱点致命', '速度极慢', '输出一般'] },
+        { id: 143, name: '卡比兽', nameEn: 'Snorlax', usage: 11.76, trend: 'same', types: ['normal'], 
+          moves: ['泰山压顶', '地震', '诅咒', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '戏法空间下双输出核心' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '飞行系免疫地震' },
+            { id: 591, name: '败露球菇', nameEn: 'Amoonguss', reason: '蘑菇孢子控场，愤怒粉保护' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复HP' }
+          ],
+          stats: { hp: 160, attack: 110, defense: 65, spAtk: 65, spDef: 110, speed: 30 },
+          ability: '厚脂肪', item: '剩饭', nature: '勇敢',
+          reason: '卡比兽拥有游戏中最高的HP种族值之一，配合厚脂肪特性可以抵抗火/冰系攻击。在戏法空间队伍中是绝对的输出核心，诅咒强化后几乎无法被物理攻击击倒。一般系只有格斗弱点，防守面优秀。',
+          strengths: ['超高HP和特防', '厚脂肪抵抗火冰', '戏法空间核心'],
+          weaknesses: ['物防较低', '速度极慢', '格斗系致命威胁'] },
+        { id: 448, name: '路卡利欧', nameEn: 'Lucario', usage: 10.54, trend: 'down', types: ['fighting', 'steel'], 
+          moves: ['近身战', '子弹拳', '剑舞', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '双钢系核心，属性互补' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '飞行系覆盖格斗弱点' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复HP' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '威吓保护路卡利欧' }
+          ],
+          stats: { hp: 70, attack: 110, defense: 70, spAtk: 115, spDef: 70, speed: 90 },
+          ability: '精神力', item: '气势披带', nature: '爽朗',
+          reason: '路卡利欧的格斗+钢属性组合提供了优秀的抗性(9个抗性/免疫)。双攻种族值都超过110，可以根据队伍需要选择物攻或特攻型。子弹拳的先制攻击能力让它可以收割残血目标。',
+          strengths: ['属性抗性优秀', '双攻皆可', '子弹拳先制收割'],
+          weaknesses: ['耐久一般', '火/地/格斗弱点', '速度不上不下'] },
+        { id: 197, name: '月亮伊布', nameEn: 'Umbreon', usage: 9.87, trend: 'up', types: ['dark'], 
+          moves: ['欺诈', '帮助', '哈欠', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '帮助提升赛富豪伤害50%' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '帮助提升快龙伤害' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '帮助提升血月伤害' },
+            { id: 812, name: '轰擂金刚猩', nameEn: 'Rillaboom', reason: '青草场地回复HP' }
+          ],
+          stats: { hp: 95, attack: 65, defense: 110, spAtk: 60, spDef: 130, speed: 65 },
+          ability: '精神力', item: '剩饭', nature: '慎重',
+          reason: '月亮伊布是最强的纯辅助宝可梦之一！130特防让它极其耐打，"欺诈"用对手的攻击力计算伤害，"帮助"提升队友50%伤害，"哈欠"可以逼迫对手换人或被催眠。精神力免疫威吓。',
+          strengths: ['特防极高', '欺诈无视自身攻击', '帮助+哈欠辅助强'],
+          weaknesses: ['输出依赖对手', '格斗/虫/仙弱点', '速度慢'] },
+        { id: 778, name: '谜拟Q', nameEn: 'Mimikyu', usage: 9.23, trend: 'same', types: ['ghost', 'fairy'], 
+          moves: ['嬉闹', '暗影爪', '剑舞', '守住'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '双幽灵打击面广' },
+            { id: 149, name: '快龙', nameEn: 'Dragonite', reason: '仙系打击龙系威胁' },
+            { id: 901, name: '月月熊', nameEn: 'Ursaluna-Bloodmoon', reason: '画皮安全强化后收割' },
+            { id: 727, name: '炽焰咆哮虎', nameEn: 'Incineroar', reason: '威吓保护谜拟Q' }
+          ],
+          stats: { hp: 55, attack: 90, defense: 80, spAtk: 50, spDef: 105, speed: 96 },
+          ability: '画皮', item: '生命宝珠', nature: '爽朗',
+          reason: '谜拟Q的画皮特性可以免疫一次攻击伤害，相当于自带气势披带。这让它可以安全地使用剑舞强化，然后用嬉闘和暗影爪输出。幽灵+仙的属性组合独特，可以打击龙系和格斗系。',
+          strengths: ['画皮免疫一次攻击', '可安全强化', '属性组合独特'],
+          weaknesses: ['基础攻击力一般', '钢/幽灵弱点', '画皮破后很脆'] }
+      ],
+      ou: [
+        { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', usage: 28.5, trend: 'up', types: ['steel', 'ghost'], 
+          moves: ['赚大钱', '暗影球', '诡计', '戏法'],
+          teammatesDetail: [
+            { id: 445, name: '烈咬陆鲨', nameEn: 'Garchomp', reason: '地面系打击赛富豪弱点的火系' },
+            { id: 248, name: '班基拉斯', nameEn: 'Tyranitar', reason: '沙暴+追击陷阱幽灵系' },
+            { id: 94, name: '耿鬼', nameEn: 'Gengar', reason: '双幽灵打击面广' }
+          ],
+          stats: { hp: 87, attack: 60, defense: 95, spAtk: 133, spDef: 91, speed: 84 },
+          ability: '黄金之躯', item: '讲究眼镜', nature: '胆小',
+          reason: '单打中赛富豪同样凭借黄金之躯成为顶级威胁。免疫剧毒、鬼火等状态招式让它难以被消耗，诡计强化后特攻爆炸。戏法可以锁定对手招式，打乱对手节奏。',
+          strengths: ['黄金之躯免疫状态', '诡计强化后输出爆炸', '戏法打乱节奏'],
+          weaknesses: ['速度中等', '火/地/幽灵/恶弱点', '被先手压制'] },
+        { id: 445, name: '烈咬陆鲨', nameEn: 'Garchomp', usage: 22.3, trend: 'same', types: ['dragon', 'ground'], 
+          moves: ['地震', '逆鳞', '剑舞', '岩石封'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '钢系抵抗冰系，属性互补' },
+            { id: 598, name: '坚果哑铃', nameEn: 'Ferrothorn', reason: '抵抗冰/仙/龙弱点' },
+            { id: 91, name: '刺甲贝', nameEn: 'Cloyster', reason: '冰系打击龙系威胁' }
+          ],
+          stats: { hp: 108, attack: 130, defense: 95, spAtk: 80, spDef: 85, speed: 102 },
+          ability: '粗糙皮肤', item: '生命宝珠', nature: '爽朗',
+          reason: '烈咬陆鲨是OU tier的经典物攻手。130攻击+102速度的组合让它成为可靠的剑舞强化手。地震+逆鳞的打击面极广，粗糙皮肤可以对接触攻击造成反伤。',
+          strengths: ['高攻高速', '剑舞强化后极强', '粗糙皮肤反伤'],
+          weaknesses: ['4倍冰弱点', '龙/仙弱点', '被先制冰系秒杀'] },
+        { id: 598, name: '坚果哑铃', nameEn: 'Ferrothorn', usage: 18.7, trend: 'same', types: ['grass', 'steel'], 
+          moves: ['寄生种子', '隐形岩', '电磁波', '力量鞭打'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '钢系核心，属性互补' },
+            { id: 130, name: '暴鲤龙', nameEn: 'Gyarados', reason: '水系抵抗火弱点' },
+            { id: 248, name: '班基拉斯', nameEn: 'Tyranitar', reason: '沙暴提升特防' }
+          ],
+          stats: { hp: 74, attack: 94, defense: 131, spAtk: 54, spDef: 116, speed: 20 },
+          ability: '铁刺', item: '剩饭', nature: '悠闲',
+          reason: '坚果哑铃是最强的物防墙之一。草+钢的属性组合提供了10个抗性，寄生种子可以持续消耗对手，隐形岩提供进场伤害。铁刺特性让接触攻击付出代价。',
+          strengths: ['10个属性抗性', '寄生种子消耗', '隐形岩进场伤害'],
+          weaknesses: ['4倍火弱点致命', '速度极慢', '被火系完克'] },
+        { id: 248, name: '班基拉斯', nameEn: 'Tyranitar', usage: 15.2, trend: 'up', types: ['rock', 'dark'], 
+          moves: ['岩崩', '咬碎', '追击', '隐形岩'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '沙暴提升特防，追击陷阱幽灵' },
+            { id: 598, name: '坚果哑铃', nameEn: 'Ferrothorn', reason: '抵抗格斗/地面弱点' },
+            { id: 445, name: '烈咬陆鲨', nameEn: 'Garchomp', reason: '沙暴队核心' }
+          ],
+          stats: { hp: 100, attack: 134, defense: 110, spAtk: 95, spDef: 100, speed: 61 },
+          ability: '扬沙', item: '突击背心', nature: '固执',
+          reason: '班基拉斯的扬沙特性上场召唤沙暴，岩石系特防提升50%。追击可以陷阱逃跑的幽灵/超能系，是经典的沙暴队核心。全面的种族值让它攻防兼备。',
+          strengths: ['沙暴提升特防', '追击陷阱逃跑目标', '种族值全面'],
+          weaknesses: ['4倍格斗弱点', '水/草/地/钢弱点多', '速度偏慢'] },
+        { id: 94, name: '耿鬼', nameEn: 'Gengar', usage: 12.8, trend: 'same', types: ['ghost', 'poison'], 
+          moves: ['暗影球', '污泥炸弹', '诡计', '替身'],
+          teammatesDetail: [
+            { id: 1000, name: '赛富豪', nameEn: 'Gholdengo', reason: '双幽灵打击面广' },
+            { id: 445, name: '烈咬陆鲨', nameEn: 'Garchomp', reason: '地面系打击钢系' },
+            { id: 598, name: '坚果哑铃', nameEn: 'Ferrothorn', reason: '物防墙保护耿鬼' }
+          ],
+          stats: { hp: 60, attack: 65, defense: 60, spAtk: 130, spDef: 75, speed: 110 },
+          ability: '诅咒之躯', item: '生命宝珠', nature: '胆小',
+          reason: '耿鬼是经典的高速特攻手。130特攻+110速度让它成为可靠的输出点，诡计强化后更加恐怖。替身可以规避状态招式和先读，幽灵+毒的属性打击面广。',
+          strengths: ['高速高特攻', '诡计强化后极强', '替身规避状态'],
+          weaknesses: ['极其脆弱', '恶/幽灵/地面弱点', '被先制秒杀'] }
+      ]
+    };
+
+    let currentFormat = 'vgc';
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', () => {
+      loadRankings();
+      setupFormatTabs();
+    });
+
+    // 格式切换
+    function setupFormatTabs() {
+      document.querySelectorAll('.format-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          document.querySelectorAll('.format-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          currentFormat = tab.dataset.format;
+          loadRankings();
+        });
+      });
+    }
+
+    // 加载排行榜
+    function loadRankings() {
+      const data = trendingData[currentFormat] || trendingData.vgc;
+      renderTopThree(data.slice(0, 3));
+      renderRankingList(data.slice(3));
+    }
+
+    // 渲染 Top 3
+    function renderTopThree(top3) {
+      const container = document.getElementById('topThree');
+      const medals = ['gold', 'silver', 'bronze'];
+      const order = [1, 0, 2]; // 显示顺序：银、金、铜
+      
+      container.innerHTML = order.map(i => {
+        const p = top3[i];
+        if (!p) return '';
+        const imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`;
+        const typesHtml = getTypeHtml(p.types);
+        
+        return `
+          <div class="top-card ${medals[i]}" onclick="showDetail(${p.id})">
+            <span class="top-rank">${i + 1}</span>
+            <span class="top-usage">${p.usage}%</span>
+            <img class="top-img" src="${imgUrl}" alt="${p.name}">
+            <div class="top-name">${p.name}</div>
+            <div class="top-name-en">${p.nameEn}</div>
+            <div class="top-types">${typesHtml}</div>
+            <div class="top-stats">
+              <div class="top-stat">
+                <div class="top-stat-value">${p.stats.hp}</div>
+                <div class="top-stat-label">HP</div>
+              </div>
+              <div class="top-stat">
+                <div class="top-stat-value">${p.stats.attack}</div>
+                <div class="top-stat-label">攻击</div>
+              </div>
+              <div class="top-stat">
+                <div class="top-stat-value">${p.stats.speed}</div>
+                <div class="top-stat-label">速度</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 渲染排行列表
+    function renderRankingList(list) {
+      const container = document.getElementById('rankingList');
+      
+      container.innerHTML = list.map((p, i) => {
+        const imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${p.id}.png`;
+        const typesHtml = getTypeHtml(p.types);
+        const trendIcon = p.trend === 'up' ? 'bi-arrow-up' : p.trend === 'down' ? 'bi-arrow-down' : 'bi-dash';
+        
+        return `
+          <div class="ranking-item" onclick="showDetail(${p.id})">
+            <div class="ranking-number">${i + 4}</div>
+            <div class="ranking-pokemon">
+              <img class="ranking-img" src="${imgUrl}" alt="${p.name}">
+              <div class="ranking-info">
+                <h4>${p.name}</h4>
+                <p>${p.nameEn}</p>
+              </div>
+            </div>
+            <div class="ranking-types">${typesHtml}</div>
+            <div class="ranking-trend ${p.trend}">
+              <i class="bi ${trendIcon}"></i>
+            </div>
+            <div class="ranking-usage">${p.usage}%</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 显示详情
+    async function showDetail(id) {
+      const data = trendingData[currentFormat] || trendingData.vgc;
+      const pokemon = data.find(p => p.id === id);
+      if (!pokemon) return;
+
+      const imgUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+      const typesHtml = getTypeHtml(pokemon.types);
+      
+      const statsHtml = Object.entries(pokemon.stats).map(([key, value]) => {
+        const names = { hp: 'HP', attack: '攻击', defense: '防御', spAtk: '特攻', spDef: '特防', speed: '速度' };
+        const percent = Math.min(value / 160 * 100, 100);
+        return `
+          <div class="stat-bar">
+            <span class="stat-name">${names[key]}</span>
+            <div class="stat-bar-bg">
+              <div class="stat-bar-fill" style="width: ${percent}%"></div>
+            </div>
+            <span class="stat-value">${value}</span>
+          </div>
+        `;
+      }).join('');
+
+      const movesHtml = pokemon.moves.map(move => {
+        return `<div class="move-item">${move}</div>`;
+      }).join('');
+
+      const teammatesHtml = pokemon.teammatesDetail ? pokemon.teammatesDetail.map(t => {
+        const tImg = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${t.id}.png`;
+        return `
+          <div class="teammate-item" style="flex-direction:column;align-items:flex-start;background:rgba(139,115,85,0.15);padding:0.8rem;border-radius:8px;">
+            <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+              <img class="teammate-img" src="${tImg}" alt="${t.name}" style="width:40px;height:40px;">
+              <div>
+                <span class="teammate-name" style="font-weight:bold;color:var(--white);">${t.name}</span>
+                <span style="color:var(--gray);font-size:0.75rem;margin-left:0.5rem;">${t.nameEn}</span>
+              </div>
+            </div>
+            <p style="color:var(--gray-light);font-size:0.8rem;margin:0;line-height:1.5;">${t.reason}</p>
+          </div>
+        `;
+      }).join('') : '';
+
+      // 生成优势劣势HTML
+      const strengthsHtml = pokemon.strengths ? pokemon.strengths.map(s => 
+        `<span style="background:rgba(74,222,128,0.15);color:#4ade80;padding:4px 10px;border-radius:12px;font-size:0.8rem;display:inline-block;margin:2px;">✓ ${s}</span>`
+      ).join('') : '';
+      
+      const weaknessesHtml = pokemon.weaknesses ? pokemon.weaknesses.map(w => 
+        `<span style="background:rgba(248,113,113,0.15);color:#f87171;padding:4px 10px;border-radius:12px;font-size:0.8rem;display:inline-block;margin:2px;">✗ ${w}</span>`
+      ).join('') : '';
+
+      document.getElementById('modalTitle').textContent = `${pokemon.name} · ${pokemon.nameEn} · #${String(id).padStart(4, '0')}`;
+      document.getElementById('modalBody').innerHTML = `
+        <div class="detail-grid">
+          <div class="detail-image">
+            <img class="detail-img" src="${imgUrl}" alt="${pokemon.name}">
+            <div class="detail-types">${typesHtml}</div>
+            <div style="background: rgba(74, 222, 128, 0.1); color: #4ade80; padding: 0.5rem 1rem; border-radius: 20px; display: inline-block; margin-top: 1rem;">
+              <i class="bi bi-graph-up"></i> 使用率 ${pokemon.usage}%
+            </div>
+            ${pokemon.ability ? `
+            <div style="margin-top:1rem;text-align:left;background:rgba(139,115,85,0.2);padding:1rem;border-radius:8px;">
+              <div style="margin-bottom:0.5rem;"><span style="color:var(--gray);">特性:</span> <span style="color:var(--primary-light);font-weight:bold;">${pokemon.ability}</span></div>
+              <div style="margin-bottom:0.5rem;"><span style="color:var(--gray);">道具:</span> <span style="color:var(--white);">${pokemon.item}</span></div>
+              <div><span style="color:var(--gray);">性格:</span> <span style="color:var(--white);">${pokemon.nature}</span></div>
+            </div>
+            ` : ''}
+          </div>
+          <div class="detail-info">
+            ${pokemon.reason ? `
+            <div class="detail-section">
+              <h5><i class="bi bi-info-circle"></i> 为什么上榜？</h5>
+              <p style="color:var(--gray-light);line-height:1.8;font-size:0.95rem;">${pokemon.reason}</p>
+            </div>
+            ` : ''}
+            <div class="detail-section">
+              <h5><i class="bi bi-bar-chart"></i> 种族值</h5>
+              ${statsHtml}
+            </div>
+            ${pokemon.strengths ? `
+            <div class="detail-section">
+              <h5><i class="bi bi-shield-check"></i> 优势</h5>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;">${strengthsHtml}</div>
+            </div>
+            ` : ''}
+            ${pokemon.weaknesses ? `
+            <div class="detail-section">
+              <h5><i class="bi bi-exclamation-triangle"></i> 劣势</h5>
+              <div style="display:flex;flex-wrap:wrap;gap:4px;">${weaknessesHtml}</div>
+            </div>
+            ` : ''}
+            <div class="detail-section">
+              <h5><i class="bi bi-lightning"></i> 常用招式</h5>
+              <div class="move-list">${movesHtml}</div>
+            </div>
+            ${teammatesHtml ? `
+            <div class="detail-section">
+              <h5><i class="bi bi-people"></i> 常见队友及配合原因</h5>
+              <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:0.8rem;">${teammatesHtml}</div>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+      `;
+
+      const modal = new bootstrap.Modal(document.getElementById('pokemonModal'));
+      modal.show();
+    }
+  </script>
+  
+  <script src="static/js/music-player.js"></script>
+</body>
+</html>

@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宝可梦皮肤 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/carousel.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: '中华薪火体', 'Noto Sans SC', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+      line-height: 1.8;
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .loader-content {
+      text-align: center;
+    }
+    
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    /* 页面头部 */
+    .page-header {
+      background: linear-gradient(135deg, rgba(28, 24, 20, 0.95), rgba(40, 35, 30, 0.9)), 
+                  url('static/image/pokemon-skins-bg.png') center/cover;
+      padding: 120px 0 80px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(to top, #1c1814, transparent);
+    }
+    
+    .page-title {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 20px rgba(212, 165, 116, 0.3);
+    }
+    
+    .page-subtitle {
+      color: #999;
+      font-size: 1.2rem;
+    }
+    
+    .breadcrumb-nav {
+      margin-bottom: 1rem;
+    }
+    
+    .breadcrumb-nav a {
+      color: #888;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .breadcrumb-nav a:hover {
+      color: #d4a574;
+    }
+    
+    .breadcrumb-nav span {
+      color: #666;
+      margin: 0 0.5rem;
+    }
+    
+    /* 区块样式 */
+    .section {
+      padding: 80px 0;
+    }
+    
+    .section-dark {
+      background: #1c1814;
+    }
+    
+    .section-light {
+      background: linear-gradient(180deg, #201c18 0%, #1c1814 100%);
+    }
+    
+    .section-title {
+      font-size: 2rem;
+      color: #d4a574;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 3rem;
+      font-size: 1.1rem;
+    }
+    
+    /* 皮肤介绍卡片 */
+    .intro-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+    
+    .intro-card {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.8), rgba(30, 25, 20, 0.9));
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+    
+    .intro-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(212, 165, 116, 0.4);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .intro-card-icon {
+      width: 70px;
+      height: 70px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      font-size: 1.8rem;
+      color: #1c1814;
+    }
+    
+    .intro-card h3 {
+      color: #d4a574;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+    
+    .intro-card p {
+      color: #aaa;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    
+    /* 皮肤展示区 */
+    .skin-showcase {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.6), rgba(30, 25, 20, 0.8));
+      border: 1px solid rgba(212, 165, 116, 0.15);
+      border-radius: 20px;
+      padding: 2.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    .skin-showcase-title {
+      color: #d4a574;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .skin-showcase-desc {
+      color: #999;
+      margin-bottom: 2rem;
+    }
+    
+    /* 皮肤画廊 */
+    .skin-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .skin-card {
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid rgba(212, 165, 116, 0.1);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .skin-card:hover {
+      transform: scale(1.03);
+      border-color: rgba(212, 165, 116, 0.4);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+    }
+    
+    .skin-card-image {
+      width: 100%;
+      height: 180px;
+      background: linear-gradient(135deg, #2a2520, #1c1814);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .skin-card-image img {
+      max-width: 90%;
+      max-height: 90%;
+      object-fit: contain;
+      transition: transform 0.3s;
+    }
+    
+    .skin-card:hover .skin-card-image img {
+      transform: scale(1.1);
+    }
+    
+    .skin-card-image .skin-rarity {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 0.25rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .skin-rarity.common { background: #7f8c8d; color: #fff; }
+    .skin-rarity.rare { background: #3498db; color: #fff; }
+    .skin-rarity.epic { background: #9b59b6; color: #fff; }
+    .skin-rarity.legendary { background: linear-gradient(135deg, #f39c12, #e74c3c); color: #fff; }
+    .skin-rarity.mythic { background: linear-gradient(135deg, #e74c3c, #9b59b6); color: #fff; }
+    
+    .skin-card-info {
+      padding: 1rem;
+    }
+    
+    .skin-card-name {
+      color: #e0e0e0;
+      font-size: 1rem;
+      margin-bottom: 0.3rem;
+    }
+    
+    .skin-card-pokemon {
+      color: #888;
+      font-size: 0.85rem;
+    }
+    
+    /* 获取方式区块 */
+    .obtain-methods {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .obtain-card {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.7), rgba(30, 25, 20, 0.8));
+      border: 1px solid rgba(212, 165, 116, 0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+    }
+    
+    .obtain-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(212, 165, 116, 0.4);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(212, 165, 116, 0.1);
+    }
+    
+    .obtain-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, #d4a574, #b8956e);
+      transition: all 0.3s ease;
+    }
+    
+    .obtain-card:hover::before {
+      width: 6px;
+      box-shadow: 0 0 15px rgba(212, 165, 116, 0.5);
+    }
+    
+    .obtain-card-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(212, 165, 116, 0.15);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+    }
+    
+    .obtain-card:hover .obtain-card-icon {
+      transform: scale(1.1) rotate(5deg);
+      background: rgba(212, 165, 116, 0.25);
+      box-shadow: 0 5px 15px rgba(212, 165, 116, 0.2);
+    }
+    
+    .obtain-card:hover h3 {
+      color: #e8c49a;
+    }
+    
+    .obtain-card:hover .obtain-tag {
+      background: rgba(212, 165, 116, 0.25);
+      transform: translateX(5px);
+    }
+    
+    .obtain-card h3 {
+      transition: color 0.3s ease;
+    }
+    
+    .obtain-card .obtain-tag {
+      transition: all 0.3s ease;
+    }
+    
+    .obtain-card h3 {
+      color: #d4a574;
+      font-size: 1.2rem;
+      margin-bottom: 0.8rem;
+    }
+    
+    .obtain-card p {
+      color: #aaa;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    
+    .obtain-card .obtain-tag {
+      display: inline-block;
+      background: rgba(212, 165, 116, 0.15);
+      color: #d4a574;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+    
+    /* 温馨提示 */
+    .tip-box {
+      background: linear-gradient(145deg, rgba(46, 204, 113, 0.1), rgba(39, 174, 96, 0.05));
+      border: 1px solid rgba(46, 204, 113, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    
+    .tip-box > i {
+      font-size: 2rem;
+      color: #2ecc71;
+      flex-shrink: 0;
+    }
+    
+    .tip-content h4 {
+      color: #2ecc71;
+      margin-bottom: 0.5rem;
+    }
+    
+    .tip-content p {
+      color: #aaa;
+      margin: 0;
+    }
+    
+    /* 页脚 */
+    footer {
+      background: #151210;
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid rgba(212, 165, 116, 0.1);
+    }
+    
+    footer p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .section {
+        padding: 50px 0;
+      }
+      
+      .skin-gallery {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+      }
+      
+      .skin-card-image {
+        height: 140px;
+      }
+      
+      .tip-box {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-stars"></i></div>
+      <div class="loader-text">加载皮肤图鉴中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 页面头部 -->
+  <header class="page-header">
+    <div class="container" style="position: relative; z-index: 1;">
+      <h1 class="page-title" data-aos="fade-up">宝可梦皮肤系统</h1>
+      <p class="page-subtitle" data-aos="fade-up" data-aos-delay="100">让你的宝可梦与众不同，展现独特个性</p>
+    </div>
+  </header>
+
+  <!-- 皮肤介绍 -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-palette2"></i>
+        什么是宝可梦皮肤？
+      </div>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+        皮肤系统让你的宝可梦拥有独一无二的外观
+      </p>
+      
+      <div class="intro-cards">
+        <div class="intro-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="intro-card-icon"><i class="bi bi-brush"></i></div>
+          <h3>外观变化</h3>
+          <p>
+            皮肤可以改变宝可梦的外观材质，让它们拥有全新的配色和纹理。
+            想象一下，你的喷火龙披上了星空般的皮肤，在战斗中格外耀眼！
+          </p>
+        </div>
+        
+        <div class="intro-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="intro-card-icon"><i class="bi bi-trophy"></i></div>
+          <h3>稀有收藏</h3>
+          <p>
+            每款皮肤都有不同的稀有度，从普通到传说级别。
+            收集稀有皮肤不仅是实力的象征，更是你在服务器中独特品味的体现！
+          </p>
+        </div>
+        
+        <div class="intro-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="intro-card-icon"><i class="bi bi-heart"></i></div>
+          <h3>纯装饰性</h3>
+          <p>
+            皮肤是纯粹的装饰品，不会影响宝可梦的任何属性和战斗能力。
+            这意味着你可以放心地追求美观，而不用担心影响对战平衡！
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 皮肤展示 -->
+  <section class="section section-light">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-collection"></i>
+        皮肤图鉴
+      </div>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+        探索我们精心设计的各种宝可梦皮肤
+      </p>
+      
+      <!-- 传说皮肤 -->
+      <div class="skin-showcase" data-aos="fade-up">
+        <h3 class="skin-showcase-title"><i class="bi bi-gem"></i> 传说皮肤</h3>
+        <p class="skin-showcase-desc">最稀有的皮肤，只有最幸运或最努力的训练师才能获得</p>
+        <div class="skin-gallery">
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity legendary">传说</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">星空喷火龙</div>
+              <div class="skin-card-pokemon">喷火龙</div>
+            </div>
+          </div>
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity legendary">传说</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">极光水箭龟</div>
+              <div class="skin-card-pokemon">水箭龟</div>
+            </div>
+          </div>
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity legendary">传说</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">樱花妙蛙花</div>
+              <div class="skin-card-pokemon">妙蛙花</div>
+            </div>
+          </div>
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity mythic">神话</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">暗影皮卡丘</div>
+              <div class="skin-card-pokemon">皮卡丘</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 史诗皮肤 -->
+      <div class="skin-showcase" data-aos="fade-up">
+        <h3 class="skin-showcase-title"><i class="bi bi-star-fill"></i> 史诗皮肤</h3>
+        <p class="skin-showcase-desc">精美的设计，让你的宝可梦脱颖而出</p>
+        <div class="skin-gallery">
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity epic">史诗</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">冰晶伊布</div>
+              <div class="skin-card-pokemon">冰伊布</div>
+            </div>
+          </div>
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity epic">史诗</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">烈焰鸭嘴火兽</div>
+              <div class="skin-card-pokemon">鸭嘴火兽</div>
+            </div>
+          </div>
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity epic">史诗</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">月光耿鬼</div>
+              <div class="skin-card-pokemon">耿鬼</div>
+            </div>
+          </div>
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity epic">史诗</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">雷霆雷丘</div>
+              <div class="skin-card-pokemon">雷丘</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 稀有皮肤 -->
+      <div class="skin-showcase" data-aos="fade-up">
+        <h3 class="skin-showcase-title"><i class="bi bi-star"></i> 稀有皮肤</h3>
+        <p class="skin-showcase-desc">独特的配色方案，展现你的个性</p>
+        <div class="skin-gallery">
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity rare">稀有</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">森林小火龙</div>
+              <div class="skin-card-pokemon">小火龙</div>
+            </div>
+          </div>
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity rare">稀有</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">沙漠杰尼龟</div>
+              <div class="skin-card-pokemon">杰尼龟</div>
+            </div>
+          </div>
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity rare">稀有</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">秋叶妙蛙种子</div>
+              <div class="skin-card-pokemon">妙蛙种子</div>
+            </div>
+          </div>
+          <div class="skin-card">
+            <div class="skin-card-image">
+              <span class="skin-rarity rare">稀有</span>
+              <i class="bi bi-image" style="font-size: 3rem; color: #444;"></i>
+            </div>
+            <div class="skin-card-info">
+              <div class="skin-card-name">海洋可达鸭</div>
+              <div class="skin-card-pokemon">可达鸭</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 获取方式 -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-gift"></i>
+        如何获取皮肤？
+      </div>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+        多种途径，总有一款适合你
+      </p>
+      
+      <div class="obtain-methods">
+        <div class="obtain-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="obtain-card-icon"><i class="bi bi-calendar-event"></i></div>
+          <h3>节日活动</h3>
+          <p>
+            每逢节假日，我们都会举办特别活动！春节、万圣节、圣诞节……
+            参与活动任务，就有机会获得限定节日皮肤。这些皮肤过期不候，
+            错过就要等明年啦！
+          </p>
+          <span class="obtain-tag">限时限定</span>
+        </div>
+        
+        <div class="obtain-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="obtain-card-icon"><i class="bi bi-trophy"></i></div>
+          <h3>赛事奖励</h3>
+          <p>
+            参加服务器举办的各类比赛——对战锦标赛、建筑大赛、速通挑战……
+            获得好名次的训练师将获得专属冠军皮肤，向所有人展示你的实力！
+          </p>
+          <span class="obtain-tag">荣誉象征</span>
+        </div>
+        
+        <div class="obtain-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="obtain-card-icon"><i class="bi bi-check2-circle"></i></div>
+          <h3>成就解锁</h3>
+          <p>
+            完成特定的游戏成就，如收集满图鉴、击败所有道馆、累计游戏时长等，
+            即可解锁对应的成就皮肤。这是对你努力的最好证明！
+          </p>
+          <span class="obtain-tag">努力见证</span>
+        </div>
+        
+        <div class="obtain-card" data-aos="fade-up" data-aos-delay="400">
+          <div class="obtain-card-icon"><i class="bi bi-box-seam"></i></div>
+          <h3>皮肤宝箱</h3>
+          <p>
+            通过日常任务、活动奖励等途径获得皮肤宝箱，
+            开启后随机获得各种稀有度的皮肤。运气好的话，
+            说不定能开出传说级皮肤哦！
+          </p>
+          <span class="obtain-tag">惊喜开箱</span>
+        </div>
+        
+        <div class="obtain-card" data-aos="fade-up" data-aos-delay="500">
+          <div class="obtain-card-icon"><i class="bi bi-people"></i></div>
+          <h3>社区贡献</h3>
+          <p>
+            为服务器社区做出贡献的玩家——如帮助新人、举报Bug、提供建议等，
+            管理组会不定期发放感谢皮肤作为回馈。你的每一份付出都被看见！
+          </p>
+          <span class="obtain-tag">社区回馈</span>
+        </div>
+        
+        <div class="obtain-card" data-aos="fade-up" data-aos-delay="600">
+          <div class="obtain-card-icon"><i class="bi bi-arrow-left-right"></i></div>
+          <h3>玩家交易</h3>
+          <p>
+            部分皮肤支持玩家之间交易！如果你有多余的皮肤，
+            可以在商业街与其他玩家交换或出售。也许你梦寐以求的皮肤，
+            就在某个玩家的背包里等着你！
+          </p>
+          <span class="obtain-tag">自由交易</span>
+        </div>
+      </div>
+      
+      <!-- 温馨提示 -->
+      <div class="tip-box" data-aos="fade-up" style="margin-top: 3rem;">
+        <i class="bi bi-lightbulb"></i>
+        <div class="tip-content">
+          <h4>温馨提示</h4>
+          <p>
+            皮肤获取完全不需要氪金！我们承诺所有皮肤都可以通过游戏内途径获得。
+            当然，如果你想支持服务器发展，我们也提供了一些赞助专属皮肤作为感谢。
+            但请放心，<strong style="color: #2ecc71;">这些皮肤同样不会带来任何属性加成</strong>，
+            只是一份来自我们的小小心意~
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>皮肤展示</h2>
+        <p>精美的宝可梦皮肤预览</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>皮肤截图 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>传说皮肤</h4>
+                <p>稀有的传说级皮肤</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>皮肤截图 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>节日皮肤</h4>
+                <p>限定的节日主题皮肤</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>皮肤截图 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>闪光皮肤</h4>
+                <p>炫酷的闪光特效皮肤</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container">
+      <p>© 2024 GalaxyPokemon. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="static/js/carousel.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // 页面加载完成后隐藏加载动画
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 50
+    });
+  </script>
+</body>
+</html>

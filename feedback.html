@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>反馈系统 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    
+    body {
+      font-family: '中华薪火体', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+    }
+    
+    /* 页面头部 */
+    .page-header {
+      padding: 140px 0 80px;
+      background: #1c1814;
+      text-align: center;
+    }
+    
+    .page-title {
+      font-size: 4rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 8px;
+    }
+    
+    .page-subtitle {
+      font-size: 1.4rem;
+      color: #888;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+    
+    /* 内容区块 */
+    .content-section {
+      padding: 80px 0;
+    }
+    
+    .content-section:nth-child(even) {
+      background: rgba(255,255,255,0.015);
+    }
+    
+    .section-header {
+      margin-bottom: 50px;
+    }
+    
+    .section-tag {
+      display: inline-block;
+      color: #d4a574;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      margin-bottom: 15px;
+      padding: 5px 15px;
+      border: 1px solid rgba(212, 165, 116, 0.3);
+      border-radius: 20px;
+    }
+    
+    .section-title {
+      font-size: 2.2rem;
+      color: #e0e0e0;
+      margin-bottom: 15px;
+    }
+    
+    .section-desc {
+      color: #888;
+      font-size: 1.15rem;
+      line-height: 1.9;
+      max-width: 800px;
+    }
+    
+    /* 反馈类型卡片 */
+    .type-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+    
+    .type-card {
+      background: rgba(40, 35, 30, 0.4);
+      padding: 35px 30px;
+      border-radius: 12px;
+      border-left: 4px solid;
+      transition: all 0.3s;
+    }
+    
+    .type-card:hover {
+      transform: translateY(-5px);
+      background: rgba(40, 35, 30, 0.6);
+    }
+    
+    .type-card.report { border-color: #e74c3c; }
+    .type-card.suggest { border-color: #3498db; }
+    .type-card.bug { border-color: #f39c12; }
+    
+    .type-card i {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+    
+    .type-card.report i { color: #e74c3c; }
+    .type-card.suggest i { color: #3498db; }
+    .type-card.bug i { color: #f39c12; }
+    
+    .type-card h3 {
+      color: #e0e0e0;
+      font-size: 1.4rem;
+      margin-bottom: 15px;
+    }
+    
+    .type-card p {
+      color: #888;
+      font-size: 1rem;
+      line-height: 1.8;
+      margin: 0;
+    }
+    
+    /* 流程展示 */
+    .process-flow {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    
+    .process-step {
+      flex: 1;
+      min-width: 180px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .process-step::after {
+      content: '';
+      position: absolute;
+      top: 30px;
+      right: -30px;
+      width: 40px;
+      height: 2px;
+      background: linear-gradient(90deg, #d4a574, transparent);
+    }
+    
+    .process-step:last-child::after {
+      display: none;
+    }
+    
+    .process-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.2), rgba(212, 165, 116, 0.05));
+      border: 2px solid rgba(212, 165, 116, 0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    
+    .process-icon i {
+      font-size: 1.5rem;
+      color: #d4a574;
+    }
+    
+    .process-step h4 {
+      color: #e0e0e0;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+    
+    .process-step p {
+      color: #777;
+      font-size: 0.95rem;
+    }
+    
+    /* 特色功能 */
+    .feature-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+    }
+    
+    .feature-item {
+      display: flex;
+      gap: 20px;
+      padding: 30px;
+      background: rgba(40, 35, 30, 0.3);
+      border-radius: 10px;
+    }
+    
+    .feature-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(212, 165, 116, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .feature-icon i {
+      font-size: 1.3rem;
+      color: #d4a574;
+    }
+    
+    .feature-content h4 {
+      color: #e0e0e0;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    
+    .feature-content p {
+      color: #777;
+      font-size: 0.95rem;
+      margin: 0;
+      line-height: 1.7;
+    }
+    
+    /* 人性化介绍 */
+    .story-box {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .story-box p {
+      color: #999;
+      font-size: 1.15rem;
+      line-height: 2.2;
+      margin-bottom: 1.5rem;
+    }
+    
+    .story-box .highlight {
+      color: #d4a574;
+    }
+    
+    .story-box .quote {
+      border-left: 3px solid #d4a574;
+      padding-left: 25px;
+      margin: 2.5rem 0;
+      color: #aaa;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+    
+    /* 示例场景 */
+    .scenario-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+    
+    .scenario-card {
+      padding: 30px;
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px;
+      background: rgba(40, 35, 30, 0.2);
+    }
+    
+    .scenario-card h4 {
+      color: #d4a574;
+      font-size: 1.15rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .scenario-card p {
+      color: #888;
+      font-size: 1rem;
+      line-height: 1.9;
+      margin: 0;
+    }
+    
+    /* 统计数据 */
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      padding: 50px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      flex-wrap: wrap;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-num {
+      font-size: 2.5rem;
+      color: #d4a574;
+      line-height: 1;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 0.95rem;
+      margin-top: 8px;
+    }
+    
+    /* CTA */
+    .cta-section {
+      padding: 100px 0;
+      text-align: center;
+    }
+    
+    .cta-title {
+      font-size: 2rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-text {
+      color: #888;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+    
+    .cta-section .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 40px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      color: #1c1814;
+      text-decoration: none;
+      font-size: 1.1rem;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+    
+    .cta-section .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(212, 165, 116, 0.3);
+      color: #1c1814;
+    }
+    
+    @media (max-width: 992px) {
+      .type-cards { grid-template-columns: 1fr; }
+      .feature-list { grid-template-columns: 1fr; }
+      .scenario-cards { grid-template-columns: 1fr; }
+      .process-step::after { display: none; }
+      .stats-row { gap: 40px; }
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-content { text-align: center; }
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-chat-square-text"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 页面头部 -->
+  <header class="page-header">
+    <div class="container">
+      <h1 class="page-title" data-aos="fade-up">反馈系统</h1>
+      <p class="page-subtitle" data-aos="fade-up" data-aos-delay="100">
+        你的声音，我们在听。无论是建议、投诉还是Bug反馈，这里都是你和管理团队沟通的桥梁。
+      </p>
+    </div>
+  </header>
+
+  <!-- 为什么需要反馈系统 -->
+  <section class="content-section">
+    <div class="container">
+      <div class="story-box" data-aos="fade-up">
+        <p>
+          一个好的服务器，离不开玩家的参与和反馈。我们深知，<span class="highlight">管理员不可能时刻在线</span>，
+          也不可能看到服务器里发生的每一件事。有时候，你可能遇到了一个破坏游戏体验的玩家，
+          或者发现了一个影响游戏的Bug，又或者有一个能让服务器变得更好的点子。
+        </p>
+        <p>
+          这时候，你需要一个渠道来表达。<span class="highlight">反馈系统就是这个渠道。</span>
+        </p>
+        <p>
+          在这里，你可以提交任何关于服务器的反馈——投诉、建议、Bug报告，甚至只是想和管理员聊聊天。
+          每一条反馈都会被认真对待，每一个问题都会得到回应。
+        </p>
+        <div class="quote">
+          "我们相信，最了解服务器的人，是每天在这里游玩的你们。你们的反馈，是服务器进步的动力。"
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 反馈类型 -->
+  <section class="content-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-tag">反馈类型</div>
+        <h2 class="section-title">你可以反馈什么？</h2>
+        <p class="section-desc">无论是什么类型的问题，我们都欢迎你提出来</p>
+      </div>
+      <div class="type-cards" data-aos="fade-up" data-aos-delay="100">
+        <div class="type-card report">
+          <i class="bi bi-exclamation-triangle"></i>
+          <h3>投诉举报</h3>
+          <p>
+            遇到了破坏游戏体验的玩家？有人作弊、辱骂、恶意破坏？
+            提交投诉，附上证据，我们会尽快处理。保护每一位玩家的游戏体验是我们的责任。
+          </p>
+        </div>
+        <div class="type-card suggest">
+          <i class="bi bi-lightbulb"></i>
+          <h3>建议意见</h3>
+          <p>
+            有什么能让服务器变得更好的点子？新玩法、新功能、新活动？
+            我们非常欢迎你的建议！好的建议会被采纳，提出者还会获得奖励。
+          </p>
+        </div>
+        <div class="type-card bug">
+          <i class="bi bi-bug"></i>
+          <h3>Bug反馈</h3>
+          <p>
+            发现了游戏中的Bug或异常？某个功能不正常？
+            请详细描述问题，帮助我们定位和修复。发现重大Bug的玩家会获得特别感谢。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 反馈流程 -->
+  <section class="content-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-tag">反馈流程</div>
+        <h2 class="section-title">提交反馈后会发生什么？</h2>
+        <p class="section-desc">从提交到解决，全程透明可追踪</p>
+      </div>
+      <div class="process-flow" data-aos="fade-up" data-aos-delay="100">
+        <div class="process-step">
+          <div class="process-icon"><i class="bi bi-pencil-square"></i></div>
+          <h4>提交反馈</h4>
+          <p>描述问题，附上截图或证据</p>
+        </div>
+        <div class="process-step">
+          <div class="process-icon"><i class="bi bi-eye"></i></div>
+          <h4>管理员审核</h4>
+          <p>管理员查看并开始处理</p>
+        </div>
+        <div class="process-step">
+          <div class="process-icon"><i class="bi bi-chat-dots"></i></div>
+          <h4>沟通交流</h4>
+          <p>通过留言了解更多细节</p>
+        </div>
+        <div class="process-step">
+          <div class="process-icon"><i class="bi bi-people"></i></div>
+          <h4>社区讨论</h4>
+          <p>其他玩家参与讨论投票</p>
+        </div>
+        <div class="process-step">
+          <div class="process-icon"><i class="bi bi-check-circle"></i></div>
+          <h4>问题解决</h4>
+          <p>反馈处理完成并通知</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 特色功能 -->
+  <section class="content-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-tag">特色功能</div>
+        <h2 class="section-title">不只是提交，更是互动</h2>
+        <p class="section-desc">我们的反馈系统不是冷冰冰的工单系统，而是一个互动社区</p>
+      </div>
+      <div class="feature-list" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-item">
+          <div class="feature-icon"><i class="bi bi-chat-left-text"></i></div>
+          <div class="feature-content">
+            <h4>留言沟通</h4>
+            <p>提交反馈后，可以和管理员持续沟通，补充信息、了解进度、获取回复</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="bi bi-people"></i></div>
+          <div class="feature-content">
+            <h4>社区讨论</h4>
+            <p>每个反馈都有讨论区，所有玩家都可以参与讨论，发表自己的看法</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="bi bi-hand-thumbs-up"></i></div>
+          <div class="feature-content">
+            <h4>点赞投票</h4>
+            <p>觉得这个建议好？给它点个赞！点赞多的建议会被优先考虑</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="bi bi-star"></i></div>
+          <div class="feature-content">
+            <h4>评分系统</h4>
+            <p>对反馈的处理结果进行评分，帮助我们不断改进服务质量</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="bi bi-bell"></i></div>
+          <div class="feature-content">
+            <h4>进度通知</h4>
+            <p>反馈状态变更时会收到通知，随时了解处理进度</p>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+          <div class="feature-content">
+            <h4>隐私保护</h4>
+            <p>敏感投诉可以选择匿名提交，保护你的隐私安全</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 使用场景 -->
+  <section class="content-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-tag">使用场景</div>
+        <h2 class="section-title">什么时候该用反馈系统？</h2>
+      </div>
+      <div class="scenario-cards" data-aos="fade-up" data-aos-delay="100">
+        <div class="scenario-card">
+          <h4><i class="bi bi-emoji-angry"></i> 遇到了熊孩子</h4>
+          <p>
+            有人在你家门口放岩浆？有人一直跟着你骂人？别生气，截图保存证据，
+            提交投诉。我们会根据情节严重程度进行处理，从警告到封禁。
+          </p>
+        </div>
+        <div class="scenario-card">
+          <h4><i class="bi bi-lightbulb"></i> 想到了好点子</h4>
+          <p>
+            "要是能有个XXX功能就好了"——这种想法不要只是想想！提交建议，
+            说不定下个版本就能看到你的想法变成现实。
+          </p>
+        </div>
+        <div class="scenario-card">
+          <h4><i class="bi bi-bug"></i> 发现了奇怪的Bug</h4>
+          <p>
+            某个指令用不了？某个物品显示异常？某个地方能卡进墙里？
+            这些都是Bug，请告诉我们！详细描述复现步骤会帮助我们更快修复。
+          </p>
+        </div>
+        <div class="scenario-card">
+          <h4><i class="bi bi-question-circle"></i> 有疑问想咨询</h4>
+          <p>
+            不确定某个行为是否违规？想了解某个功能怎么用？
+            也可以通过反馈系统咨询，管理员会耐心解答。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 我们的承诺 -->
+  <section class="content-section">
+    <div class="container">
+      <div class="story-box" data-aos="fade-up">
+        <p style="text-align: center; font-size: 1.8rem; color: #d4a574; margin-bottom: 2rem;">我们的承诺</p>
+        <p>
+          <span class="highlight">每一条反馈都会被阅读。</span>不管是长篇大论还是简短几句，
+          我们都会认真看完。也许不是每个建议都能被采纳，但每个声音都值得被听到。
+        </p>
+        <p>
+          <span class="highlight">每一个问题都会有回应。</span>我们承诺在48小时内对反馈进行首次回复。
+          复杂的问题可能需要更长时间处理，但我们会及时告知进度。
+        </p>
+        <p>
+          <span class="highlight">每一次改进都来自你们。</span>服务器的很多功能和规则，
+          都是根据玩家的反馈不断优化的。你们的参与，让这个服务器变得更好。
+        </p>
+      </div>
+      <div class="stats-row" data-aos="fade-up" data-aos-delay="100">
+        <div class="stat-item">
+          <div class="stat-num">48h</div>
+          <div class="stat-label">首次响应</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">反馈必回</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">N+</div>
+          <div class="stat-label">已采纳建议</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">24/7</div>
+          <div class="stat-label">全天候受理</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title" data-aos="fade-up">有话想说？</h2>
+      <p class="cta-text" data-aos="fade-up" data-aos-delay="100">加入服务器，让我们听到你的声音</p>
+      <a href="guide.html" class="btn-primary" data-aos="fade-up" data-aos-delay="200">
+        <i class="bi bi-play-circle"></i> 立即加入服务器
+      </a>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    AOS.init({ duration: 800, once: true });
+  </script>
+</body>
+</html>

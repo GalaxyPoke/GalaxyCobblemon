@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>玩家登录 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'ZhongHuaXinHuo';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      height: auto;
+      min-height: 100%;
+    }
+    
+    body {
+      font-family: 'ZhongHuaXinHuo', sans-serif;
+      background: linear-gradient(135deg, #1c1814 0%, #2a2420 50%, #1c1814 100%);
+      height: auto;
+      min-height: 100vh;
+      overflow-y: auto !important;
+      overflow-x: hidden;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+      padding: 60px 0;
+    }
+
+    /* 动态背景 */
+    .bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 浮动光晕 */
+    .bg-glow {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.12;
+      pointer-events: none;
+      animation: floatGlow 20s ease-in-out infinite;
+    }
+
+    .bg-glow-1 {
+      width: 500px;
+      height: 500px;
+      top: -150px;
+      right: -100px;
+      background: radial-gradient(circle, #d4a574 0%, transparent 70%);
+      animation-delay: 0s;
+    }
+
+    .bg-glow-2 {
+      width: 400px;
+      height: 400px;
+      bottom: -100px;
+      left: -80px;
+      background: radial-gradient(circle, #8b7355 0%, transparent 70%);
+      animation-delay: -10s;
+    }
+
+    .bg-glow-3 {
+      width: 300px;
+      height: 300px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, #d4a574 0%, transparent 70%);
+      opacity: 0.05;
+      animation: pulseGlow 8s ease-in-out infinite;
+    }
+
+    @keyframes floatGlow {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(30px, -20px) scale(1.1); }
+      50% { transform: translate(-20px, 30px) scale(0.95); }
+      75% { transform: translate(20px, 20px) scale(1.05); }
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.05; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.1; transform: translate(-50%, -50%) scale(1.3); }
+    }
+
+    /* 粒子效果 */
+    .particle {
+      position: fixed;
+      width: 2px;
+      height: 2px;
+      background: rgba(212, 165, 116, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: floatParticle 15s linear infinite;
+    }
+
+    @keyframes floatParticle {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    /* 网格背景 */
+    .bg-grid {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(212,165,116,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(212,165,116,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 登录容器 */
+    .login-wrapper {
+      width: 100%;
+      max-width: 380px;
+      padding: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* 返回按钮 */
+    .back-link {
+      position: fixed;
+      top: 30px;
+      left: 30px;
+      color: rgba(255,255,255,0.3);
+      text-decoration: none;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .back-link:hover {
+      color: #d4a574;
+    }
+
+    /* 登录表单 */
+    .login-form {
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeUp 0.6s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* 头像区域 */
+    .avatar-section {
+      text-align: center;
+      margin-bottom: 50px;
+      perspective: 500px;
+    }
+
+    .avatar-ring {
+      width: 90px;
+      height: 90px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: float3d 6s ease-in-out infinite;
+    }
+
+    @keyframes float3d {
+      0%, 100% { 
+        transform: rotateY(-8deg) rotateX(5deg) translateY(0);
+      }
+      50% { 
+        transform: rotateY(8deg) rotateX(-5deg) translateY(-8px);
+      }
+    }
+
+    .avatar-ring:hover {
+      animation-play-state: paused;
+      transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+    }
+
+    .avatar-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 0;
+      box-shadow: 
+        0 10px 30px rgba(0,0,0,0.5),
+        0 5px 15px rgba(0,0,0,0.3),
+        inset 0 0 0 1px rgba(212,165,116,0.1);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .avatar-ring:hover .avatar-img {
+      box-shadow: 
+        0 20px 50px rgba(0,0,0,0.6),
+        0 10px 25px rgba(212,165,116,0.2),
+        inset 0 0 0 1px rgba(212,165,116,0.2);
+    }
+
+    /* 3D 底座阴影 */
+    .avatar-ring::after {
+      content: '';
+      position: absolute;
+      bottom: -15px;
+      left: 50%;
+      transform: translateX(-50%) rotateX(90deg);
+      width: 60px;
+      height: 60px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+      filter: blur(8px);
+      animation: shadowPulse 6s ease-in-out infinite;
+    }
+
+    @keyframes shadowPulse {
+      0%, 100% { 
+        opacity: 0.6;
+        transform: translateX(-50%) scale(1);
+      }
+      50% { 
+        opacity: 0.3;
+        transform: translateX(-50%) scale(0.8);
+      }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      10%, 30%, 50%, 70%, 90% { transform: translateX(-5px) rotateY(-5deg); }
+      20%, 40%, 60%, 80% { transform: translateX(5px) rotateY(5deg); }
+    }
+
+    .login-title {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.4rem;
+      letter-spacing: 6px;
+      font-weight: normal;
+      margin-bottom: 8px;
+    }
+
+    .login-subtitle {
+      color: rgba(255,255,255,0.25);
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+    }
+
+    /* 输入框 */
+    .input-group {
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      display: block;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.8rem;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+
+    .input-field {
+      width: 100%;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(212,165,116,0.15);
+      color: rgba(255,255,255,0.9);
+      padding: 12px 0;
+      font-size: 1rem;
+      font-family: inherit;
+      letter-spacing: 2px;
+      transition: all 0.3s;
+      outline: none;
+    }
+
+    .input-field::placeholder {
+      color: rgba(255,255,255,0.15);
+      letter-spacing: 2px;
+    }
+
+    .input-field:focus {
+      border-bottom-color: #d4a574;
+    }
+
+    /* 覆盖浏览器自动填充样式 */
+    .input-field:-webkit-autofill,
+    .input-field:-webkit-autofill:hover,
+    .input-field:-webkit-autofill:focus,
+    .input-field:-webkit-autofill:active {
+      -webkit-box-shadow: 0 0 0 1000px #1c1814 inset !important;
+      -webkit-text-fill-color: rgba(255,255,255,0.9) !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
+
+    /* 登录按钮 - 金色填充风格 */
+    .login-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #d4a574 0%, #c9a06a 50%, #d4a574 100%);
+      border: none;
+      color: #1c1814;
+      padding: 18px;
+      font-size: 1rem;
+      font-family: inherit;
+      font-weight: 500;
+      letter-spacing: 6px;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-top: 35px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(212,165,116,0.3);
+    }
+
+    .login-btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #e0b080 0%, #d4a574 50%, #e0b080 100%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .login-btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(212,165,116,0.4);
+    }
+
+    .login-btn:hover::before {
+      opacity: 1;
+    }
+
+    .login-btn:active {
+      transform: translateY(0);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* 错误提示 - 高级样式 */
+    .error-msg {
+      text-align: center;
+      margin-bottom: 25px;
+      padding: 16px 20px;
+      background: rgba(231,76,60,0.08);
+      border: 1px solid rgba(231,76,60,0.15);
+      border-left: 3px solid #e74c3c;
+      opacity: 0;
+      transform: translateY(-10px) scale(0.98);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .error-msg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, rgba(231,76,60,0.1) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .error-msg.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .error-msg.show::before {
+      opacity: 1;
+    }
+
+    .error-icon {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+      vertical-align: middle;
+      color: #e74c3c;
+    }
+
+    .error-text {
+      color: rgba(231,76,60,0.9);
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+      vertical-align: middle;
+    }
+
+    .error-hint {
+      display: block;
+      color: rgba(255,255,255,0.3);
+      font-size: 0.75rem;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+
+    /* 已登录状态 */
+    .logged-section {
+      text-align: center;
+      perspective: 600px;
+    }
+
+    .logged-avatar-wrap {
+      display: inline-block;
+      margin-bottom: 25px;
+      transform-style: preserve-3d;
+      animation: float3d 6s ease-in-out infinite;
+      position: relative;
+    }
+
+    .logged-avatar-wrap:hover {
+      animation-play-state: paused;
+      transform: rotateY(0deg) rotateX(0deg) scale(1.05);
+    }
+
+    .logged-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 0;
+      box-shadow: 
+        0 15px 40px rgba(0,0,0,0.5),
+        0 8px 20px rgba(0,0,0,0.3),
+        inset 0 0 0 1px rgba(212,165,116,0.15);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .logged-avatar-wrap:hover .logged-avatar {
+      box-shadow: 
+        0 25px 60px rgba(0,0,0,0.6),
+        0 15px 35px rgba(212,165,116,0.2),
+        inset 0 0 0 1px rgba(212,165,116,0.25);
+    }
+
+    /* 3D 底座阴影 */
+    .logged-avatar-wrap::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(ellipse, rgba(0,0,0,0.4) 0%, transparent 70%);
+      filter: blur(10px);
+      animation: shadowPulse 6s ease-in-out infinite;
+    }
+
+    .logged-name {
+      color: #d4a574;
+      font-size: 1.6rem;
+      letter-spacing: 4px;
+      margin-bottom: 30px;
+    }
+
+    .logged-info {
+      color: rgba(255,255,255,0.3);
+      font-size: 0.85rem;
+      margin-bottom: 40px;
+      line-height: 2;
+    }
+
+    .logged-info i {
+      margin-right: 8px;
+      opacity: 0.5;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.5);
+      padding: 12px 24px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(255,255,255,0.3);
+      color: rgba(255,255,255,0.8);
+    }
+
+    .btn-danger {
+      background: transparent;
+      border: 1px solid rgba(231,76,60,0.3);
+      color: rgba(231,76,60,0.7);
+      padding: 12px 24px;
+      font-family: inherit;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-danger:hover {
+      border-color: #e74c3c;
+      color: #e74c3c;
+    }
+
+    .send-code-btn {
+      background: transparent;
+      border: 1px solid rgba(212,165,116,0.3);
+      color: #d4a574;
+      padding: 8px 16px;
+      font-family: inherit;
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .send-code-btn:hover:not(:disabled) {
+      background: rgba(212,165,116,0.1);
+      border-color: #d4a574;
+    }
+
+    .send-code-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .d-none {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <!-- 背景效果 -->
+  <div class="bg-grid"></div>
+  <div class="bg-glow bg-glow-1"></div>
+  <div class="bg-glow bg-glow-2"></div>
+  <div class="bg-glow bg-glow-3"></div>
+  <div id="particles"></div>
+
+  <!-- 返回首页 -->
+  <a href="index.html" class="back-link">
+    <i class="bi bi-arrow-left"></i> 返回
+  </a>
+
+  <div class="login-wrapper">
+    <!-- 登录表单 -->
+    <div class="login-form d-none" id="loginBox">
+      <div class="avatar-section">
+        <div class="avatar-ring">
+          <img src="https://mc-heads.net/avatar/MHF_Steve/80" alt="头像" class="avatar-img" id="previewAvatar">
+        </div>
+        <h1 class="login-title">玩家登录</h1>
+        <p class="login-subtitle">使用游戏账号</p>
+      </div>
+
+      <div class="error-msg" id="loginError"></div>
+
+      <form id="loginForm">
+        <div class="input-group">
+          <label class="input-label">游戏ID</label>
+          <input type="text" class="input-field" id="username" placeholder="请输入" required autocomplete="off" spellcheck="false">
+        </div>
+        <div class="input-group">
+          <label class="input-label">密码</label>
+          <input type="password" class="input-field" id="password" placeholder="请输入" required>
+        </div>
+        <button type="submit" class="login-btn" id="loginBtn">
+          <span>登 录</span>
+        </button>
+      </form>
+      <div class="switch-link" style="text-align:center;margin-top:20px;">
+        <span style="color:rgba(255,255,255,0.4);font-size:0.85rem;">还没有账号？</span>
+        <a href="javascript:void(0)" onclick="showRegister()" style="color:#d4a574;font-size:0.85rem;text-decoration:none;">立即注册</a>
+      </div>
+    </div>
+
+    <!-- 注册表单 -->
+    <div class="login-form d-none" id="registerBox">
+      <div class="avatar-section">
+        <div class="avatar-ring">
+          <img src="https://mc-heads.net/avatar/MHF_Steve/80" alt="头像" class="avatar-img" id="regPreviewAvatar">
+        </div>
+        <h1 class="login-title">玩家注册</h1>
+        <p class="login-subtitle">创建游戏账号</p>
+      </div>
+
+      <div class="error-msg" id="registerError"></div>
+
+      <form id="registerForm">
+        <div class="input-group">
+          <label class="input-label">游戏ID</label>
+          <input type="text" class="input-field" id="regUsername" placeholder="3-16位字母数字下划线" required autocomplete="off" spellcheck="false">
+        </div>
+        <div class="input-group">
+          <label class="input-label">邮箱 <span style="color:rgba(212,165,116,0.6);font-size:0.75rem;">* 必填，每个邮箱只能绑定一个账号</span></label>
+          <div style="display:flex;gap:10px;">
+            <input type="email" class="input-field" id="regEmail" placeholder="请输入邮箱" required autocomplete="off" style="flex:1;">
+            <button type="button" class="send-code-btn" id="sendCodeBtn" onclick="sendVerifyCode()">发送验证码</button>
+          </div>
+        </div>
+        <div class="input-group">
+          <label class="input-label">验证码</label>
+          <input type="text" class="input-field" id="regCode" placeholder="请输入6位验证码" required autocomplete="off" maxlength="6">
+        </div>
+        <div class="input-group">
+          <label class="input-label">密码</label>
+          <input type="password" class="input-field" id="regPassword" placeholder="至少6位" required>
+        </div>
+        <div class="input-group">
+          <label class="input-label">确认密码</label>
+          <input type="password" class="input-field" id="regPassword2" placeholder="再次输入密码" required>
+        </div>
+        <button type="submit" class="login-btn" id="registerBtn">
+          <span>注 册</span>
+        </button>
+      </form>
+      <div class="switch-link" style="text-align:center;margin-top:20px;">
+        <span style="color:rgba(255,255,255,0.4);font-size:0.85rem;">已有账号？</span>
+        <a href="javascript:void(0)" onclick="showLogin()" style="color:#d4a574;font-size:0.85rem;text-decoration:none;">返回登录</a>
+      </div>
+    </div>
+
+    <!-- 已登录状态 -->
+    <div class="login-form logged-section d-none" id="loggedInBox">
+      <div class="logged-avatar-wrap">
+        <img id="playerAvatar" class="logged-avatar" src="" alt="头像">
+      </div>
+      <h2 class="logged-name" id="playerName"></h2>
+      <div class="logged-info">
+        <p id="playerRegDate"></p>
+        <p id="playerLastLogin"></p>
+      </div>
+      <div class="btn-group">
+        <a href="index.html" class="btn-secondary">返回首页</a>
+        <button class="btn-danger" onclick="logout()">退出登录</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'http://localhost:3000/api';
+    
+    // 检查登录状态
+    const token = localStorage.getItem('playerToken');
+    if (token) {
+      verifyAndShowProfile();
+    } else {
+      // 未登录，显示登录表单
+      document.getElementById('loginBox').classList.remove('d-none');
+    }
+
+    async function verifyAndShowProfile() {
+      try {
+        const res = await fetch(`${API_URL}/player/profile`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          showLoggedIn(data);
+        } else {
+          localStorage.removeItem('playerToken');
+          document.getElementById('loginBox').classList.remove('d-none');
+        }
+      } catch (e) {
+        console.error('验证失败:', e);
+        document.getElementById('loginBox').classList.remove('d-none');
+      }
+    }
+
+    function showLoggedIn(player) {
+      document.getElementById('loginBox').classList.add('d-none');
+      document.getElementById('loggedInBox').classList.remove('d-none');
+      
+      // Minecraft 头像 API
+      document.getElementById('playerAvatar').src = `https://mc-heads.net/avatar/${player.username}/100`;
+      document.getElementById('playerName').textContent = player.username;
+      
+      if (player.regDate) {
+        const regDate = new Date(player.regDate);
+        document.getElementById('playerRegDate').innerHTML = `<i class="bi bi-calendar-check"></i> 注册于 ${regDate.toLocaleDateString()}`;
+      }
+      
+      if (player.lastLogin) {
+        const lastLogin = new Date(player.lastLogin);
+        document.getElementById('playerLastLogin').innerHTML = `<i class="bi bi-clock-history"></i> 上次登录 ${lastLogin.toLocaleString()}`;
+      }
+    }
+
+    // 输入用户名时预览头像
+    document.getElementById('username').addEventListener('input', function() {
+      const username = this.value.trim();
+      const avatar = document.getElementById('previewAvatar');
+      if (username.length > 2) {
+        avatar.src = `https://mc-heads.net/avatar/${username}/80`;
+      } else {
+        avatar.src = 'https://mc-heads.net/avatar/MHF_Steve/80';
+      }
+    });
+
+    // 登录表单
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+      const loginBtn = document.getElementById('loginBtn');
+      const errorDiv = document.getElementById('loginError');
+      
+      loginBtn.disabled = true;
+      loginBtn.querySelector('span').textContent = '登录中...';
+      errorDiv.classList.remove('show');
+      
+      try {
+        const res = await fetch(`${API_URL}/player/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          localStorage.setItem('playerToken', data.token);
+          localStorage.setItem('playerName', data.player.username);
+          // 登录成功，跳转到首页
+          window.location.href = 'index.html';
+        } else {
+          showError(data.error || '登录失败');
+        }
+      } catch (e) {
+        showError('无法连接服务器', '请检查网络连接或稍后再试');
+      }
+    });
+
+    // 显示错误提示
+    function showError(message, hint = '') {
+      const errorDiv = document.getElementById('loginError');
+      
+      // 根据错误类型设置不同的提示
+      let icon = 'bi-exclamation-circle';
+      let hintText = hint;
+      
+      if (message.includes('不存在')) {
+        icon = 'bi-person-x';
+        hintText = '请确认游戏ID是否正确，或前往服务器注册';
+      } else if (message.includes('密码')) {
+        icon = 'bi-shield-x';
+        hintText = '请检查密码是否正确';
+      } else if (message.includes('连接')) {
+        icon = 'bi-wifi-off';
+      }
+      
+      errorDiv.innerHTML = `
+        <i class="bi ${icon} error-icon"></i>
+        <span class="error-text">${message}</span>
+        ${hintText ? `<span class="error-hint">${hintText}</span>` : ''}
+      `;
+      errorDiv.classList.add('show');
+      
+      // 头像抖动效果
+      const avatar = document.querySelector('.avatar-ring');
+      avatar.style.animation = 'none';
+      avatar.offsetHeight; // 触发重绘
+      avatar.style.animation = 'shake 0.5s ease';
+      setTimeout(() => {
+        avatar.style.animation = 'float3d 6s ease-in-out infinite';
+      }, 500);
+      
+      document.getElementById('loginBtn').disabled = false;
+      document.getElementById('loginBtn').querySelector('span').textContent = '登 录';
+    }
+
+    function logout() {
+      localStorage.removeItem('playerToken');
+      localStorage.removeItem('playerName');
+      location.reload();
+    }
+
+    // 切换到注册
+    function showRegister() {
+      document.getElementById('loginBox').classList.add('d-none');
+      document.getElementById('registerBox').classList.remove('d-none');
+    }
+
+    // 切换到登录
+    function showLogin() {
+      document.getElementById('registerBox').classList.add('d-none');
+      document.getElementById('loginBox').classList.remove('d-none');
+    }
+
+    // 注册时预览头像
+    document.getElementById('regUsername').addEventListener('input', function() {
+      const username = this.value.trim();
+      const avatar = document.getElementById('regPreviewAvatar');
+      if (username.length > 2) {
+        avatar.src = `https://mc-heads.net/avatar/${username}/80`;
+      } else {
+        avatar.src = 'https://mc-heads.net/avatar/MHF_Steve/80';
+      }
+    });
+
+    // 发送验证码
+    let codeSent = false;
+    let countdown = 0;
+    
+    async function sendVerifyCode() {
+      const username = document.getElementById('regUsername').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const password = document.getElementById('regPassword').value;
+      const password2 = document.getElementById('regPassword2').value;
+      const sendBtn = document.getElementById('sendCodeBtn');
+      
+      // 验证
+      if (!username) {
+        showRegisterError('请先输入游戏ID');
+        return;
+      }
+      if (!email) {
+        showRegisterError('请输入邮箱');
+        return;
+      }
+      if (!password || password.length < 6) {
+        showRegisterError('请输入至少6位密码');
+        return;
+      }
+      if (password !== password2) {
+        showRegisterError('两次密码输入不一致');
+        return;
+      }
+      
+      sendBtn.disabled = true;
+      sendBtn.textContent = '发送中...';
+      
+      try {
+        const res = await fetch(`${API_URL}/player/send-code`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password, email })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          codeSent = true;
+          showRegisterSuccess('验证码已发送，请查收邮件');
+          // 60秒倒计时
+          countdown = 60;
+          const timer = setInterval(() => {
+            countdown--;
+            if (countdown <= 0) {
+              clearInterval(timer);
+              sendBtn.disabled = false;
+              sendBtn.textContent = '重新发送';
+            } else {
+              sendBtn.textContent = `${countdown}秒`;
+            }
+          }, 1000);
+        } else {
+          sendBtn.disabled = false;
+          sendBtn.textContent = '发送验证码';
+          showRegisterError(data.error || '发送失败');
+        }
+      } catch (e) {
+        sendBtn.disabled = false;
+        sendBtn.textContent = '发送验证码';
+        showRegisterError('无法连接服务器');
+      }
+    }
+
+    // 注册表单
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('regEmail').value.trim();
+      const code = document.getElementById('regCode').value.trim();
+      const registerBtn = document.getElementById('registerBtn');
+      const errorDiv = document.getElementById('registerError');
+      
+      if (!codeSent) {
+        showRegisterError('请先发送验证码');
+        return;
+      }
+      
+      if (!code || code.length !== 6) {
+        showRegisterError('请输入6位验证码');
+        return;
+      }
+      
+      registerBtn.disabled = true;
+      registerBtn.querySelector('span').textContent = '注册中...';
+      errorDiv.classList.remove('show');
+      
+      try {
+        const res = await fetch(`${API_URL}/player/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, code })
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          localStorage.setItem('playerToken', data.token);
+          localStorage.setItem('playerName', data.player.username);
+          // 注册成功提示
+          showRegisterSuccess('注册成功！正在跳转...');
+          // 延迟跳转
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
+          return;
+        } else {
+          showRegisterError(data.error || '注册失败');
+        }
+      } catch (e) {
+        showRegisterError('无法连接服务器');
+      }
+      
+      registerBtn.disabled = false;
+      registerBtn.querySelector('span').textContent = '注 册';
+    });
+    
+    function showRegisterSuccess(message) {
+      const errorDiv = document.getElementById('registerError');
+      errorDiv.innerHTML = `
+        <i class="bi bi-check-circle error-icon" style="color:#2ecc71;"></i>
+        <span class="error-text" style="color:rgba(46,204,113,0.9);">${message}</span>
+      `;
+      errorDiv.classList.add('show');
+      errorDiv.style.borderLeftColor = '#2ecc71';
+      errorDiv.style.background = 'rgba(46,204,113,0.08)';
+    }
+
+    function showRegisterError(message) {
+      const errorDiv = document.getElementById('registerError');
+      errorDiv.innerHTML = `
+        <i class="bi bi-exclamation-circle error-icon"></i>
+        <span class="error-text">${message}</span>
+      `;
+      errorDiv.classList.add('show');
+      // 重置为错误样式
+      errorDiv.style.borderLeftColor = '#e74c3c';
+      errorDiv.style.background = 'rgba(231,76,60,0.08)';
+      
+      // 头像抖动效果
+      const avatar = document.querySelector('#registerBox .avatar-ring');
+      if (avatar) {
+        avatar.style.animation = 'none';
+        avatar.offsetHeight;
+        avatar.style.animation = 'shake 0.5s ease';
+        setTimeout(() => {
+          avatar.style.animation = 'float3d 6s ease-in-out infinite';
+        }, 500);
+      }
+    }
+
+    // 生成粒子
+    function createParticles() {
+      const container = document.getElementById('particles');
+      const count = 20;
+      
+      for (let i = 0; i < count; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDuration = (10 + Math.random() * 20) + 's';
+        particle.style.animationDelay = (Math.random() * 15) + 's';
+        particle.style.width = (1 + Math.random() * 2) + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.opacity = 0.2 + Math.random() * 0.4;
+        container.appendChild(particle);
+      }
+    }
+    
+    createParticles();
+  </script>
+</body>
+</html>

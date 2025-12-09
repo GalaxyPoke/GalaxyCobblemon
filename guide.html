@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>入服教程 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/carousel.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: '中华薪火体', 'Noto Sans SC', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+      line-height: 1.8;
+    }
+    
+    /* 通用区块样式 */
+    .section {
+      padding: 80px 0;
+      position: relative;
+    }
+    
+    .section-dark {
+      background: #1c1814;
+    }
+    
+    .section-with-bg {
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      position: relative;
+    }
+    
+    .section-with-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(28, 24, 20, 0.75);
+    }
+    
+    .section-with-bg .container {
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* 大标题样式 */
+    .section-title {
+      font-size: 2.8rem;
+      font-weight: 400;
+      color: #d4a574;
+      margin-bottom: 1.5rem;
+      letter-spacing: 4px;
+    }
+    
+    .section-title span {
+      color: #888;
+      font-weight: 400;
+    }
+    
+    /* 段落文字 */
+    .section-text {
+      font-size: 1.1rem;
+      color: #bbb;
+      line-height: 2;
+      max-width: 900px;
+    }
+    
+    /* 特性列表 - 带勾选图标 */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px 60px;
+      margin-top: 40px;
+      max-width: 700px;
+    }
+    
+    @media (max-width: 576px) {
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      font-size: 1.1rem;
+      color: #e0e0e0;
+    }
+    
+    .feature-item .check {
+      width: 24px;
+      height: 24px;
+      background: #d4a574;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .feature-item .check i {
+      color: #1c1814;
+      font-size: 14px;
+    }
+    
+    /* Hero 区域 */
+    .hero-section {
+      min-height: 60vh;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding-top: 100px;
+      padding-bottom: 60px;
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 400;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 6px;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.3rem;
+      color: #bbb;
+      margin-bottom: 2rem;
+    }
+    
+    /* 步骤区域 */
+    .step-section {
+      padding: 100px 0;
+    }
+    
+    .step-number {
+      font-size: 5rem;
+      font-weight: 900;
+      color: rgba(212, 165, 116, 0.15);
+      line-height: 1;
+      margin-bottom: -20px;
+    }
+    
+    .step-title {
+      font-size: 2rem;
+      font-weight: 400;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 3px;
+    }
+    
+    .step-text {
+      font-size: 1.05rem;
+      color: #aaa;
+      line-height: 2;
+      margin-bottom: 1.5rem;
+    }
+    
+    /* 下载按钮 - 使用 style.css 的统一风格 */
+    .download-grid {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+    
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 28px;
+      background: rgba(28, 24, 20, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(139, 115, 85, 0.3);
+      color: #d4a574;
+      text-decoration: none;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+    
+    .download-btn:hover {
+      background: rgba(139, 115, 85, 0.2);
+      border-color: #8b7355;
+      color: #d4a574;
+    }
+    
+    .download-btn-outline {
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid rgba(139, 115, 85, 0.3);
+      color: #d4a574;
+    }
+    
+    .download-btn-outline:hover {
+      background: rgba(139, 115, 85, 0.2);
+      border-color: #8b7355;
+      color: #d4a574;
+    }
+    
+    /* 服务器地址 - 使用 style.css 的统一风格 */
+    .server-address {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(28, 24, 20, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(139, 115, 85, 0.3);
+      padding: 1rem 1.5rem;
+      margin: 30px 0;
+    }
+    
+    .server-address code {
+      font-size: 1.25rem;
+      color: #d4a574;
+      font-family: 'Consolas', monospace;
+      font-weight: 700;
+    }
+    
+    .server-address button {
+      background: #8b7355;
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      font-family: '中华薪火体', sans-serif;
+    }
+    
+    .server-address button:hover {
+      background: #6b5344;
+    }
+    
+    /* 登录方式 */
+    .login-options {
+      display: flex;
+      gap: 40px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+    
+    .login-option {
+      text-align: center;
+    }
+    
+    .login-option i {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 10px;
+      display: block;
+    }
+    
+    .login-option h5 {
+      color: #fff;
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    
+    .login-option p {
+      color: #888;
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    
+    /* 代码块 - 使用 style.css 的统一风格 */
+    .code-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      background: rgba(28, 24, 20, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(139, 115, 85, 0.3);
+      padding: 0.8rem 1.2rem;
+      margin: 15px 0;
+    }
+    
+    .code-box code {
+      color: #d4a574;
+      font-family: 'Consolas', monospace;
+      font-size: 1rem;
+      font-weight: 700;
+    }
+    
+    .code-box button {
+      background: #8b7355;
+      border: none;
+      color: #fff;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: '中华薪火体', sans-serif;
+    }
+    
+    .code-box button:hover {
+      background: #6b5344;
+    }
+    
+    /* 提示框 - 榜文风格 */
+    .tip-box {
+      background: rgba(28, 24, 20, 0.8);
+      border: none;
+      border-left: 4px solid #d4a574;
+      padding: 1.2rem 1.5rem;
+      margin-top: 20px;
+      transition: all 0.3s;
+      width: 100%;
+    }
+    
+    .tip-box:hover {
+      border-left-color: #e8c49a;
+      transform: translateX(5px);
+      box-shadow: 0 5px 30px rgba(139, 115, 85, 0.2);
+    }
+    
+    .tip-box-meta {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      margin-right: 0.8rem;
+      vertical-align: middle;
+    }
+    
+    .tip-box-tag {
+      background: #8b7355;
+      color: #fff;
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+      letter-spacing: 1px;
+    }
+    
+    .tip-box-title {
+      display: inline;
+      font-size: 1.3rem;
+      color: #fff;
+      letter-spacing: 2px;
+      margin-bottom: 0.4rem;
+      vertical-align: middle;
+    }
+    
+    .tip-box-content {
+      color: #aaa;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    
+    /* 警告样式 */
+    .tip-box.warning {
+      border-left-color: #c45c48;
+      background: rgba(196, 92, 72, 0.1);
+    }
+    
+    .tip-box.warning .tip-box-tag {
+      background: #c45c48;
+    }
+    
+    .tip-box.warning:hover {
+      border-left-color: #e57373;
+    }
+    
+    /* 成功/福利样式 */
+    .tip-box.success {
+      border-left-color: #4caf50;
+    }
+    
+    .tip-box.success .tip-box-tag {
+      background: #4caf50;
+    }
+    
+    /* 旧版提示文字 */
+    .tip-text {
+      color: #d4a574;
+      font-size: 0.95rem;
+      margin-top: 15px;
+    }
+    
+    .tip-text i {
+      margin-right: 8px;
+    }
+    
+    /* 步骤列表 */
+    .step-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+    }
+    
+    .step-list li {
+      padding: 10px 0;
+      color: #bbb;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    
+    .step-list li::before {
+      content: counter(step);
+      counter-increment: step;
+      width: 28px;
+      height: 28px;
+      background: rgba(212, 165, 116, 0.2);
+      color: #d4a574;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    
+    .step-list {
+      counter-reset: step;
+    }
+    
+    /* FAQ */
+    .faq-section {
+      padding: 80px 0;
+    }
+    
+    .faq-item {
+      border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+      padding: 25px 0;
+    }
+    
+    .faq-question {
+      font-size: 1.15rem;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .faq-question i {
+      color: #d4a574;
+      transition: transform 0.3s;
+    }
+    
+    .faq-item.active .faq-question i {
+      transform: rotate(180deg);
+    }
+    
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: all 0.3s;
+      color: #999;
+      line-height: 1.8;
+    }
+    
+    .faq-item.active .faq-answer {
+      max-height: 300px;
+      padding-top: 15px;
+    }
+    
+    /* CTA 区域 */
+    .cta-section {
+      padding: 100px 0;
+      text-align: center;
+      background: #1c1814;
+    }
+    
+    .cta-title {
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 4px;
+    }
+    
+    .cta-text {
+      color: #bbb;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    
+    /* 分隔线 */
+    .divider {
+      width: 60px;
+      height: 3px;
+      background: #d4a574;
+      margin: 30px 0;
+    }
+    
+    /* 警告文字 */
+    .warning-text {
+      color: #e57373;
+      font-size: 0.95rem;
+      margin-top: 15px;
+    }
+    
+    .warning-text i {
+      margin-right: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-controller"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <div id="particles-js"></div>
+
+  <!-- 导航栏（由navbar.js自动生成） -->
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/navbar.js"></script>
+
+  <!-- Hero 区域 -->
+  <section class="hero-section">
+    <div class="container hero-content">
+      <h1 class="hero-title" data-aos="fade-up">入服教程</h1>
+      <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="100">跟随教程，轻松加入 GalaxyPokemon 服务器</p>
+      
+      <div class="feature-grid" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-item">
+          <span class="check"><i class="bi bi-check"></i></span>
+          <span>支持正版/离线登录</span>
+        </div>
+        <div class="feature-item">
+          <span class="check"><i class="bi bi-check"></i></span>
+          <span>支持 Java/基岩版互通</span>
+        </div>
+        <div class="feature-item">
+          <span class="check"><i class="bi bi-check"></i></span>
+          <span>定期举办活动与比赛</span>
+        </div>
+        <div class="feature-item">
+          <span class="check"><i class="bi bi-check"></i></span>
+          <span>活跃的玩家社区</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 服务器信息 -->
+  <section class="section section-dark">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">服务器信息</h2>
+      <p class="section-text" data-aos="fade-up" data-aos-delay="100">
+        复制下方地址，添加到你的多人游戏服务器列表中即可加入。
+      </p>
+      
+      <div class="server-address" data-aos="fade-up" data-aos-delay="200">
+        <code id="serverIP">play.galaxypokemon.com</code>
+        <button onclick="copyServerIP()"><i class="bi bi-clipboard"></i> 复制</button>
+      </div>
+      
+      <div class="feature-grid" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-item">
+          <span class="check"><i class="bi bi-check"></i></span>
+          <span>游戏版本：1.21.1</span>
+        </div>
+        <div class="feature-item">
+          <span class="check"><i class="bi bi-check"></i></span>
+          <span>核心模组：Cobblemon</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 步骤1：下载启动器 -->
+  <section class="step-section section-dark">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-lg-6" data-aos="fade-right">
+          <span class="step-number">01</span>
+          <h3 class="step-title">下载启动器</h3>
+          <p class="step-text">
+            首先，你需要下载一个 Minecraft 启动器。启动器用于管理游戏版本、模组和账户。我们推荐使用以下两款启动器，它们都支持导入整合包。
+          </p>
+          
+          <div class="download-grid">
+            <a href="https://afdian.com/p/0164034c016c11ebafcb52540025c377" target="_blank" class="download-btn">
+              <i class="bi bi-rocket-takeoff"></i> PCL2 启动器
+            </a>
+            <a href="https://hmcl.huangyuhui.net/download/" target="_blank" class="download-btn download-btn-outline">
+              <i class="bi bi-terminal"></i> HMCL 启动器
+            </a>
+          </div>
+          
+        </div>
+      </div>
+      
+      <div class="tip-box" data-aos="fade-up">
+        <div class="tip-box-meta">
+          <span class="tip-box-tag">提示</span>
+        </div>
+        <h4 class="tip-box-title">新手推荐</h4>
+        <p class="tip-box-content">新手推荐使用 PCL2 启动器，界面友好，操作简单，导入整合包一键完成...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 步骤2：安装整合包 -->
+  <section class="step-section section-dark">
+    <div class="container">
+      <span class="step-number" data-aos="fade-up">02</span>
+      <h3 class="step-title" data-aos="fade-up">安装整合包</h3>
+      <p class="step-text" data-aos="fade-up">
+        下载我们提供的整合包，包含所有必需的模组和配置。整合包已经预设好所有内容，开箱即用。
+      </p>
+      
+      <a href="download.html" class="download-btn" data-aos="fade-up">
+        <i class="bi bi-download"></i> 下载整合包
+      </a>
+      
+      <div class="divider" data-aos="fade-up"></div>
+      
+      <h4 style="color:#d4a574; margin-bottom:20px;" data-aos="fade-up">安装步骤</h4>
+      <ol class="step-list" data-aos="fade-up">
+        <li>下载整合包压缩文件（.zip）</li>
+        <li>打开 PCL2/HMCL 启动器</li>
+        <li>点击「版本管理」或「版本列表」</li>
+        <li>选择「导入整合包」</li>
+        <li>选择下载的压缩文件，等待导入完成</li>
+      </ol>
+      
+      <div class="tip-box warning" data-aos="fade-up">
+              <div class="tip-box-meta">
+                <span class="tip-box-tag">注意</span>
+              </div>
+              <h4 class="tip-box-title">内存要求</h4>
+              <p class="tip-box-content">请确保分配至少 4GB 内存给游戏，否则可能会卡顿或崩溃，推荐 6-8GB 以获得最佳体验...</p>
+            </div>
+    </div>
+  </section>
+
+  <!-- 步骤3：配置账户 -->
+  <section class="step-section section-dark">
+    <div class="container">
+      <span class="step-number" data-aos="fade-up">03</span>
+      <h3 class="step-title" data-aos="fade-up">配置账户</h3>
+      <p class="step-text" data-aos="fade-up">
+        我们服务器支持多种登录方式，选择适合你的方式即可。
+      </p>
+      
+      <div class="login-options" data-aos="fade-up">
+        <div class="login-option">
+          <i class="bi bi-person-badge"></i>
+          <h5>离线登录</h5>
+          <p>随便取个名字即可</p>
+        </div>
+        <div class="login-option">
+          <i class="bi bi-microsoft"></i>
+          <h5>正版登录</h5>
+          <p>使用微软账户</p>
+        </div>
+        <div class="login-option">
+          <i class="bi bi-palette"></i>
+          <h5>外置登录</h5>
+          <p>LittleSkin 皮肤站</p>
+        </div>
+      </div>
+      
+      <div class="divider" data-aos="fade-up"></div>
+      
+      <div class="tip-box" data-aos="fade-up">
+              <div class="tip-box-meta">
+                <span class="tip-box-tag">推荐</span>
+              </div>
+              <h4 class="tip-box-title">外置登录优势</h4>
+              <p class="tip-box-content">推荐使用外置登录（LittleSkin），可以使用自定义皮肤和披风，让你的角色更加个性化...</p>
+            </div>
+      
+      <h4 style="color:#d4a574; margin: 30px 0 15px;" data-aos="fade-up">外置登录配置</h4>
+      <div class="code-box" data-aos="fade-up">
+        <code>https://littleskin.cn/api/yggdrasil</code>
+        <button onclick="copyText('https://littleskin.cn/api/yggdrasil')">复制</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 步骤4：进入服务器 -->
+  <section class="step-section section-dark">
+    <div class="container">
+      <span class="step-number" data-aos="fade-up">04</span>
+      <h3 class="step-title" data-aos="fade-up">进入服务器</h3>
+      <p class="step-text" data-aos="fade-up">
+        一切准备就绪，现在可以进入服务器开始你的宝可梦冒险了！
+      </p>
+      
+      <ol class="step-list" data-aos="fade-up">
+        <li>启动游戏，等待加载完成</li>
+        <li>点击「多人游戏」</li>
+        <li>点击「添加服务器」</li>
+        <li>输入服务器名称（随意）和地址</li>
+      </ol>
+      
+      <div class="code-box" data-aos="fade-up">
+        <code>play.galaxypokemon.com</code>
+        <button onclick="copyText('play.galaxypokemon.com')">复制</button>
+      </div>
+      
+      <ol class="step-list" start="5" data-aos="fade-up">
+        <li>点击「完成」保存服务器</li>
+        <li>双击服务器或点击「加入服务器」</li>
+        <li>首次进入需要注册，按照提示操作即可</li>
+      </ol>
+      
+      <div class="tip-box success" data-aos="fade-up">
+              <div class="tip-box-meta">
+                <span class="tip-box-tag">福利</span>
+              </div>
+              <h4 class="tip-box-title">新手礼包</h4>
+              <p class="tip-box-content">首次进服可领取新手礼包，包含初始宝可梦和基础物资，快来开启你的冒险之旅！</p>
+            </div>
+    </div>
+  </section>
+
+  <!-- 常见问题 -->
+  <section class="faq-section section-dark">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-up">常见问题</h2>
+      
+      <div class="faq-item" data-aos="fade-up">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>游戏启动后闪退怎么办？</span>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>1. 检查是否分配了足够的内存（建议 4-8GB）<br>
+          2. 确保 Java 版本正确（需要 Java 21+）<br>
+          3. 尝试更新显卡驱动<br>
+          4. 关闭杀毒软件后重试</p>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-aos="fade-up">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>连接服务器超时怎么办？</span>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>1. 检查网络连接是否正常<br>
+          2. 确认服务器地址输入正确<br>
+          3. 尝试使用加速器<br>
+          4. 检查防火墙是否阻止了游戏</p>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-aos="fade-up">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>如何获得初始宝可梦？</span>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>进入服务器后，在野外行走一段时间，会触发宝可梦博士的对话，届时可以选择你的初始宝可梦（御三家）。</p>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-aos="fade-up">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>怎么设置皮肤？</span>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>1. 注册 LittleSkin 账户<br>
+          2. 在皮肤站上传你喜欢的皮肤<br>
+          3. 启动器中使用外置登录（LittleSkin）<br>
+          4. 进入游戏即可显示皮肤</p>
+        </div>
+      </div>
+      
+      <div class="faq-item" data-aos="fade-up">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          <span>遇到问题如何求助？</span>
+          <i class="bi bi-chevron-down"></i>
+        </div>
+        <div class="faq-answer">
+          <p>1. 查看服务器公告和帮助文档<br>
+          2. 在游戏内使用 /help 命令<br>
+          3. 联系在线管理员<br>
+          4. 加入我们的 QQ 群：123456789</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>服务器风采</h2>
+        <p>精彩的游戏画面</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>服务器截图 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>主城风光</h4>
+                <p>服务器主城全景</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>服务器截图 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>宝可梦世界</h4>
+                <p>野外探险场景</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>服务器截图 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>玩家聚会</h4>
+                <p>热闹的玩家活动</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section section-dark">
+    <div class="container">
+      <h2 class="cta-title" data-aos="fade-up">准备好了吗？</h2>
+      <p class="cta-text" data-aos="fade-up">开始你的宝可梦冒险之旅！</p>
+      <div class="download-grid" style="justify-content:center;" data-aos="fade-up">
+        <a href="download.html" class="download-btn">
+          <i class="bi bi-download"></i> 下载客户端
+        </a>
+        <a href="index.html" class="download-btn download-btn-outline">
+          <i class="bi bi-house"></i> 返回首页
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer-section">
+    <div class="container">
+      <div class="footer-bottom">
+        <p class="footer-copyright">&copy; 2024 GalaxyPokemon. All Rights Reserved.</p>
+        <p class="footer-note">本站与 Mojang Studios 和 The Pokémon Company 无关。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="static/js/carousel.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true });
+    
+    // 粒子背景
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 50 },
+        color: { value: '#d4a574' },
+        opacity: { value: 0.3 },
+        size: { value: 2 },
+        line_linked: { enable: true, color: '#d4a574', opacity: 0.1 },
+        move: { enable: true, speed: 1 }
+      }
+    });
+    
+    // 页面加载
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    
+    // 复制服务器地址
+    function copyServerIP() {
+      const ip = document.getElementById('serverIP').textContent;
+      navigator.clipboard.writeText(ip).then(() => {
+        alert('服务器地址已复制！');
+      });
+    }
+    
+    // 复制文本
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('已复制到剪贴板！');
+      });
+    }
+    
+    // FAQ 折叠
+    function toggleFaq(element) {
+      const item = element.parentElement;
+      item.classList.toggle('active');
+    }
+  </script>
+  
+  <script src="static/js/music-player.js"></script>
+</body>
+</html>

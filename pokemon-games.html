@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>游戏图鉴 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+    }
+    
+    body {
+      font-family: '中华薪火体', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+    }
+    
+    .hero-section {
+      padding: 140px 0 100px;
+      background: #1c1814 !important;
+    }
+    
+    .hero-title {
+      font-size: 4.5rem;
+      color: #d4a574;
+      margin-bottom: 1.5rem;
+      letter-spacing: 8px;
+    }
+    
+    .hero-subtitle {
+      color: #888;
+      font-size: 1.6rem;
+      margin-bottom: 2rem;
+      letter-spacing: 3px;
+    }
+    
+    .divider {
+      width: 80px;
+      height: 4px;
+      background: #d4a574;
+      margin-bottom: 2rem;
+    }
+    
+    .hero-text {
+      color: #999;
+      max-width: 800px;
+      line-height: 2.2;
+      font-size: 1.25rem;
+    }
+    
+    .stats-row {
+      display: flex;
+      gap: 70px;
+      margin-top: 60px;
+      flex-wrap: wrap;
+    }
+    
+    .stat-number {
+      font-size: 4rem;
+      color: #d4a574;
+      line-height: 1;
+    }
+    
+    .stat-label {
+      color: #777;
+      font-size: 1.15rem;
+      margin-top: 5px;
+    }
+    
+    /* 世代区块 */
+    .gen-section {
+      padding: 80px 0;
+    }
+    
+    .gen-section:nth-child(even) {
+      background: rgba(255,255,255,0.02);
+    }
+    
+    .gen-header {
+      margin-bottom: 40px;
+    }
+    
+    .gen-number {
+      font-size: 4rem;
+      color: rgba(212, 165, 116, 0.15);
+      font-weight: bold;
+      line-height: 1;
+    }
+    
+    .gen-title {
+      font-size: 1.8rem;
+      color: #d4a574;
+      margin-top: -10px;
+    }
+    
+    .gen-subtitle {
+      color: #777;
+      margin-bottom: 1rem;
+    }
+    
+    .gen-desc {
+      color: #999;
+      max-width: 600px;
+      line-height: 1.8;
+    }
+    
+    /* 游戏卡片 */
+    .games-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 25px;
+    }
+    
+    .game-card {
+      background: rgba(40, 35, 30, 0.6);
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+    
+    .game-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+    
+    .game-cover {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.2);
+    }
+    
+    .game-cover img {
+      max-width: 100%;
+      max-height: 100%;
+    }
+    
+    .game-icon {
+      font-size: 3rem;
+    }
+    
+    .game-info {
+      padding: 15px 5px 5px;
+      text-align: center;
+    }
+    
+    .game-name {
+      color: #d4a574;
+      font-size: 0.95rem;
+      margin-bottom: 5px;
+    }
+    
+    .game-meta {
+      color: #777;
+      font-size: 0.8rem;
+    }
+    
+    /* CTA */
+    .cta-section {
+      padding: 80px 0;
+      text-align: center;
+    }
+    
+    .cta-title {
+      font-size: 2rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-text {
+      color: #888;
+      margin-bottom: 2rem;
+    }
+    
+    .cta-section .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 15px 35px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      color: #1c1814;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+      border-radius: 0;
+    }
+    
+    .cta-section .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(212, 165, 116, 0.3);
+      color: #1c1814;
+    }
+  </style>
+</head>
+<body>
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 页面内容 -->
+  <div id="pageContent"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true });
+    
+    var coverPath = 'static/image/游戏封面图/';
+    
+    var gamesData = [
+      {
+        gen: 1, name: '第一世代', region: '关都地区', years: '1996-1999',
+        desc: '一切的起点。1996年，宝可梦红·绿在日本发售，开创了一个传奇。151种宝可梦、8个道馆、四天王挑战——这些经典元素从此成为系列的基石。',
+        games: [
+          { name: '宝可梦 红', year: 1996, platform: 'Game Boy', icon: '🔴', cover: '宝可梦_红_日版封面.webp' },
+          { name: '宝可梦 绿', year: 1996, platform: 'Game Boy', icon: '🟢', cover: '宝可梦_绿_日版封面.webp' },
+          { name: '宝可梦 蓝', year: 1996, platform: 'Game Boy', icon: '🔵', cover: '宝可梦_蓝_日版封面.webp' },
+          { name: '宝可梦 皮卡丘', year: 1998, platform: 'Game Boy', icon: '⚡', cover: '250px-宝可梦_皮卡丘_日版封面.webp' }
+        ]
+      },
+      {
+        gen: 2, name: '第二世代', region: '城都地区', years: '1999-2001',
+        desc: '传说的延续。新增100种宝可梦，引入昼夜系统、培育系统和闪光宝可梦。通关城都后还能重返关都，双倍的冒险体验！',
+        games: [
+          { name: '宝可梦 金', year: 1999, platform: 'GBC', icon: '🌟', cover: '478px-宝可梦_金_日版封面.webp' },
+          { name: '宝可梦 银', year: 1999, platform: 'GBC', icon: '🌙', cover: '180px-宝可梦_银_日版封面.webp' },
+          { name: '宝可梦 水晶', year: 2000, platform: 'GBC', icon: '💎', cover: '250px-宝可梦_水晶版_日版封面.webp' }
+        ]
+      },
+      {
+        gen: 3, name: '第三世代', region: '丰缘地区', years: '2002-2006',
+        desc: '全新的冒险。GBA平台带来了全彩画面，引入双打对战、特性系统和性格系统，对战系统更加完善。',
+        games: [
+          { name: '宝可梦 红宝石', year: 2002, platform: 'GBA', icon: '💎', cover: '180px-宝可梦_红宝石_日版封面.webp' },
+          { name: '宝可梦 蓝宝石', year: 2002, platform: 'GBA', icon: '💎', cover: '宝可梦_蓝宝石_日版封面.webp' },
+          { name: '宝可梦 火红', year: 2004, platform: 'GBA', icon: '🔥', cover: '180px-宝可梦_火红_日版封面.webp' },
+          { name: '宝可梦 叶绿', year: 2004, platform: 'GBA', icon: '🍃', cover: '180px-宝可梦_叶绿_日版封面.webp' },
+          { name: '宝可梦 绿宝石', year: 2004, platform: 'GBA', icon: '💚', cover: '250px-宝可梦_绿宝石_日版封面.webp' }
+        ]
+      },
+      {
+        gen: 4, name: '第四世代', region: '神奥地区', years: '2006-2010',
+        desc: '神话的诞生。NDS平台带来了物理/特殊分离系统，彻底改变了对战格局。创世神话的故事在这里展开。',
+        games: [
+          { name: '宝可梦 钻石', year: 2006, platform: 'NDS', icon: '💎', cover: '180px-宝可梦_钻石_日版封面.webp' },
+          { name: '宝可梦 珍珠', year: 2006, platform: 'NDS', icon: '🦪', cover: '180px-宝可梦_珍珠_日版封面.webp' },
+          { name: '宝可梦 白金', year: 2008, platform: 'NDS', icon: '⚪', cover: '宝可梦_白金_日版封面.webp' },
+          { name: '宝可梦 心金', year: 2009, platform: 'NDS', icon: '💛', cover: '180px-宝可梦_心金_日版封面.webp' },
+          { name: '宝可梦 魂银', year: 2009, platform: 'NDS', icon: '🤍', cover: '180px-宝可梦_魂银_日版封面.webp' }
+        ]
+      },
+      {
+        gen: 5, name: '第五世代', region: '合众地区', years: '2010-2013',
+        desc: '全新的开始。156种全新宝可梦，通关前只能遇到新宝可梦。N和等离子队的故事探讨了人与宝可梦的关系。',
+        games: [
+          { name: '宝可梦 黑', year: 2010, platform: 'NDS', icon: '⬛', cover: '180px-Pokemon_Black_Boxart_JP.webp' },
+          { name: '宝可梦 白', year: 2010, platform: 'NDS', icon: '⬜', cover: '180px-Pokemon_White_Boxart_JP.webp' },
+          { name: '宝可梦 黑2', year: 2012, platform: 'NDS', icon: '⬛', cover: '180px-Pokemon_Black_2_Boxart_JP.webp' },
+          { name: '宝可梦 白2', year: 2012, platform: 'NDS', icon: '⬜', cover: '180px-Pokemon_White_2_Boxart_JP.webp' }
+        ]
+      },
+      {
+        gen: 6, name: '第六世代', region: '卡洛斯地区', years: '2013-2016',
+        desc: '3D革命。系列首次3D化，引入Mega进化系统和妖精属性。以法国为原型的卡洛斯地区美轮美奂。',
+        games: [
+          { name: '宝可梦 X', year: 2013, platform: '3DS', icon: '✖️', cover: '180px-Pokemon_X_Boxart_JP.webp' },
+          { name: '宝可梦 Y', year: 2013, platform: '3DS', icon: '🔻', cover: '180px-Pokemon_Y_Boxart_JP.webp' },
+          { name: '欧米伽红宝石', year: 2014, platform: '3DS', icon: 'Ω', cover: '180px-Omegaruby_Boxart_JP.webp' },
+          { name: '阿尔法蓝宝石', year: 2014, platform: '3DS', icon: 'α', cover: '180px-Alphasapphire_Boxart_JP.webp' }
+        ]
+      },
+      {
+        gen: 7, name: '第七世代', region: '阿罗拉地区', years: '2016-2019',
+        desc: '热带冒险。以夏威夷为原型，取消道馆制改为诸岛巡礼。引入Z招式和地区形态，Switch首作也在此诞生。',
+        games: [
+          { name: '宝可梦 太阳', year: 2016, platform: '3DS', icon: '☀️', cover: '180px-精靈寶可夢_太陽_封面_繁體中文.webp' },
+          { name: '宝可梦 月亮', year: 2016, platform: '3DS', icon: '🌙', cover: '180px-精靈寶可夢_月亮_封面_繁體中文.webp' },
+          { name: '究极之日', year: 2017, platform: '3DS', icon: '🌞', cover: '180px-精靈寶可夢_究極之日_封面_繁體中文.webp' },
+          { name: '究极之月', year: 2017, platform: '3DS', icon: '🌛', cover: '180px-精靈寶可夢_究極之月_封面_繁體中文.webp' },
+          { name: "Let's Go 皮卡丘", year: 2018, platform: 'Switch', icon: '⚡', cover: "180px-精靈寶可夢_Let's_Go！皮卡丘_封面_繁體中文.webp" },
+          { name: "Let's Go 伊布", year: 2018, platform: 'Switch', icon: '🦊', cover: "180px-精靈寶可夢_Let's_Go！伊布_封面_繁體中文.webp" }
+        ]
+      },
+      {
+        gen: 8, name: '第八世代', region: '伽勒尔地区', years: '2019-2022',
+        desc: '巨大化时代。以英国为原型，引入极巨化系统和旷野地带。传说阿尔宙斯开创了开放世界新篇章。',
+        games: [
+          { name: '宝可梦 剑', year: 2019, platform: 'Switch', icon: '⚔️', cover: '180px-寶可夢_劍_封面_繁體中文.webp' },
+          { name: '宝可梦 盾', year: 2019, platform: 'Switch', icon: '🛡️', cover: '180px-寶可夢_盾_封面_繁體中文.webp' },
+          { name: '晶灿钻石', year: 2021, platform: 'Switch', icon: '💎', cover: '180px-寶可夢_晶燦鑽石_封面_繁體中文.webp' },
+          { name: '明亮珍珠', year: 2021, platform: 'Switch', icon: '🦪', cover: '180px-寶可夢_明亮珍珠_封面_繁體中文.webp' },
+          { name: '传说 阿尔宙斯', year: 2022, platform: 'Switch', icon: '🌟', cover: '250px-寶可夢傳說_阿爾宙斯_封面_繁體中文.webp' }
+        ]
+      },
+      {
+        gen: 9, name: '第九世代', region: '帕底亚地区', years: '2022-2025',
+        desc: '开放世界。系列首款完全开放世界作品，三条主线自由探索。传说Z-A即将带我们重返卡洛斯！',
+        games: [
+          { name: '宝可梦 朱', year: 2022, platform: 'Switch', icon: '🔴', cover: '180px-寶可夢_朱_封面_繁體中文.webp' },
+          { name: '宝可梦 紫', year: 2022, platform: 'Switch', icon: '🟣', cover: '180px-寶可夢_紫_封面_繁體中文.webp' },
+          { name: '传说 Z-A', year: 2025, platform: 'Switch', icon: '⚡', cover: '250px-寶可夢傳說_Z-A_NS_封面_繁體中文.webp', upcoming: true }
+        ]
+      }
+    ];
+    
+    // 页面数据
+    var pageData = {
+      hero: {
+        title: '游戏图鉴',
+        subtitle: '从1996到2025，宝可梦系列全游戏收录',
+        text: '宝可梦系列游戏自1996年诞生以来，已经走过了近30年的历程。从最初的Game Boy到如今的Nintendo Switch，每一款游戏都承载着无数玩家的青春回忆。',
+        stats: [
+          { number: '29', label: '年历史' },
+          { number: '9', label: '个世代' },
+          { number: '50+', label: '款游戏' },
+          { number: '1025', label: '种宝可梦' }
+        ]
+      },
+      cta: {
+        title: '开始你的冒险',
+        text: '在 GalaxyPokemon 服务器体验 Cobblemon 模组的魅力',
+        btnText: '入服教程',
+        btnLink: 'guide.html'
+      }
+    };
+    
+    function render() {
+      var html = '';
+      
+      // Hero
+      var statsHtml = '';
+      for (var s = 0; s < pageData.hero.stats.length; s++) {
+        var stat = pageData.hero.stats[s];
+        statsHtml += '<div class="stat-item"><div class="stat-number">' + stat.number + '</div><div class="stat-label">' + stat.label + '</div></div>';
+      }
+      html += '<section class="hero-section"><div class="container">' +
+        '<h1 class="hero-title">' + pageData.hero.title + '</h1>' +
+        '<p class="hero-subtitle">' + pageData.hero.subtitle + '</p>' +
+        '<div class="divider"></div>' +
+        '<p class="hero-text">' + pageData.hero.text + '</p>' +
+        '<div class="stats-row">' + statsHtml + '</div>' +
+        '</div></section>';
+      
+      // 世代
+      for (var i = 0; i < gamesData.length; i++) {
+        var d = gamesData[i];
+        var gameCount = d.games.length;
+        // 根据游戏数量计算卡片宽度
+        var cardWidth;
+        if (gameCount <= 3) cardWidth = 'calc(33.33% - 20px)';
+        else if (gameCount === 4) cardWidth = 'calc(25% - 20px)';
+        else if (gameCount === 5) cardWidth = 'calc(20% - 20px)';
+        else cardWidth = 'calc(16.66% - 21px)';
+        
+        var cardsHtml = '';
+        for (var j = 0; j < d.games.length; j++) {
+          var g = d.games[j];
+          var coverHtml = g.cover ? '<img src="' + coverPath + g.cover + '">' : '<span class="game-icon">' + g.icon + '</span>';
+          cardsHtml += '<div class="game-card" style="width:' + cardWidth + '"><div class="game-cover">' + coverHtml + '</div><div class="game-info"><div class="game-name">' + g.name + '</div><div class="game-meta">' + g.year + '年 · ' + g.platform + '</div></div></div>';
+        }
+        html += '<section class="gen-section"><div class="container"><div class="gen-header">' +
+          '<div class="gen-number">0' + d.gen + '</div>' +
+          '<h2 class="gen-title">' + d.name + '</h2>' +
+          '<p class="gen-subtitle">' + d.region + ' · ' + d.years + '</p>' +
+          '<p class="gen-desc">' + d.desc + '</p></div>' +
+          '<div class="games-grid">' + cardsHtml + '</div></div></section>';
+      }
+      
+      // CTA
+      html += '<section class="cta-section"><div class="container">' +
+        '<h2 class="cta-title" data-aos="fade-up">' + pageData.cta.title + '</h2>' +
+        '<p class="cta-text" data-aos="fade-up">' + pageData.cta.text + '</p>' +
+        '<a href="' + pageData.cta.btnLink + '" class="btn-primary" data-aos="fade-up"><i class="bi bi-play-circle"></i> ' + pageData.cta.btnText + '</a>' +
+        '</div></section>';
+      
+      document.getElementById('pageContent').innerHTML = html;
+      // 动态渲染后重新初始化AOS
+      setTimeout(function() { AOS.init({ duration: 800, once: true }); }, 100);
+    }
+    
+    render();
+  </script>
+</body>
+</html>

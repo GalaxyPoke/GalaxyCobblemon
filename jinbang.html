@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="keywords" content="我的世界,GalaxyPokemon,Minecraft,排行榜">
+  <meta name="description" content="GalaxyPokemon - 金榜题名，服务器玩家排行榜">
+  <meta name="author" content="GalaxyPokemon">
+  <title>金榜 | GalaxyPokemon</title>
+  
+  <!-- 预加载字体 -->
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/responsive.css" rel="stylesheet">
+  <link href="static/css/carousel.css" rel="stylesheet">
+  <style>
+    /* 中华薪火体 */
+    @font-face {
+      font-family: 'ZhongHuaXinHuo';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+
+    /* 金榜页面专属样式 */
+    .jinbang-page {
+      min-height: 100vh;
+      background: var(--gradient-dark);
+      padding-top: 100px;
+      padding-bottom: 4rem;
+    }
+
+    .jinbang-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .jinbang-title {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 4rem;
+      color: var(--primary-light);
+      letter-spacing: 10px;
+      margin-bottom: 1rem;
+    }
+
+    .jinbang-subtitle {
+      color: var(--gray-light);
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+    }
+
+    /* 榜单分类标签 */
+    .jinbang-tabs {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 3rem;
+    }
+
+    .jinbang-tab {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      padding: 0.6rem 1.5rem;
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      border-radius: 2px;
+      color: var(--gray-light);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .jinbang-tab:hover {
+      border-color: var(--primary-light);
+      color: var(--primary-light);
+    }
+
+    .jinbang-tab.active {
+      background: rgba(139, 115, 85, 0.3);
+      border-color: var(--primary-light);
+      color: var(--primary-light);
+    }
+
+    /* 榜单容器 */
+    .jinbang-container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .jinbang-panel {
+      display: none;
+    }
+
+    .jinbang-panel.active {
+      display: block;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 前三名特殊样式 */
+    .jinbang-top3 {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .jinbang-top-item {
+      text-align: center;
+      padding: 1.5rem;
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      transition: var(--transition);
+    }
+
+    .jinbang-top-item:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 40px rgba(139, 115, 85, 0.3);
+    }
+
+    .jinbang-top-item.rank-1 {
+      order: 2;
+      border-color: #ffd700;
+      background: linear-gradient(180deg, rgba(255, 215, 0, 0.1) 0%, rgba(28, 24, 20, 0.8) 100%);
+    }
+
+    .jinbang-top-item.rank-2 {
+      order: 1;
+      border-color: #c0c0c0;
+    }
+
+    .jinbang-top-item.rank-3 {
+      order: 3;
+      border-color: #cd7f32;
+    }
+
+    .jinbang-rank-badge {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .rank-1 .jinbang-rank-badge { color: #ffd700; }
+    .rank-2 .jinbang-rank-badge { color: #c0c0c0; }
+    .rank-3 .jinbang-rank-badge { color: #cd7f32; }
+
+    .jinbang-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      border: 3px solid var(--glass-border);
+    }
+
+    .rank-1 .jinbang-avatar { 
+      width: 100px; 
+      height: 100px; 
+      border-color: #ffd700;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .jinbang-name {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 1.3rem;
+      color: var(--white);
+      letter-spacing: 2px;
+      margin-bottom: 0.5rem;
+    }
+
+    .jinbang-value {
+      color: var(--primary-light);
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* 榜单列表 */
+    .jinbang-list {
+      background: rgba(28, 24, 20, 0.6);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .jinbang-list-header {
+      display: grid;
+      grid-template-columns: 60px 1fr 120px;
+      padding: 1rem 1.5rem;
+      background: rgba(139, 115, 85, 0.2);
+      border-bottom: 1px solid var(--glass-border);
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 1.1rem;
+      color: var(--primary-light);
+      letter-spacing: 2px;
+    }
+
+    .jinbang-list-item {
+      display: grid;
+      grid-template-columns: 60px 1fr 120px;
+      padding: 1rem 1.5rem;
+      align-items: center;
+      border-bottom: 1px solid rgba(139, 115, 85, 0.1);
+      transition: var(--transition);
+    }
+
+    .jinbang-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .jinbang-list-item:hover {
+      background: rgba(139, 115, 85, 0.1);
+    }
+
+    .jinbang-list-rank {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 1.3rem;
+      color: var(--gray-light);
+    }
+
+    .jinbang-list-player {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .jinbang-list-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 4px;
+      border: 2px solid var(--glass-border);
+    }
+
+    .jinbang-list-name {
+      color: var(--white);
+      font-size: 1rem;
+    }
+
+    .jinbang-list-value {
+      text-align: right;
+      color: var(--primary-light);
+      font-weight: 600;
+    }
+
+    /* 返回按钮 */
+    .back-home {
+      position: fixed;
+      bottom: 2rem;
+      left: 2rem;
+      background: var(--gradient-primary);
+      color: var(--white);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      box-shadow: var(--shadow-md);
+      transition: var(--transition);
+      text-decoration: none;
+      z-index: 100;
+    }
+
+    .back-home:hover {
+      transform: scale(1.1);
+      color: var(--white);
+    }
+
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .jinbang-top3 {
+        flex-direction: column;
+        align-items: center;
+      }
+      .jinbang-top-item {
+        width: 100%;
+        max-width: 300px;
+      }
+      .jinbang-top-item.rank-1,
+      .jinbang-top-item.rank-2,
+      .jinbang-top-item.rank-3 {
+        order: unset;
+      }
+      .jinbang-list-header,
+      .jinbang-list-item {
+        grid-template-columns: 50px 1fr 80px;
+        padding: 0.75rem 1rem;
+      }
+    }
+  </style>
+</head>
+
+<body style="background:#1c1814;">
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-controller"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <!-- 粒子背景 -->
+  <div id="particles-js"></div>
+
+  <!-- 导航栏（由navbar.js自动生成） -->
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 金榜页面 -->
+  <section class="jinbang-page">
+    <div class="container">
+      <div class="jinbang-header" data-aos="fade-up">
+        <h1 class="jinbang-title">🏆 金 榜</h1>
+        <p class="jinbang-subtitle">龙虎榜上留名 · 天下英雄共仰</p>
+      </div>
+
+      <!-- 榜单分类 -->
+      <div class="jinbang-tabs" data-aos="fade-up">
+        <button class="jinbang-tab active" data-tab="wealth">💰 财富榜</button>
+        <button class="jinbang-tab" data-tab="playtime">⏱️ 在线榜</button>
+        <button class="jinbang-tab" data-tab="builder">🏗️ 建造榜</button>
+        <button class="jinbang-tab" data-tab="combat">⚔️ 战力榜</button>
+      </div>
+
+      <div class="jinbang-container">
+        <!-- 财富榜 -->
+        <div class="jinbang-panel active" data-panel="wealth">
+          <!-- 前三名 -->
+          <div class="jinbang-top3" data-aos="fade-up">
+            <div class="jinbang-top-item rank-2">
+              <div class="jinbang-rank-badge">榜眼</div>
+              <img src="https://mc-heads.net/avatar/MHF_Alex/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">沈万三</div>
+              <div class="jinbang-value">888,888 两</div>
+            </div>
+            <div class="jinbang-top-item rank-1">
+              <div class="jinbang-rank-badge">状元</div>
+              <img src="https://mc-heads.net/avatar/Notch/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">陶朱公</div>
+              <div class="jinbang-value">1,234,567 两</div>
+            </div>
+            <div class="jinbang-top-item rank-3">
+              <div class="jinbang-rank-badge">探花</div>
+              <img src="https://mc-heads.net/avatar/Dream/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">吕不韦</div>
+              <div class="jinbang-value">666,666 两</div>
+            </div>
+          </div>
+
+          <!-- 榜单列表 -->
+          <div class="jinbang-list" data-aos="fade-up">
+            <div class="jinbang-list-header">
+              <span>名次</span>
+              <span>玩家</span>
+              <span>财富</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第四</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/MHF_Steve/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">王员外</span>
+              </div>
+              <span class="jinbang-list-value">555,555 两</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第五</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/Herobrine/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">李掌柜</span>
+              </div>
+              <span class="jinbang-list-value">444,444 两</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第六</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/jeb_/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">张财主</span>
+              </div>
+              <span class="jinbang-list-value">333,333 两</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第七</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/Dinnerbone/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">赵老板</span>
+              </div>
+              <span class="jinbang-list-value">222,222 两</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第八</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/Grumm/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">钱庄主</span>
+              </div>
+              <span class="jinbang-list-value">111,111 两</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 在线榜 -->
+        <div class="jinbang-panel" data-panel="playtime">
+          <div class="jinbang-top3" data-aos="fade-up">
+            <div class="jinbang-top-item rank-2">
+              <div class="jinbang-rank-badge">榜眼</div>
+              <img src="https://mc-heads.net/avatar/Dream/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">守城人</div>
+              <div class="jinbang-value">888 时辰</div>
+            </div>
+            <div class="jinbang-top-item rank-1">
+              <div class="jinbang-rank-badge">状元</div>
+              <img src="https://mc-heads.net/avatar/MHF_Steve/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">长安客</div>
+              <div class="jinbang-value">1,024 时辰</div>
+            </div>
+            <div class="jinbang-top-item rank-3">
+              <div class="jinbang-rank-badge">探花</div>
+              <img src="https://mc-heads.net/avatar/MHF_Alex/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">夜游神</div>
+              <div class="jinbang-value">666 时辰</div>
+            </div>
+          </div>
+          <div class="jinbang-list" data-aos="fade-up">
+            <div class="jinbang-list-header">
+              <span>名次</span>
+              <span>玩家</span>
+              <span>时长</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第四</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/Notch/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">不眠者</span>
+              </div>
+              <span class="jinbang-list-value">512 时辰</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第五</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/Herobrine/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">城中隐</span>
+              </div>
+              <span class="jinbang-list-value">456 时辰</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 建造榜 -->
+        <div class="jinbang-panel" data-panel="builder">
+          <div class="jinbang-top3" data-aos="fade-up">
+            <div class="jinbang-top-item rank-2">
+              <div class="jinbang-rank-badge">榜眼</div>
+              <img src="https://mc-heads.net/avatar/jeb_/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">鲁班七</div>
+              <div class="jinbang-value">88,888 块</div>
+            </div>
+            <div class="jinbang-top-item rank-1">
+              <div class="jinbang-rank-badge">状元</div>
+              <img src="https://mc-heads.net/avatar/Dinnerbone/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">公输班</div>
+              <div class="jinbang-value">123,456 块</div>
+            </div>
+            <div class="jinbang-top-item rank-3">
+              <div class="jinbang-rank-badge">探花</div>
+              <img src="https://mc-heads.net/avatar/Grumm/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">墨子门</div>
+              <div class="jinbang-value">66,666 块</div>
+            </div>
+          </div>
+          <div class="jinbang-list" data-aos="fade-up">
+            <div class="jinbang-list-header">
+              <span>名次</span>
+              <span>玩家</span>
+              <span>方块</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第四</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/MHF_Steve/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">造物主</span>
+              </div>
+              <span class="jinbang-list-value">55,555 块</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第五</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/MHF_Alex/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">筑梦者</span>
+              </div>
+              <span class="jinbang-list-value">44,444 块</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 战力榜 -->
+        <div class="jinbang-panel" data-panel="combat">
+          <div class="jinbang-top3" data-aos="fade-up">
+            <div class="jinbang-top-item rank-2">
+              <div class="jinbang-rank-badge">榜眼</div>
+              <img src="https://mc-heads.net/avatar/Herobrine/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">关云长</div>
+              <div class="jinbang-value">战力 9,500</div>
+            </div>
+            <div class="jinbang-top-item rank-1">
+              <div class="jinbang-rank-badge">状元</div>
+              <img src="https://mc-heads.net/avatar/Notch/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">吕奉先</div>
+              <div class="jinbang-value">战力 10,000</div>
+            </div>
+            <div class="jinbang-top-item rank-3">
+              <div class="jinbang-rank-badge">探花</div>
+              <img src="https://mc-heads.net/avatar/Dream/100" alt="头像" class="jinbang-avatar">
+              <div class="jinbang-name">赵子龙</div>
+              <div class="jinbang-value">战力 9,000</div>
+            </div>
+          </div>
+          <div class="jinbang-list" data-aos="fade-up">
+            <div class="jinbang-list-header">
+              <span>名次</span>
+              <span>玩家</span>
+              <span>战力</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第四</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/MHF_Steve/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">张翼德</span>
+              </div>
+              <span class="jinbang-list-value">战力 8,500</span>
+            </div>
+            <div class="jinbang-list-item">
+              <span class="jinbang-list-rank">第五</span>
+              <div class="jinbang-list-player">
+                <img src="https://mc-heads.net/avatar/MHF_Alex/40" alt="头像" class="jinbang-list-avatar">
+                <span class="jinbang-list-name">马孟起</span>
+              </div>
+              <span class="jinbang-list-value">战力 8,000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>荣耀时刻</h2>
+        <p>记录玩家们的辉煌成就</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>荣耀截图 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>冠军时刻</h4>
+                <p>比赛冠军的荣耀瞬间</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>荣耀截图 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>排行榜顶</h4>
+                <p>登顶排行榜的玩家</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>荣耀截图 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>传奇玩家</h4>
+                <p>服务器传奇玩家展示</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 返回首页按钮 -->
+  <a href="index.html" class="back-home" title="返回首页">
+    <i class="bi bi-house"></i>
+  </a>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="static/js/carousel.js"></script>
+  
+  <script>
+    // 初始化 AOS 动画
+    AOS.init({
+      duration: 800,
+      easing: 'ease-out-cubic',
+      once: true
+    });
+
+    // 粒子背景
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 30, density: { enable: true, value_area: 1000 } },
+        color: { value: '#d4a574' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.2, random: true },
+        size: { value: 2, random: true },
+        line_linked: { enable: true, distance: 200, color: '#8b7355', opacity: 0.15, width: 1 },
+        move: { enable: true, speed: 1, direction: 'none', random: true, out_mode: 'out' }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: { onhover: { enable: true, mode: 'grab' }, resize: true },
+        modes: { grab: { distance: 180, line_linked: { opacity: 0.3 } } }
+      }
+    });
+
+    // 导航栏滚动效果
+    window.addEventListener('scroll', function() {
+      const navbar = document.querySelector('.navbar');
+      if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    });
+
+    // 榜单切换
+    const tabs = document.querySelectorAll('.jinbang-tab');
+    const panels = document.querySelectorAll('.jinbang-panel');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+        
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        
+        panels.forEach(p => {
+          p.classList.remove('active');
+          if (p.dataset.panel === target) {
+            p.classList.add('active');
+          }
+        });
+      });
+    });
+
+    // 页面加载完成后隐藏加载动画
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+  </script>
+  
+  <!-- 背景音乐播放器 -->
+  <script src="static/js/music-player.js"></script>
+</body>
+</html>

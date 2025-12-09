@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>道馆系统 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    
+    body {
+      font-family: '中华薪火体', sans-serif;
+      background: #0f0d0a;
+      color: #e0e0e0;
+    }
+    
+    /* 全屏Hero - 道馆风格 */
+    .hero-gym {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(180deg, #0f0d0a 0%, #1a1510 50%, #0f0d0a 100%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-gym::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(ellipse at 30% 20%, rgba(212, 165, 116, 0.03) 0%, transparent 50%),
+        radial-gradient(ellipse at 70% 80%, rgba(212, 165, 116, 0.03) 0%, transparent 50%);
+    }
+    
+    .gym-badge-icon {
+      width: 120px;
+      height: 120px;
+      background: linear-gradient(135deg, #d4a574 0%, #8b7355 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 30px;
+      box-shadow: 0 0 60px rgba(212, 165, 116, 0.3);
+    }
+    
+    .gym-badge-icon i {
+      font-size: 3.5rem;
+      color: #1a1510;
+    }
+    
+    .hero-title {
+      font-size: 4.5rem;
+      color: #d4a574;
+      letter-spacing: 12px;
+      margin-bottom: 25px;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.3rem;
+      color: #777;
+      max-width: 650px;
+      margin: 0 auto;
+      line-height: 2;
+    }
+    
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #444;
+      font-size: 0.9rem;
+      animation: float 2s ease-in-out infinite;
+    }
+    
+    .scroll-hint i {
+      display: block;
+      font-size: 1.5rem;
+      margin-top: 8px;
+    }
+    
+    @keyframes float {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+    
+    /* 内容区块 */
+    .content-section {
+      padding: 100px 0;
+    }
+    
+    .content-section.alt {
+      background: rgba(255,255,255,0.01);
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    .section-tag {
+      display: inline-block;
+      color: #d4a574;
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      margin-bottom: 15px;
+      text-transform: uppercase;
+    }
+    
+    .section-title {
+      font-size: 2.5rem;
+      color: #e0e0e0;
+      margin-bottom: 15px;
+    }
+    
+    .section-desc {
+      color: #666;
+      font-size: 1.1rem;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+    
+    /* 故事介绍 */
+    .story-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .story-text {
+      font-size: 1.15rem;
+      color: #888;
+      line-height: 2.2;
+      margin-bottom: 2rem;
+    }
+    
+    .story-text .highlight {
+      color: #d4a574;
+    }
+    
+    /* 道馆类型 - 圆形布局 */
+    .gym-circle-container {
+      position: relative;
+      width: 700px;
+      height: 700px;
+      margin: 0 auto;
+    }
+    
+    .gym-circle-center {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, #1a1714 0%, #0f0d0a 100%);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(212, 165, 116, 0.3);
+      z-index: 10;
+    }
+    
+    .gym-circle-center i {
+      font-size: 2.5rem;
+      color: #d4a574;
+      margin-bottom: 8px;
+    }
+    
+    .gym-circle-center span {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    .gym-type-item {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+    }
+    
+    .gym-type-item:hover {
+      transform: scale(1.3);
+      z-index: 20;
+      box-shadow: 0 10px 40px rgba(212, 165, 116, 0.3);
+    }
+    
+    .gym-type-item img {
+      width: 45px;
+      height: 45px;
+      object-fit: contain;
+    }
+    
+    .gym-type-item {
+      background: rgba(30, 25, 20, 0.9);
+    }
+    
+    /* 道馆详情弹窗 */
+    .gym-detail-popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    
+    .gym-detail-popup.active {
+      display: flex;
+    }
+    
+    .gym-detail-card {
+      background: linear-gradient(180deg, #1a1714 0%, #121010 100%);
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 500px;
+      width: 90%;
+      text-align: center;
+      position: relative;
+      animation: popIn 0.3s ease;
+    }
+    
+    @keyframes popIn {
+      from { transform: scale(0.8); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+    
+    .gym-detail-close {
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 1.5rem;
+      color: #666;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    
+    .gym-detail-close:hover {
+      color: #d4a574;
+    }
+    
+    .gym-detail-icon {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    
+    .gym-detail-icon img {
+      width: 70px;
+      height: 70px;
+    }
+    
+    .gym-detail-card h3 {
+      color: #e0e0e0;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+    }
+    
+    .gym-detail-card .gym-quote {
+      color: #d4a574;
+      font-size: 1.1rem;
+      font-style: italic;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    
+    .gym-detail-card .gym-desc {
+      color: #888;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+    
+    .gym-detail-info {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .gym-detail-info > div {
+      text-align: center;
+    }
+    
+    .gym-detail-info .info-label {
+      display: block;
+      color: #555;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+    
+    .gym-detail-info .type-icons {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .gym-detail-info .type-icons img {
+      width: 24px;
+      height: 24px;
+    }
+    
+    .gym-detail-info .type-icons span {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    /* 圆形旋转动画 */
+    .gym-circle-container {
+      transition: transform 0.1s ease-out;
+    }
+    
+    .gym-circle-container.rotating {
+      cursor: grab;
+    }
+    
+    .gym-circle-container.rotating:active {
+      cursor: grabbing;
+    }
+    
+    /* 流程步骤 - 时间轴 */
+    .timeline {
+      max-width: 800px;
+      margin: 0 auto;
+      position: relative;
+      padding: 0 20px;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: linear-gradient(180deg, transparent, #d4a574, transparent);
+      transform: translateX(-50%);
+    }
+    
+    .timeline-item {
+      display: flex;
+      margin-bottom: 60px;
+      position: relative;
+    }
+    
+    .timeline-item:nth-child(odd) {
+      flex-direction: row;
+    }
+    
+    .timeline-item:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+    
+    .timeline-content {
+      width: 45%;
+      background: #151210;
+      padding: 30px;
+      border-radius: 12px;
+      position: relative;
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-content {
+      margin-right: auto;
+      text-align: right;
+    }
+    
+    .timeline-item:nth-child(even) .timeline-content {
+      margin-left: auto;
+      text-align: left;
+    }
+    
+    .timeline-dot {
+      position: absolute;
+      left: 50%;
+      top: 30px;
+      width: 20px;
+      height: 20px;
+      background: #d4a574;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 20px rgba(212, 165, 116, 0.5);
+    }
+    
+    .timeline-step {
+      color: #d4a574;
+      font-size: 0.85rem;
+      margin-bottom: 8px;
+    }
+    
+    .timeline-content h4 {
+      color: #e0e0e0;
+      font-size: 1.3rem;
+      margin-bottom: 12px;
+    }
+    
+    .timeline-content p {
+      color: #777;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin: 0;
+    }
+    
+    /* 馆主特权 */
+    .privilege-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .privilege-card {
+      background: linear-gradient(180deg, #1a1714 0%, #151210 100%);
+      border-radius: 16px;
+      padding: 35px 30px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .privilege-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    }
+    
+    .privilege-icon {
+      width: 70px;
+      height: 70px;
+      background: rgba(212, 165, 116, 0.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    
+    .privilege-icon i {
+      font-size: 1.8rem;
+      color: #d4a574;
+    }
+    
+    .privilege-card h4 {
+      color: #e0e0e0;
+      font-size: 1.2rem;
+      margin-bottom: 12px;
+    }
+    
+    .privilege-card p {
+      color: #777;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin: 0;
+    }
+    
+    /* 挑战者视角 */
+    .challenger-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+      align-items: center;
+    }
+    
+    .challenger-info h3 {
+      color: #d4a574;
+      font-size: 1.8rem;
+      margin-bottom: 20px;
+    }
+    
+    .challenger-info p {
+      color: #888;
+      font-size: 1.05rem;
+      line-height: 2;
+      margin-bottom: 25px;
+    }
+    
+    .reward-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .reward-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      background: rgba(21, 18, 16, 0.6);
+      padding: 15px 20px;
+      border-radius: 10px;
+      border-left: 3px solid #d4a574;
+    }
+    
+    .reward-item i {
+      font-size: 1.3rem;
+      color: #d4a574;
+    }
+    
+    .reward-item span {
+      color: #999;
+      font-size: 0.95rem;
+    }
+    
+    .challenger-visual {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    
+    .badge-display {
+      aspect-ratio: 1;
+      background: linear-gradient(135deg, #1a1714 0%, #151210 100%);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    
+    .badge-display:hover {
+      transform: scale(1.05);
+    }
+    
+    .badge-display i {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+    
+    .badge-display span {
+      font-size: 0.85rem;
+      color: #888;
+    }
+    
+    .badge-display:nth-child(1) i { color: #f08030; }
+    .badge-display:nth-child(2) i { color: #6890f0; }
+    .badge-display:nth-child(3) i { color: #78c850; }
+    .badge-display:nth-child(4) i { color: #f8d030; }
+    
+    /* 装饰系统 */
+    .decor-features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .decor-item {
+      background: #151210;
+      padding: 30px 20px;
+      border-radius: 12px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .decor-item:hover {
+      background: #1a1714;
+    }
+    
+    .decor-item i {
+      font-size: 2rem;
+      color: #d4a574;
+      margin-bottom: 15px;
+    }
+    
+    .decor-item h4 {
+      color: #e0e0e0;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    
+    .decor-item p {
+      color: #666;
+      font-size: 0.85rem;
+      margin: 0;
+    }
+    
+    /* 数据统计 */
+    .stats-bar {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      padding: 60px 0;
+      flex-wrap: wrap;
+    }
+    
+    .stat-item {
+      text-align: center;
+    }
+    
+    .stat-num {
+      font-size: 3rem;
+      color: #d4a574;
+      line-height: 1;
+    }
+    
+    .stat-label {
+      color: #555;
+      font-size: 0.9rem;
+      margin-top: 10px;
+    }
+    
+    /* CTA */
+    .cta-section {
+      padding: 120px 0;
+      text-align: center;
+      background: radial-gradient(ellipse at center, #1a1510 0%, #0f0d0a 70%);
+    }
+    
+    .cta-title {
+      font-size: 2.2rem;
+      color: #d4a574;
+      margin-bottom: 15px;
+    }
+    
+    .cta-text {
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 35px;
+    }
+    
+    .cta-section .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 45px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      color: #1a1510;
+      text-decoration: none;
+      font-size: 1.1rem;
+      border-radius: 6px;
+      transition: all 0.3s;
+    }
+    
+    .cta-section .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(212, 165, 116, 0.3);
+    }
+    
+    /* 轮播图样式 - 全宽无背景 */
+    .carousel-section {
+      padding: 0;
+      background: transparent;
+    }
+    
+    .carousel-section .section-intro {
+      display: none;
+    }
+    
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      border-radius: 0;
+      overflow: hidden;
+      box-shadow: none;
+    }
+    
+    .carousel-inner {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+    
+    .carousel-slides {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+    
+    .carousel-slide {
+      min-width: 100%;
+      position: relative;
+    }
+    
+    .carousel-slide img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .carousel-slide .slide-placeholder {
+      width: 100%;
+      height: 500px;
+      background: linear-gradient(135deg, rgba(40, 35, 30, 0.9), rgba(28, 24, 20, 1));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+    }
+    
+    .carousel-slide .slide-placeholder i {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+      color: rgba(212, 165, 116, 0.2);
+    }
+    
+    .carousel-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 30px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      color: #fff;
+    }
+    
+    .carousel-caption h4 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #d4a574;
+    }
+    
+    .carousel-caption p {
+      font-size: 0.95rem;
+      color: #888;
+      margin: 0;
+    }
+    
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.6);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .carousel-btn:hover {
+      background: rgba(212, 165, 116, 0.8);
+    }
+    
+    .carousel-btn.prev { left: 20px; }
+    .carousel-btn.next { right: 20px; }
+    
+    .carousel-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+    }
+    
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(212, 165, 116, 0.3);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .carousel-dot.active {
+      background: #d4a574;
+      transform: scale(1.2);
+    }
+    
+    @media (max-width: 768px) {
+      .carousel-slide img,
+      .carousel-slide .slide-placeholder {
+        height: 300px;
+      }
+      .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      .carousel-caption h4 {
+        font-size: 1.1rem;
+      }
+      .carousel-caption p {
+        font-size: 0.85rem;
+      }
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0f0d0a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-content { text-align: center; }
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    @media (max-width: 992px) {
+      .hero-title { font-size: 3rem; letter-spacing: 6px; }
+      .gym-types-wall { flex-wrap: wrap; }
+      .gym-type-card { transform: none !important; }
+      .timeline::before { left: 20px; }
+      .timeline-item { flex-direction: column !important; }
+      .timeline-content { width: 100%; margin-left: 50px !important; text-align: left !important; }
+      .timeline-dot { left: 20px; }
+      .privilege-grid { grid-template-columns: 1fr; }
+      .challenger-section { grid-template-columns: 1fr; }
+      .decor-features { grid-template-columns: repeat(2, 1fr); }
+      .stats-bar { gap: 40px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-shield-fill"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <script src="static/js/navbar.js"></script>
+
+  <!-- Hero -->
+  <section class="hero-gym">
+    <div class="hero-content">
+      <div class="gym-badge-icon" data-aos="zoom-in">
+        <i class="bi bi-shield-fill"></i>
+      </div>
+      <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">道馆系统</h1>
+      <p class="hero-subtitle" data-aos="fade-up" data-aos-delay="200">
+        成为道馆馆主，建造属于你的战斗圣殿<br>
+        接受挑战者的考验，守护你的荣耀徽章
+      </p>
+    </div>
+    <div class="scroll-hint">
+      向下探索
+      <i class="bi bi-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- 故事介绍 -->
+  <section class="content-section">
+    <div class="story-section" data-aos="fade-up">
+      <p class="story-text">
+        在 GalaxyPokemon 的世界里，<span class="highlight">道馆不仅仅是战斗的场所</span>，
+        更是训练师实力与荣耀的象征。每一位道馆馆主都是经过严格考验的精英训练师，
+        他们在自己的领地建造独特的道馆，等待着勇敢的挑战者前来。
+      </p>
+      <p class="story-text">
+        你可以申请成为馆主，<span class="highlight">亲手设计和装饰你的道馆</span>，
+        制定挑战规则，迎接来自四面八方的挑战者。每一次胜利都会为你带来丰厚的奖励，
+        而你的道馆也会因此声名远扬。
+      </p>
+      <p class="story-text">
+        或者，你也可以作为挑战者，<span class="highlight">挑战各地的道馆</span>，
+        收集珍贵的徽章，证明你的实力。集齐所有徽章的训练师，将获得至高无上的荣誉！
+      </p>
+    </div>
+  </section>
+
+  <!-- 道馆类型 - 圆形布局 -->
+  <section class="content-section alt">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Gym Types</div>
+      <h2 class="section-title">道馆类型</h2>
+      <p class="section-desc">点击属性图标，了解每个道馆的特色</p>
+    </div>
+    <div class="gym-circle-container" data-aos="fade-up" data-aos-delay="100">
+      <div class="gym-circle-center">
+        <i class="bi bi-shield-fill"></i>
+        <span>18种道馆</span>
+      </div>
+      <!-- 18个属性图标围成圆形 -->
+    </div>
+  </section>
+
+  <!-- 道馆详情弹窗 -->
+  <div class="gym-detail-popup" id="gymPopup">
+    <div class="gym-detail-card">
+      <div class="gym-detail-close" onclick="closeGymPopup()"><i class="bi bi-x"></i></div>
+      <div class="gym-detail-icon" id="gymDetailIcon"></div>
+      <h3 id="gymDetailName"></h3>
+      <p class="gym-quote" id="gymDetailQuote"></p>
+      <p class="gym-desc" id="gymDetailDesc"></p>
+      <div class="gym-detail-info">
+        <div>
+          <span class="info-label">克制属性</span>
+          <div class="type-icons" id="gymDetailStrong"></div>
+        </div>
+        <div>
+          <span class="info-label">被克制</span>
+          <div class="type-icons" id="gymDetailWeak"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 成为馆主流程 -->
+  <section class="content-section">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Become Gym Leader</div>
+      <h2 class="section-title">成为馆主</h2>
+      <p class="section-desc">四步开启你的道馆之旅</p>
+    </div>
+    <div class="timeline">
+      <div class="timeline-item" data-aos="fade-right">
+        <div class="timeline-content">
+          <div class="timeline-step">Step 01</div>
+          <h4>提交申请</h4>
+          <p>选择你想要的道馆类型，提交申请表。需要展示你的宝可梦实力和对该属性的理解。</p>
+        </div>
+        <div class="timeline-dot"></div>
+      </div>
+      <div class="timeline-item" data-aos="fade-left">
+        <div class="timeline-content">
+          <div class="timeline-step">Step 02</div>
+          <h4>实力考核</h4>
+          <p>通过管理员的实力测试，证明你有资格成为馆主。考核内容包括对战技巧和属性知识。</p>
+        </div>
+        <div class="timeline-dot"></div>
+      </div>
+      <div class="timeline-item" data-aos="fade-right">
+        <div class="timeline-content">
+          <div class="timeline-step">Step 03</div>
+          <h4>建造道馆</h4>
+          <p>获得专属道馆建筑区域，自由设计和装饰你的道馆。打造独一无二的战斗场地。</p>
+        </div>
+        <div class="timeline-dot"></div>
+      </div>
+      <div class="timeline-item" data-aos="fade-left">
+        <div class="timeline-content">
+          <div class="timeline-step">Step 04</div>
+          <h4>开馆迎战</h4>
+          <p>正式开放道馆，接受挑战者的挑战。每次胜利都能获得奖励，提升道馆声望！</p>
+        </div>
+        <div class="timeline-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>道馆风采</h2>
+        <p>各具特色的道馆建筑</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>道馆截图 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>火系道馆</h4>
+                <p>熔岩主题的火焰圣殿</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>道馆截图 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>水系道馆</h4>
+                <p>深海主题的水晶宫殿</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>道馆截图 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>龙系道馆</h4>
+                <p>神秘的龙族圣地</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 馆主特权 -->
+  <section class="content-section alt">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Gym Leader Privileges</div>
+      <h2 class="section-title">馆主特权</h2>
+      <p class="section-desc">成为馆主，享受专属福利</p>
+    </div>
+    <div class="privilege-grid" data-aos="fade-up" data-aos-delay="100">
+      <div class="privilege-card">
+        <div class="privilege-icon"><i class="bi bi-building"></i></div>
+        <h4>专属道馆建筑</h4>
+        <p>获得独立的道馆建筑区域，可以自由设计内部结构和外观装饰，打造个性化战斗场地。</p>
+      </div>
+      <div class="privilege-card">
+        <div class="privilege-icon"><i class="bi bi-coin"></i></div>
+        <h4>挑战奖励分成</h4>
+        <p>每次成功守馆都能获得奖励分成，挑战者越多，收益越丰厚。还有每日在线奖励。</p>
+      </div>
+      <div class="privilege-card">
+        <div class="privilege-icon"><i class="bi bi-award"></i></div>
+        <h4>专属馆主称号</h4>
+        <p>获得独特的馆主称号和标识，在服务器中彰显你的身份和地位。</p>
+      </div>
+      <div class="privilege-card">
+        <div class="privilege-icon"><i class="bi bi-gear"></i></div>
+        <h4>自定义挑战规则</h4>
+        <p>可以设置道馆挑战的规则，如等级限制、禁用宝可梦、特殊战斗条件等。</p>
+      </div>
+      <div class="privilege-card">
+        <div class="privilege-icon"><i class="bi bi-graph-up"></i></div>
+        <h4>道馆排行榜</h4>
+        <p>道馆会根据胜率和挑战次数进行排名，顶级道馆将获得额外奖励和曝光。</p>
+      </div>
+      <div class="privilege-card">
+        <div class="privilege-icon"><i class="bi bi-gift"></i></div>
+        <h4>每周馆主礼包</h4>
+        <p>每周领取专属馆主礼包，包含稀有道具、经验加成和特殊物品。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 道馆装饰 -->
+  <section class="content-section">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Gym Decoration</div>
+      <h2 class="section-title">道馆装饰</h2>
+      <p class="section-desc">打造独一无二的战斗圣殿</p>
+    </div>
+    <div class="decor-features" data-aos="fade-up" data-aos-delay="100">
+      <div class="decor-item">
+        <i class="bi bi-palette"></i>
+        <h4>主题装饰</h4>
+        <p>根据属性选择主题装饰风格</p>
+      </div>
+      <div class="decor-item">
+        <i class="bi bi-lamp"></i>
+        <h4>灯光效果</h4>
+        <p>自定义道馆内的灯光氛围</p>
+      </div>
+      <div class="decor-item">
+        <i class="bi bi-signpost-2"></i>
+        <h4>入口设计</h4>
+        <p>设计独特的道馆入口和标识</p>
+      </div>
+      <div class="decor-item">
+        <i class="bi bi-trophy"></i>
+        <h4>荣誉展示</h4>
+        <p>展示你的战绩和收藏品</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 挑战者视角 -->
+  <section class="content-section alt">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Challenger</div>
+      <h2 class="section-title">挑战道馆</h2>
+      <p class="section-desc">收集徽章，证明你的实力</p>
+    </div>
+    <div class="challenger-section">
+      <div class="challenger-info" data-aos="fade-right">
+        <h3>踏上徽章收集之旅</h3>
+        <p>
+          作为挑战者，你可以挑战服务器中的各个道馆。每击败一位馆主，
+          你就能获得该道馆的专属徽章。集齐所有徽章的训练师，
+          将获得"徽章大师"的称号和丰厚奖励！
+        </p>
+        <div class="reward-list">
+          <div class="reward-item">
+            <i class="bi bi-patch-check-fill"></i>
+            <span>击败馆主获得专属徽章</span>
+          </div>
+          <div class="reward-item">
+            <i class="bi bi-box-seam"></i>
+            <span>首次挑战成功获得稀有道具</span>
+          </div>
+          <div class="reward-item">
+            <i class="bi bi-star-fill"></i>
+            <span>集齐徽章解锁特殊称号</span>
+          </div>
+          <div class="reward-item">
+            <i class="bi bi-currency-exchange"></i>
+            <span>挑战失败也有安慰奖励</span>
+          </div>
+        </div>
+      </div>
+      <div class="challenger-visual" data-aos="fade-left">
+        <div class="badge-display">
+          <i class="bi bi-hexagon-fill"></i>
+          <span>火焰徽章</span>
+        </div>
+        <div class="badge-display">
+          <i class="bi bi-droplet-half"></i>
+          <span>水滴徽章</span>
+        </div>
+        <div class="badge-display">
+          <i class="bi bi-flower1"></i>
+          <span>森林徽章</span>
+        </div>
+        <div class="badge-display">
+          <i class="bi bi-lightning-charge-fill"></i>
+          <span>雷电徽章</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 道馆规则 -->
+  <section class="content-section">
+    <div class="section-header" data-aos="fade-up">
+      <div class="section-tag">Gym Rules</div>
+      <h2 class="section-title">道馆规则</h2>
+      <p class="section-desc">公平竞技，尊重对手</p>
+    </div>
+    <div class="decor-features" data-aos="fade-up" data-aos-delay="100">
+      <div class="decor-item">
+        <i class="bi bi-clock"></i>
+        <h4>挑战时间</h4>
+        <p>馆主在线时可随时发起挑战</p>
+      </div>
+      <div class="decor-item">
+        <i class="bi bi-arrow-repeat"></i>
+        <h4>冷却时间</h4>
+        <p>挑战失败后需等待一定时间</p>
+      </div>
+      <div class="decor-item">
+        <i class="bi bi-list-ol"></i>
+        <h4>队伍限制</h4>
+        <p>按道馆规则携带指定数量宝可梦</p>
+      </div>
+      <div class="decor-item">
+        <i class="bi bi-trophy"></i>
+        <h4>徽章奖励</h4>
+        <p>首次击败馆主获得专属徽章</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="cta-title" data-aos="fade-up">准备好成为馆主了吗？</h2>
+    <p class="cta-text" data-aos="fade-up" data-aos-delay="100">建造你的道馆，迎接挑战者的考验！</p>
+    <a href="guide.html" class="btn-primary" data-aos="fade-up" data-aos-delay="200">
+      <i class="bi bi-shield-plus"></i> 立即申请道馆
+    </a>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    AOS.init({ duration: 800, once: true });
+
+    // 属性名称映射
+    const typeNameMap = {
+      '一般': 'normal', '火': 'fire', '水': 'water', '电': 'electric',
+      '草': 'grass', '冰': 'ice', '格斗': 'fighting', '毒': 'poison',
+      '地面': 'ground', '飞行': 'flying', '超能': 'psychic', '虫': 'bug',
+      '岩石': 'rock', '幽灵': 'ghost', '龙': 'dragon', '恶': 'dark',
+      '钢': 'steel', '妖精': 'fairy'
+    };
+
+    // 道馆数据 - 18种属性（使用属性英文名数组）
+    const gymData = {
+      normal: {
+        name: '一般系道馆',
+        quote: '"看似平凡，实则深藏不露。"',
+        desc: '一般系道馆是最考验基本功的地方。这里没有属性克制的优势，只有纯粹的实力较量。馆主精通各种战术，用最朴实的招式打出最华丽的配合。',
+        strong: [],
+        weak: ['fighting']
+      },
+      fire: {
+        name: '火系道馆',
+        quote: '"燃烧吧！用烈焰点燃你的斗志！"',
+        desc: '火系道馆内熔岩流淌，热浪滚滚。馆主性格热情如火，擅长使用高攻击力的火系宝可梦进行猛烈进攻。在这里，犹豫就会被烈焰吞噬！',
+        strong: ['grass', 'ice', 'bug', 'steel'],
+        weak: ['water', 'ground', 'rock']
+      },
+      water: {
+        name: '水系道馆',
+        quote: '"水能载舟，亦能覆舟。"',
+        desc: '水系道馆建在湖畔或海边，清澈的水池是战斗的舞台。馆主沉稳冷静，善于利用水系宝可梦的灵活性和持久战能力消耗对手。',
+        strong: ['fire', 'ground', 'rock'],
+        weak: ['grass', 'electric']
+      },
+      electric: {
+        name: '电系道馆',
+        quote: '"闪电般的速度，雷霆般的力量！"',
+        desc: '电系道馆充满科技感，电弧在空中跳跃。馆主追求极致的速度，电系宝可梦往往先发制人，在对手反应过来之前就结束战斗。',
+        strong: ['water', 'flying'],
+        weak: ['ground']
+      },
+      grass: {
+        name: '草系道馆',
+        quote: '"生生不息，这就是自然的力量。"',
+        desc: '草系道馆被茂密的植物环绕，阳光透过树叶洒落。馆主与自然和谐共处，擅长使用回复和状态技能，用持久战拖垮对手。',
+        strong: ['water', 'ground', 'rock'],
+        weak: ['fire', 'ice', 'poison', 'flying', 'bug']
+      },
+      ice: {
+        name: '冰系道馆',
+        quote: '"在极寒中，只有最强者才能生存。"',
+        desc: '冰系道馆寒气逼人，冰晶闪烁。馆主冷酷无情，冰系招式不仅伤害高，还有几率冻结对手。一旦被冻住，就只能听天由命了。',
+        strong: ['grass', 'ground', 'flying', 'dragon'],
+        weak: ['fire', 'fighting', 'rock', 'steel']
+      },
+      fighting: {
+        name: '格斗系道馆',
+        quote: '"拳头就是正义！用实力说话！"',
+        desc: '格斗系道馆是一座宏伟的武道馆，训练器械随处可见。馆主崇尚力量与技巧的结合，格斗系宝可梦的近身战能力无与伦比。',
+        strong: ['normal', 'ice', 'rock', 'dark', 'steel'],
+        weak: ['flying', 'psychic', 'fairy']
+      },
+      poison: {
+        name: '毒系道馆',
+        quote: '"毒入骨髓，无药可救。"',
+        desc: '毒系道馆弥漫着诡异的紫色雾气。馆主精通各种毒术，擅长用中毒状态慢慢消耗对手的体力，让你在不知不觉中败下阵来。',
+        strong: ['grass', 'fairy'],
+        weak: ['ground', 'psychic']
+      },
+      ground: {
+        name: '地面系道馆',
+        quote: '"大地之力，无坚不摧！"',
+        desc: '地面系道馆建在荒野之中，沙尘飞扬。馆主稳重如山，地面系宝可梦的地震技能威力巨大，而且完全免疫电系攻击。',
+        strong: ['fire', 'electric', 'poison', 'rock', 'steel'],
+        weak: ['water', 'grass', 'ice']
+      },
+      flying: {
+        name: '飞行系道馆',
+        quote: '"翱翔天际，俯瞰众生！"',
+        desc: '飞行系道馆建在高塔之上，云雾缭绕。馆主自由奔放，飞行系宝可梦速度快、机动性强，而且完全免疫地面系攻击。',
+        strong: ['grass', 'fighting', 'bug'],
+        weak: ['electric', 'ice', 'rock']
+      },
+      psychic: {
+        name: '超能系道馆',
+        quote: '"心灵的力量，超越一切物质。"',
+        desc: '超能系道馆神秘莫测，充满了不可思议的超自然现象。馆主拥有强大的精神力，超能系宝可梦的特攻极高，一击必杀不是梦。',
+        strong: ['fighting', 'poison'],
+        weak: ['bug', 'ghost', 'dark']
+      },
+      bug: {
+        name: '虫系道馆',
+        quote: '"小小的身躯，蕴含无限可能。"',
+        desc: '虫系道馆隐藏在森林深处，各种昆虫在此栖息。馆主善于观察，虫系宝可梦虽然看似弱小，但进化快、技能多变，不可小觑。',
+        strong: ['grass', 'psychic', 'dark'],
+        weak: ['fire', 'flying', 'rock']
+      },
+      rock: {
+        name: '岩石系道馆',
+        quote: '"坚如磐石，不可动摇！"',
+        desc: '岩石系道馆建在山洞之中，巨石林立。馆主坚毅不拔，岩石系宝可梦防御力极高，而且隐形岩是最强的入场伤害技能之一。',
+        strong: ['fire', 'ice', 'flying', 'bug'],
+        weak: ['water', 'grass', 'fighting', 'ground', 'steel']
+      },
+      ghost: {
+        name: '幽灵系道馆',
+        quote: '"在黑暗中，恐惧才是最强的武器。"',
+        desc: '幽灵系道馆阴森恐怖，鬼火飘荡。馆主神出鬼没，幽灵系宝可梦可以穿墙、诅咒、催眠，让对手在恐惧中失去战斗意志。',
+        strong: ['psychic', 'ghost'],
+        weak: ['ghost', 'dark']
+      },
+      dragon: {
+        name: '龙系道馆',
+        quote: '"龙的传人，王者之姿！"',
+        desc: '龙系道馆气势恢宏，龙族图腾随处可见。馆主霸气侧漏，龙系宝可梦种族值极高，是最强大的属性之一，只有真正的强者才能驯服它们。',
+        strong: ['dragon'],
+        weak: ['ice', 'dragon', 'fairy']
+      },
+      dark: {
+        name: '恶系道馆',
+        quote: '"在阴影中潜行，给予致命一击。"',
+        desc: '恶系道馆隐藏在黑暗之中，充满了阴谋与诡计。馆主狡猾多端，恶系宝可梦擅长偷袭和干扰，完全免疫超能系攻击。',
+        strong: ['psychic', 'ghost'],
+        weak: ['fighting', 'bug', 'fairy']
+      },
+      steel: {
+        name: '钢系道馆',
+        quote: '"钢铁意志，百毒不侵！"',
+        desc: '钢系道馆如同一座钢铁堡垒，坚不可摧。馆主意志坚定，钢系宝可梦拥有最多的属性抗性，是最强的防守属性。',
+        strong: ['ice', 'rock', 'fairy'],
+        weak: ['fire', 'fighting', 'ground']
+      },
+      fairy: {
+        name: '妖精系道馆',
+        quote: '"可爱即是正义，梦幻即是力量。"',
+        desc: '妖精系道馆梦幻唯美，粉色花瓣飘落。馆主温柔可爱，但妖精系宝可梦是龙系的克星，千万不要被外表迷惑！',
+        strong: ['fighting', 'dragon', 'dark'],
+        weak: ['poison', 'steel']
+      }
+    };
+
+    const typeOrder = ['normal', 'fire', 'water', 'electric', 'grass', 'ice', 'fighting', 'poison', 'ground', 'flying', 'psychic', 'bug', 'rock', 'ghost', 'dragon', 'dark', 'steel', 'fairy'];
+
+    // 圆形旋转相关变量
+    let rotation = 0;
+    let isDragging = false;
+    let startX = 0;
+    let currentX = 0;
+
+    // 生成圆形布局
+    function createGymCircle() {
+      const container = document.querySelector('.gym-circle-container');
+      updateCirclePositions();
+    }
+
+    // 更新圆形位置
+    function updateCirclePositions() {
+      const container = document.querySelector('.gym-circle-container');
+      const existingItems = container.querySelectorAll('.gym-type-item');
+      existingItems.forEach(item => item.remove());
+
+      const radius = 280;
+      const centerX = 350;
+      const centerY = 350;
+
+      typeOrder.forEach((type, i) => {
+        const angle = (i / 18) * 2 * Math.PI - Math.PI / 2 + (rotation * Math.PI / 180);
+        const x = centerX + radius * Math.cos(angle) - 35;
+        const y = centerY + radius * Math.sin(angle) - 35;
+
+        const item = document.createElement('div');
+        item.className = 'gym-type-item';
+        item.setAttribute('data-type', type);
+        item.style.left = x + 'px';
+        item.style.top = y + 'px';
+        item.innerHTML = `<img src="static/image/types/${type}.png" alt="${type}">`;
+        item.onclick = (e) => {
+          if (!isDragging) showGymDetail(type);
+        };
+        container.appendChild(item);
+      });
+    }
+
+    // 生成属性图标HTML
+    function getTypeIconsHtml(types) {
+      if (types.length === 0) return '<span>无</span>';
+      return types.map(t => `<img src="static/image/types/${t}.png" alt="${t}" title="${t}">`).join('');
+    }
+
+    // 显示道馆详情
+    function showGymDetail(type) {
+      const data = gymData[type];
+      const colors = {
+        normal: '#a8a878', fire: '#f08030', water: '#6890f0', electric: '#f8d030',
+        grass: '#78c850', ice: '#98d8d8', fighting: '#c03028', poison: '#a040a0',
+        ground: '#e0c068', flying: '#a890f0', psychic: '#f85888', bug: '#a8b820',
+        rock: '#b8a038', ghost: '#705898', dragon: '#7038f8', dark: '#705848',
+        steel: '#b8b8d0', fairy: '#ee99ac'
+      };
+
+      document.getElementById('gymDetailIcon').innerHTML = `<img src="static/image/types/${type}.png" alt="${type}">`;
+      document.getElementById('gymDetailIcon').style.background = `linear-gradient(135deg, ${colors[type]}40, ${colors[type]}20)`;
+      document.getElementById('gymDetailName').textContent = data.name;
+      document.getElementById('gymDetailQuote').textContent = data.quote;
+      document.getElementById('gymDetailDesc').textContent = data.desc;
+      document.getElementById('gymDetailStrong').innerHTML = getTypeIconsHtml(data.strong);
+      document.getElementById('gymDetailWeak').innerHTML = getTypeIconsHtml(data.weak);
+      document.getElementById('gymPopup').classList.add('active');
+    }
+
+    // 关闭弹窗
+    function closeGymPopup() {
+      document.getElementById('gymPopup').classList.remove('active');
+    }
+
+    // 点击背景关闭
+    document.getElementById('gymPopup').addEventListener('click', function(e) {
+      if (e.target === this) closeGymPopup();
+    });
+
+    // 圆形旋转交互
+    const circleContainer = document.querySelector('.gym-circle-container');
+    
+    circleContainer.addEventListener('mousedown', (e) => {
+      if (e.target.closest('.gym-type-item')) return;
+      isDragging = true;
+      startX = e.clientX;
+      circleContainer.classList.add('rotating');
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      currentX = e.clientX;
+      const diff = currentX - startX;
+      rotation += diff * 0.3;
+      startX = currentX;
+      updateCirclePositions();
+    });
+
+    document.addEventListener('mouseup', () => {
+      isDragging = false;
+      circleContainer.classList.remove('rotating');
+    });
+
+    // 触摸支持
+    circleContainer.addEventListener('touchstart', (e) => {
+      if (e.target.closest('.gym-type-item')) return;
+      isDragging = true;
+      startX = e.touches[0].clientX;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      currentX = e.touches[0].clientX;
+      const diff = currentX - startX;
+      rotation += diff * 0.3;
+      startX = currentX;
+      updateCirclePositions();
+    });
+
+    document.addEventListener('touchend', () => {
+      isDragging = false;
+    });
+
+    // 初始化
+    createGymCircle();
+    
+    // 轮播图功能
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const totalSlides = slides.length;
+    const slidesContainer = document.getElementById('carouselSlides');
+    const dotsContainer = document.getElementById('carouselDots');
+    
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+    
+    function updateCarousel() {
+      slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+      document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+    
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateCarousel();
+    }
+    
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+    }
+    
+    function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
+    }
+    
+    setInterval(nextSlide, 5000);
+  </script>
+</body>
+</html>

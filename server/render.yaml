@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: galaxypokemon-api
+    env: node
+    buildCommand: npm install
+    startCommand: node app.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        value: your-secret-key-here

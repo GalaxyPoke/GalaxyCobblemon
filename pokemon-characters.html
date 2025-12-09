@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>人物图鉴 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: '中华薪火体', 'Noto Sans SC', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+      line-height: 1.8;
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .loader-content {
+      text-align: center;
+    }
+    
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    /* 页面头部 */
+    .page-header {
+      background: linear-gradient(135deg, rgba(28, 24, 20, 0.9), rgba(40, 35, 30, 0.85));
+      padding: 140px 0 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(28, 24, 20, 0.8) 70%);
+    }
+    
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to top, #1c1814, transparent);
+    }
+    
+    .header-decoration {
+      position: absolute;
+      font-size: 15rem;
+      color: rgba(212, 165, 116, 0.03);
+      pointer-events: none;
+    }
+    
+    .header-decoration.left { top: 10%; left: 5%; }
+    .header-decoration.right { bottom: 10%; right: 5%; }
+    
+    .page-title {
+      font-size: 3.5rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 20px rgba(212, 165, 116, 0.3);
+      letter-spacing: 0.2em;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .page-subtitle {
+      color: #999;
+      font-size: 1.3rem;
+      font-style: italic;
+      margin-bottom: 0.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .page-quote {
+      color: #777;
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    /* 区块样式 */
+    .section {
+      padding: 80px 0;
+    }
+    
+    .section-dark {
+      background: #1c1814;
+    }
+    
+    .section-light {
+      background: linear-gradient(180deg, #201c18 0%, #1c1814 100%);
+    }
+    
+    .section-title {
+      font-size: 2rem;
+      color: #d4a574;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 3rem;
+      font-size: 1.1rem;
+    }
+    
+    /* 世代选择器 */
+    .gen-selector {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      padding: 2rem 0 3rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    
+    .gen-btn {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.6), rgba(30, 25, 20, 0.8));
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      color: #999;
+      padding: 0.8rem 1.8rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+    
+    .gen-btn:hover {
+      background: linear-gradient(145deg, rgba(50, 45, 40, 0.8), rgba(40, 35, 30, 0.9));
+      border-color: rgba(212, 165, 116, 0.4);
+      color: #d4a574;
+      transform: translateY(-2px);
+    }
+    
+    .gen-btn.active {
+      background: linear-gradient(145deg, rgba(212, 165, 116, 0.2), rgba(184, 149, 110, 0.15));
+      border-color: #d4a574;
+      color: #d4a574;
+      box-shadow: 0 4px 20px rgba(212, 165, 116, 0.2);
+    }
+    
+    /* 世代标题 */
+    .gen-title {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .gen-title h2 {
+      font-size: 2.5rem;
+      color: #d4a574;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0.1em;
+    }
+    
+    .gen-title p {
+      color: #888;
+      font-size: 1.1rem;
+    }
+    
+    /* 分类区块 */
+    .character-section {
+      margin-bottom: 4rem;
+    }
+    
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(212, 165, 116, 0.15);
+    }
+    
+    .section-icon {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(145deg, rgba(212, 165, 116, 0.15), rgba(184, 149, 110, 0.1));
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #d4a574;
+    }
+    
+    .section-header h3 {
+      color: #d4a574;
+      font-size: 1.5rem;
+      letter-spacing: 0.05em;
+    }
+    
+    /* 人物卡片网格 */
+    .character-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    /* 人物卡片 */
+    .character-card {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.6), rgba(30, 25, 20, 0.8));
+      border: 1px solid rgba(212, 165, 116, 0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    
+    .character-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(212, 165, 116, 0.4);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(212, 165, 116, 0.1);
+    }
+    
+    .character-header {
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.08), transparent);
+      border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+    }
+    
+    .character-avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, rgba(212, 165, 116, 0.2), rgba(184, 149, 110, 0.1));
+      border: 2px solid rgba(212, 165, 116, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      flex-shrink: 0;
+    }
+    
+    .character-info h4 {
+      color: #d4a574;
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+      letter-spacing: 0.05em;
+    }
+    
+    .character-info .role {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+    
+    .character-body {
+      padding: 1.5rem;
+    }
+    
+    .character-desc {
+      color: #999;
+      font-size: 0.95rem;
+      line-height: 1.7;
+      margin-bottom: 1rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .character-pokemon {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .pokemon-tag {
+      background: rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      color: #d4a574;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+    }
+    
+    /* 弹窗样式 */
+    .character-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    
+    .character-modal.active {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: linear-gradient(145deg, #2a2520, #1c1814);
+      border: 1px solid rgba(212, 165, 116, 0.3);
+      border-radius: 20px;
+      max-width: 650px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalIn 0.3s ease;
+    }
+    
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    
+    .modal-close {
+      position: absolute;
+      top: 1.2rem;
+      right: 1.2rem;
+      background: rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      color: #d4a574;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    
+    .modal-close:hover {
+      background: rgba(212, 165, 116, 0.2);
+      transform: rotate(90deg);
+    }
+    
+    .modal-header {
+      padding: 2rem;
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), transparent);
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      border-bottom: 1px solid rgba(212, 165, 116, 0.15);
+    }
+    
+    .modal-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, rgba(212, 165, 116, 0.2), rgba(184, 149, 110, 0.1));
+      border: 3px solid rgba(212, 165, 116, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3rem;
+      flex-shrink: 0;
+    }
+    
+    .modal-title h2 {
+      color: #d4a574;
+      font-size: 1.8rem;
+      margin-bottom: 0.3rem;
+      letter-spacing: 0.05em;
+    }
+    
+    .modal-title .role {
+      color: #ccc;
+      font-size: 1rem;
+      margin-bottom: 0.2rem;
+    }
+    
+    .modal-title .region {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    .modal-body {
+      padding: 2rem;
+    }
+    
+    .modal-section {
+      margin-bottom: 2rem;
+    }
+    
+    .modal-section:last-child {
+      margin-bottom: 0;
+    }
+    
+    .modal-section-title {
+      color: #d4a574;
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+    }
+    
+    .modal-section p {
+      color: #bbb;
+      line-height: 1.8;
+      font-size: 0.95rem;
+    }
+    
+    .modal-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .modal-tag {
+      background: rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.25);
+      color: #d4a574;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+    }
+    
+    .modal-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .modal-list li {
+      color: #aaa;
+      padding: 0.5rem 0 0.5rem 1.5rem;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .modal-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .modal-list li::before {
+      content: '◆';
+      color: #d4a574;
+      position: absolute;
+      left: 0;
+      font-size: 0.7rem;
+    }
+    
+    .quote-text {
+      font-style: italic;
+      color: #d4a574;
+      border-left: 3px solid #d4a574;
+      padding: 1rem 1.5rem;
+      background: rgba(212, 165, 116, 0.05);
+      border-radius: 0 8px 8px 0;
+      font-size: 1rem;
+    }
+    
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2.5rem;
+      }
+      
+      .character-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .modal-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .gen-btn {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+      }
+    }
+    
+    /* 滚动条美化 */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    ::-webkit-scrollbar-track {
+      background: #1c1814;
+    }
+    
+    ::-webkit-scrollbar-thumb {
+      background: rgba(212, 165, 116, 0.3);
+      border-radius: 4px;
+    }
+    
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(212, 165, 116, 0.5);
+    }
+    
+    /* 感悟区块 */
+    .reflection-section {
+      margin-top: 4rem;
+      padding: 3rem 0;
+      text-align: center;
+      position: relative;
+    }
+    
+    .reflection-title {
+      font-size: 1.8rem;
+      color: #d4a574;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+    }
+    
+    .reflection-title i {
+      font-size: 1.5rem;
+    }
+    
+    .reflection-content {
+      color: #bbb;
+      font-size: 1.05rem;
+      line-height: 2;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+    }
+    
+    .reflection-quote {
+      color: #d4a574;
+      font-size: 1.1rem;
+      font-style: italic;
+      padding: 1rem 0;
+      display: block;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-people"></i></div>
+      <div class="loader-text">正在加载人物图鉴...</div>
+      <div class="loader-bar">
+        <div class="loader-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 导航栏占位 -->
+  <div class="nav-placeholder"></div>
+
+  <!-- 页面头部 -->
+  <header class="page-header">
+    <div class="header-decoration left"><i class="bi bi-person-circle"></i></div>
+    <div class="header-decoration right"><i class="bi bi-trophy"></i></div>
+    <div class="container">
+      <h1 class="page-title" data-aos="fade-up">人物图鉴</h1>
+      <p class="page-subtitle" data-aos="fade-up" data-aos-delay="100">从真新镇到帕底亚，那些陪伴我们成长的训练师们</p>
+      <p class="page-quote" data-aos="fade-up" data-aos-delay="200">「每一位训练师，都有属于自己的传奇故事」</p>
+    </div>
+  </header>
+
+  <!-- 世代选择器 -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="gen-selector" data-aos="fade-up">
+        <button class="gen-btn active" data-gen="1">关都</button>
+        <button class="gen-btn" data-gen="2">城都</button>
+        <button class="gen-btn" data-gen="3">丰缘</button>
+        <button class="gen-btn" data-gen="4">神奥</button>
+        <button class="gen-btn" data-gen="5">合众</button>
+        <button class="gen-btn" data-gen="6">卡洛斯</button>
+        <button class="gen-btn" data-gen="7">阿罗拉</button>
+        <button class="gen-btn" data-gen="8">伽勒尔</button>
+        <button class="gen-btn" data-gen="9">帕底亚</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 主要内容 -->
+  <section class="section section-light">
+    <div class="container" id="mainContent"></div>
+  </section>
+
+  <!-- 人物详情弹窗 -->
+  <div class="character-modal" id="characterModal">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeModal()"><i class="bi bi-x-lg"></i></button>
+      <div class="modal-header">
+        <div class="modal-avatar" id="modalAvatar">👤</div>
+        <div class="modal-title">
+          <h2 id="modalName"></h2>
+          <div class="role" id="modalRole"></div>
+          <div class="region" id="modalRegion"></div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-section">
+          <div class="modal-section-title"><i class="bi bi-person-lines-fill"></i> 人物简介</div>
+          <p id="modalBio"></p>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title"><i class="bi bi-star-fill"></i> 代表宝可梦</div>
+          <div class="modal-tags" id="modalPokemon"></div>
+        </div>
+        <div class="modal-section">
+          <div class="modal-section-title"><i class="bi bi-trophy-fill"></i> 主要事迹</div>
+          <ul class="modal-list" id="modalAchievements"></ul>
+        </div>
+        <div class="modal-section" id="quoteSection">
+          <div class="modal-section-title"><i class="bi bi-chat-quote-fill"></i> 经典台词</div>
+          <p class="quote-text" id="modalQuote"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="static/js/navbar.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="static/js/characters-data.js"></script>
+  <script>
+    // 初始化AOS动画
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 50
+    });
+    
+    // 页面加载完成后隐藏加载动画
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 800);
+    });
+    
+    let currentGen = 1;
+    
+    // 世代按钮点击事件
+    document.querySelectorAll('.gen-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.gen-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentGen = parseInt(btn.dataset.gen);
+        renderCharacters(currentGen);
+      });
+    });
+    
+    // 渲染人物列表
+    function renderCharacters(gen) {
+      const data = characterData[gen];
+      if (!data) return;
+      
+      let html = `
+        <div class="gen-title" data-aos="fade-up">
+          <h2>${data.name}</h2>
+          <p>${data.region}</p>
+        </div>
+      `;
+      
+      const sections = [
+        { key: 'protagonists', title: '主角与同伴', icon: 'bi-people-fill' },
+        { key: 'gymLeaders', title: '道馆馆主', icon: 'bi-shield-fill' },
+        { key: 'eliteFour', title: '四天王与冠军', icon: 'bi-trophy-fill' },
+        { key: 'rivals', title: '劲敌', icon: 'bi-lightning-fill' },
+        { key: 'villains', title: '反派组织', icon: 'bi-emoji-angry-fill' }
+      ];
+      
+      sections.forEach((section, sectionIdx) => {
+        if (data[section.key] && data[section.key].length > 0) {
+          html += `
+            <div class="character-section" data-aos="fade-up" data-aos-delay="${sectionIdx * 100}">
+              <div class="section-header">
+                <div class="section-icon"><i class="bi ${section.icon}"></i></div>
+                <h3>${section.title}</h3>
+              </div>
+              <div class="character-grid">
+                ${data[section.key].map((char, idx) => `
+                  <div class="character-card" onclick="showCharacter(${gen}, '${section.key}', ${idx})">
+                    <div class="character-header">
+                      <div class="character-avatar">${char.avatar}</div>
+                      <div class="character-info">
+                        <h4>${char.name}</h4>
+                        <div class="role">${char.role}</div>
+                      </div>
+                    </div>
+                    <div class="character-body">
+                      <p class="character-desc">${char.desc}</p>
+                      <div class="character-pokemon">
+                        ${char.pokemon.slice(0, 4).map(p => `<span class="pokemon-tag">${p}</span>`).join('')}
+                        ${char.pokemon.length > 4 ? `<span class="pokemon-tag">+${char.pokemon.length - 4}</span>` : ''}
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `;
+        }
+      });
+      
+      // 添加感悟区块
+      if (data.reflection) {
+        html += `
+          <div class="reflection-section" data-aos="fade-up" data-aos-delay="500">
+            <h3 class="reflection-title">
+              <i class="bi bi-journal-text"></i>
+              ${data.reflection.title}
+            </h3>
+            <p class="reflection-content">${data.reflection.content}</p>
+            <p class="reflection-quote">${data.reflection.quote}</p>
+          </div>
+        `;
+      }
+      
+      document.getElementById('mainContent').innerHTML = html;
+      AOS.refresh();
+    }
+    
+    // 显示人物详情
+    function showCharacter(gen, section, idx) {
+      const char = characterData[gen][section][idx];
+      document.getElementById('modalAvatar').textContent = char.avatar;
+      document.getElementById('modalName').textContent = char.name;
+      document.getElementById('modalRole').textContent = char.role;
+      document.getElementById('modalRegion').textContent = characterData[gen].region;
+      document.getElementById('modalBio').textContent = char.bio;
+      document.getElementById('modalPokemon').innerHTML = char.pokemon.map(p => `<span class="modal-tag">${p}</span>`).join('');
+      document.getElementById('modalAchievements').innerHTML = char.achievements.map(a => `<li>${a}</li>`).join('');
+      
+      const quoteSection = document.getElementById('quoteSection');
+      if (char.quote) {
+        quoteSection.style.display = 'block';
+        document.getElementById('modalQuote').textContent = char.quote;
+      } else {
+        quoteSection.style.display = 'none';
+      }
+      
+      document.getElementById('characterModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // 关闭弹窗
+    function closeModal() {
+      document.getElementById('characterModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // 点击弹窗外部关闭
+    document.getElementById('characterModal').addEventListener('click', e => {
+      if (e.target.id === 'characterModal') closeModal();
+    });
+    
+    // ESC键关闭弹窗
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') closeModal();
+    });
+    
+    // 初始渲染
+    renderCharacters(1);
+  </script>
+</body>
+</html>

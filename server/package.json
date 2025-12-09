@@ -1,0 +1,23 @@
+{
+  "name": "galaxypokemon-server",
+  "version": "1.0.0",
+  "description": "GalaxyPokemon 服务器后端",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.11",
+    "sql.js": "^1.10.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.3"
+  }
+}

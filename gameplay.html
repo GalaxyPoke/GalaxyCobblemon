@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>玩法介绍 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: '中华薪火体', 'Noto Sans SC', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+      line-height: 1.8;
+    }
+    
+    /* 页面头部 */
+    .page-header {
+      background: linear-gradient(135deg, rgba(28, 24, 20, 0.95), rgba(40, 35, 30, 0.9)), 
+                  url('static/image/商业街.png') center/cover;
+      padding: 120px 0 80px;
+      text-align: center;
+      position: relative;
+    }
+    
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 100px;
+      background: linear-gradient(to top, #1c1814, transparent);
+    }
+    
+    .page-title {
+      font-size: 3.5rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 8px;
+    }
+    
+    .page-subtitle {
+      font-size: 1.3rem;
+      color: #999;
+      letter-spacing: 2px;
+    }
+    
+    /* 通用区块样式 */
+    .section {
+      padding: 80px 0;
+      position: relative;
+    }
+    
+    .section-dark {
+      background: #1c1814;
+    }
+    
+    .section-alt {
+      background: #211d18;
+    }
+    
+    /* 大标题样式 */
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 400;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 4px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .section-title i {
+      font-size: 2rem;
+      color: #b8956e;
+    }
+    
+    .section-subtitle {
+      font-size: 1.1rem;
+      color: #888;
+      margin-bottom: 3rem;
+    }
+    
+    /* 商业街介绍 */
+    /* 商业街轮播图 - 全宽样式 */
+    .street-carousel {
+      position: relative;
+      width: 100vw;
+      margin-left: calc(-50vw + 50%);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    
+    .street-carousel .carousel-inner {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+    
+    .street-carousel .carousel-slides {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+    
+    .street-carousel .carousel-slide {
+      min-width: 100%;
+      position: relative;
+    }
+    
+    .street-carousel .carousel-slide img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .street-carousel .carousel-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 30px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      color: #fff;
+    }
+    
+    .street-carousel .carousel-caption h4 {
+      font-family: '中华薪火体', 'Ma Shan Zheng', cursive;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #d4a574;
+    }
+    
+    .street-carousel .carousel-caption p {
+      font-size: 0.95rem;
+      color: #888;
+      margin: 0;
+    }
+    
+    .street-carousel .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.5);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .street-carousel .carousel-btn:hover {
+      background: rgba(212, 165, 116, 0.8);
+    }
+    
+    .street-carousel .carousel-btn.prev { left: 20px; }
+    .street-carousel .carousel-btn.next { right: 20px; }
+    
+    .street-carousel .carousel-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+    }
+    
+    .street-carousel .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(212, 165, 116, 0.3);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .street-carousel .carousel-dot.active {
+      background: #d4a574;
+      transform: scale(1.2);
+    }
+    
+    @media (max-width: 768px) {
+      .street-carousel .carousel-slide img {
+        height: 300px;
+      }
+      .street-carousel .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      .street-carousel .carousel-caption h4 {
+        font-size: 1.1rem;
+      }
+      .street-carousel .carousel-caption p {
+        font-size: 0.85rem;
+      }
+    }
+
+    .street-intro {
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(184, 149, 110, 0.05));
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 20px;
+      padding: 40px;
+      margin-bottom: 60px;
+    }
+    
+    .street-intro h3 {
+      color: #d4a574;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .street-intro p {
+      color: #bbb;
+      font-size: 1.1rem;
+      line-height: 2;
+      margin-bottom: 1rem;
+    }
+    
+    .street-intro .highlight {
+      color: #d4a574;
+      font-weight: 500;
+    }
+    
+    /* 职业卡片网格 */
+    .career-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 30px;
+      margin-top: 40px;
+    }
+    
+    /* 职业卡片 */
+    .career-card {
+      background: linear-gradient(145deg, #252119, #1a1612);
+      border: 1px solid rgba(212, 165, 116, 0.15);
+      border-radius: 16px;
+      padding: 30px;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .career-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--card-color, #d4a574), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .career-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(212, 165, 116, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .career-card:hover::before {
+      opacity: 1;
+    }
+    
+    .career-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    
+    .career-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--card-color, #d4a574), var(--card-color-dark, #b8956e));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #1c1814;
+    }
+    
+    .career-title {
+      flex: 1;
+    }
+    
+    .career-title h3 {
+      color: #e8e8e8;
+      font-size: 1.4rem;
+      margin-bottom: 5px;
+    }
+    
+    .career-title span {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    .career-desc {
+      color: #aaa;
+      font-size: 1rem;
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+    
+    .career-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    
+    .career-tag {
+      background: rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      color: #d4a574;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+    }
+    
+    /* 不同职业的颜色 */
+    .career-card.architect { --card-color: #e67e22; --card-color-dark: #d35400; }
+    .career-card.strategist { --card-color: #9b59b6; --card-color-dark: #8e44ad; }
+    .career-card.farmer { --card-color: #27ae60; --card-color-dark: #1e8449; }
+    .career-card.collector { --card-color: #3498db; --card-color-dark: #2980b9; }
+    .career-card.breeder { --card-color: #e91e63; --card-color-dark: #c2185b; }
+    .career-card.trainer { --card-color: #f39c12; --card-color-dark: #e67e22; }
+    .career-card.chef { --card-color: #e74c3c; --card-color-dark: #c0392b; }
+    .career-card.explorer { --card-color: #1abc9c; --card-color-dark: #16a085; }
+    .career-card.merchant { --card-color: #f1c40f; --card-color-dark: #d4ac0d; }
+    .career-card.decorator { --card-color: #ff6b9d; --card-color-dark: #e91e63; }
+    
+    /* 流程步骤 */
+    .process-steps {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 40px 0;
+    }
+    
+    .process-step {
+      background: #252119;
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 12px;
+      padding: 25px 30px;
+      text-align: center;
+      min-width: 180px;
+      position: relative;
+    }
+    
+    .process-step::after {
+      content: '→';
+      position: absolute;
+      right: -25px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d4a574;
+      font-size: 1.5rem;
+    }
+    
+    .process-step:last-child::after {
+      display: none;
+    }
+    
+    .step-number {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1c1814;
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin: 0 auto 15px;
+    }
+    
+    .step-title {
+      color: #e8e8e8;
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    
+    .step-desc {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    /* 提示框 */
+    .tip-box {
+      background: linear-gradient(135deg, rgba(39, 174, 96, 0.1), rgba(39, 174, 96, 0.05));
+      border: 1px solid rgba(39, 174, 96, 0.3);
+      border-radius: 12px;
+      padding: 25px 30px;
+      margin-top: 40px;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    
+    .tip-box i {
+      color: #27ae60;
+      font-size: 1.5rem;
+      margin-top: 3px;
+    }
+    
+    .tip-box .tip-content h4 {
+      color: #27ae60;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    
+    .tip-box .tip-content p {
+      color: #aaa;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin: 0;
+    }
+    
+    /* 响应式 */
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2.5rem;
+        letter-spacing: 4px;
+      }
+      
+      .section-title {
+        font-size: 1.8rem;
+      }
+      
+      .career-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .process-step::after {
+        display: none;
+      }
+      
+      .process-steps {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .street-intro {
+        padding: 25px;
+      }
+    }
+    
+    /* 页脚 */
+    footer {
+      background: #151210;
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid rgba(212, 165, 116, 0.1);
+    }
+    
+    footer p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .loader-content {
+      text-align: center;
+    }
+    
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-controller"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <!-- 导航栏（由navbar.js自动生成） -->
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 页面头部 -->
+  <header class="page-header">
+    <div class="container" style="position: relative; z-index: 1;">
+      <h1 class="page-title" data-aos="fade-up">商业街</h1>
+      <p class="page-subtitle" data-aos="fade-up" data-aos-delay="100">打造你的梦想店铺，成为服务器的商业大亨</p>
+    </div>
+  </header>
+
+  <!-- 商业街介绍 -->
+  <section class="section section-dark">
+    <div class="container">
+      <!-- 统计数据 -->
+      <div class="street-stats" data-aos="fade-up" style="display: flex; justify-content: center; gap: 80px; margin-bottom: 60px; flex-wrap: wrap;">
+        <div style="text-align: center;">
+          <div style="font-size: 3rem; color: #d4a574; line-height: 1;">50+</div>
+          <div style="color: #777; font-size: 1rem;">店铺位置</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 3rem; color: #d4a574; line-height: 1;">N+</div>
+          <div style="color: #777; font-size: 1rem;">热门职业</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 3rem; color: #d4a574; line-height: 1;">24h</div>
+          <div style="color: #777; font-size: 1rem;">自动营业</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 3rem; color: #d4a574; line-height: 1;">∞</div>
+          <div style="color: #777; font-size: 1rem;">创意可能</div>
+        </div>
+      </div>
+      
+      <!-- 商业街轮播图 -->
+      <div class="street-carousel" data-aos="fade-up" data-aos-delay="150">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="streetCarouselSlides">
+            <div class="carousel-slide">
+              <img src="static/image/商业街.png" alt="商业街全景">
+              <div class="carousel-caption">
+                <h4>Galaxy商业街全景</h4>
+                <p>繁华的商业中心，等你来开店</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <img src="static/image/street-shop1.png" alt="精品店铺">
+              <div class="carousel-caption">
+                <h4>精品店铺展示</h4>
+                <p>玩家自建的特色店铺</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <img src="static/image/street-shop2.png" alt="夜景">
+              <div class="carousel-caption">
+                <h4>商业街夜景</h4>
+                <p>华灯初上，别有一番风味</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <img src="static/image/street-shop3.png" alt="内部装修">
+              <div class="carousel-caption">
+                <h4>店铺内部装修</h4>
+                <p>发挥创意，打造独特风格</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevStreetSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextStreetSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="streetCarouselDots"></div>
+      </div>
+      
+      <!-- 商业街总体介绍 -->
+      <div class="street-intro" data-aos="fade-up" data-aos-delay="200">
+        <h3><i class="bi bi-stars"></i> 欢迎来到Galaxy商业街</h3>
+        <p>
+          想象一下，在这片繁华的商业街上，<span class="highlight">你可以拥有一家属于自己的店铺</span>。
+          无论你是热爱建筑的创意大师，还是精通宝可梦对战的策略专家，亦或是擅长培育的繁殖达人——
+          在这里，你的每一项技能都能转化为真金白银！
+        </p>
+        <p>
+          商业街采用<span class="highlight">租赁制</span>，你可以根据自己的预算选择不同大小的店铺。
+          从温馨的小摊位到气派的旗舰店，总有一款适合你。装修风格完全自由，
+          你可以把它打造成古朴的中式茶馆，现代的科技展厅，或者充满童趣的糖果屋——
+          <span class="highlight">只有想不到，没有做不到</span>！
+        </p>
+        <p>
+          最棒的是，当你不在线时，店铺依然可以自动营业。设置好商品和价格，
+          即使你在睡觉，也有可能醒来发现钱包鼓了不少！这就是被动收入的魅力~
+        </p>
+      </div>
+      
+      <!-- 开店流程 -->
+      <h3 style="color: #d4a574; font-size: 1.5rem; margin-bottom: 30px; text-align: center;" data-aos="fade-up">
+        <i class="bi bi-signpost-split"></i> 开店流程
+      </h3>
+      <div class="process-steps" data-aos="fade-up" data-aos-delay="100">
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <div class="step-title">选择店铺</div>
+          <div class="step-desc">在商业街找到心仪的空铺</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <div class="step-title">支付租金</div>
+          <div class="step-desc">按周期支付店铺租金</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <div class="step-title">装修布置</div>
+          <div class="step-desc">发挥创意装饰你的店铺</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">4</div>
+          <div class="step-title">上架商品</div>
+          <div class="step-desc">设置商品和价格</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">5</div>
+          <div class="step-title">开门营业</div>
+          <div class="step-desc">坐等顾客上门！</div>
+        </div>
+      </div>
+      
+      <!-- 职业介绍 -->
+      <h3 style="color: #d4a574; font-size: 1.5rem; margin: 60px 0 20px; text-align: center;" data-aos="fade-up">
+        <i class="bi bi-person-workspace"></i> 热门职业推荐
+      </h3>
+      <p style="color: #888; text-align: center; margin-bottom: 40px;" data-aos="fade-up">
+        不知道卖什么？来看看这些热门职业，总有一款适合你！
+      </p>
+      
+      <div class="career-grid">
+        <!-- 建筑师 -->
+        <div class="career-card architect" data-aos="fade-up" data-aos-delay="100">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-building"></i></div>
+            <div class="career-title">
+              <h3>方块建筑师</h3>
+              <span>Architecture Master</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            你是否曾经看着别人精美的房子羡慕不已？现在，你可以成为那个让别人羡慕的人！
+            作为方块建筑师，你将用一块块方块堆砌出客户梦想中的家园。
+            从温馨的小木屋到气派的城堡，从现代简约风到古典中式庭院——
+            每一栋建筑都是你的艺术品，每一位客户的满意笑容都是你最大的成就。
+            记住，你卖的不只是房子，而是一个个温暖的家！
+          </div>
+          <div class="career-features">
+            <span class="career-tag">接单建造</span>
+            <span class="career-tag">风格定制</span>
+            <span class="career-tag">室内装修</span>
+            <span class="career-tag">景观设计</span>
+          </div>
+        </div>
+        
+        <!-- 配队师 -->
+        <div class="career-card strategist" data-aos="fade-up" data-aos-delay="150">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-diagram-3"></i></div>
+            <div class="career-title">
+              <h3>宝可梦配队师</h3>
+              <span>Team Strategist</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            属性相克？对你来说就像呼吸一样自然！你熟知每一只宝可梦的特性、招式和配合，
+            能够根据客户的需求打造出最强的战斗阵容。无论是追求极限输出的进攻队，
+            还是稳如泰山的防守队，亦或是出其不意的战术队——你都能信手拈来。
+            来找你的客户，都是带着"我想变强"的梦想而来，而你，就是实现梦想的那个人！
+          </div>
+          <div class="career-features">
+            <span class="career-tag">阵容搭配</span>
+            <span class="career-tag">战术指导</span>
+            <span class="career-tag">属性分析</span>
+            <span class="career-tag">对战陪练</span>
+          </div>
+        </div>
+        
+        <!-- 树果采摘师 -->
+        <div class="career-card farmer" data-aos="fade-up" data-aos-delay="200">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-tree"></i></div>
+            <div class="career-title">
+              <h3>树果采摘师</h3>
+              <span>Berry Farmer</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            清晨的阳光洒在果园里，你穿梭在一棵棵树果树之间，采摘着五颜六色的果实。
+            文柚果、木子果、释陀果……每一颗都是大自然的馈赠。你不仅种植和采摘，
+            还深谙每种树果的功效和用途。对战玩家需要的属性抗性果？培育玩家需要的努力值果？
+            你的果园里应有尽有！经营一片果园，享受田园生活的同时还能赚钱，这不香吗？
+          </div>
+          <div class="career-features">
+            <span class="career-tag">树果种植</span>
+            <span class="career-tag">批量供应</span>
+            <span class="career-tag">稀有果培育</span>
+            <span class="career-tag">果园参观</span>
+          </div>
+        </div>
+        
+        <!-- 宝可梦收集师 -->
+        <div class="career-card collector" data-aos="fade-up" data-aos-delay="250">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-collection"></i></div>
+            <div class="career-title">
+              <h3>宝可梦收集师</h3>
+              <span>Pokemon Hunter</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            "我想要一只闪光的六尾！""能帮我找一只梦特性的百变怪吗？"
+            这些请求对你来说都不是问题！你是服务器里最专业的宝可梦猎人，
+            熟知每种宝可梦的刷新地点、时间和概率。无论客户想要什么，
+            你都能在茫茫Pokemon海中找到那只命中注定的伙伴。
+            每一次成功交付，都是一段缘分的开始。你不只是在抓Pokemon，你是在牵红线！
+          </div>
+          <div class="career-features">
+            <span class="career-tag">定制捕捉</span>
+            <span class="career-tag">闪光猎人</span>
+            <span class="career-tag">梦特搜寻</span>
+            <span class="career-tag">稀有Pokemon</span>
+          </div>
+        </div>
+        
+        <!-- 宝可梦繁殖师 -->
+        <div class="career-card breeder" data-aos="fade-up" data-aos-delay="300">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-heart"></i></div>
+            <div class="career-title">
+              <h3>宝可梦繁殖师</h3>
+              <span>Pokemon Breeder</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            在你的Pokemon培育屋里，每一颗蛋都承载着客户的期待。
+            6V完美个体？指定性格？遗传招式？梦特性？这些对你来说都是基本操作！
+            你深谙遗传机制的奥秘，知道如何让父母的优秀基因完美传递给下一代。
+            看着客户收到梦寐以求的Pokemon时那闪闪发光的眼睛，
+            你就知道，这份工作的意义远不止赚钱那么简单。你是在创造生命，传递希望！
+          </div>
+          <div class="career-features">
+            <span class="career-tag">个体培育</span>
+            <span class="career-tag">性格遗传</span>
+            <span class="career-tag">蛋招式</span>
+            <span class="career-tag">闪光孵化</span>
+          </div>
+        </div>
+        
+        <!-- 宝可梦训练师 -->
+        <div class="career-card trainer" data-aos="fade-up" data-aos-delay="350">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-trophy"></i></div>
+            <div class="career-title">
+              <h3>宝可梦训练师</h3>
+              <span>Pokemon Trainer</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            "我的Pokemon太弱了，能帮我练一下吗？"这是你最常听到的请求。
+            作为专业的Pokemon训练师，你提供代练服务，帮助客户的Pokemon快速升级、
+            刷满努力值、学会指定招式。你知道哪里经验最多，哪里刷努力值最快，
+            如何最高效地培养一只Pokemon。客户把Pokemon交给你时是青涩的新手，
+            还回去时已经是能征善战的强者。你就是Pokemon界的健身教练！
+          </div>
+          <div class="career-features">
+            <span class="career-tag">等级代练</span>
+            <span class="career-tag">努力值培养</span>
+            <span class="career-tag">招式教学</span>
+            <span class="career-tag">进化服务</span>
+          </div>
+        </div>
+        
+        <!-- 料理师 -->
+        <div class="career-card chef" data-aos="fade-up" data-aos-delay="400">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-egg-fried"></i></div>
+            <div class="career-title">
+              <h3>宝可梦料理师</h3>
+              <span>Pokemon Chef</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            锅碗瓢盆交响曲，在你的厨房里每天都在上演！你精通各种Pokemon料理的制作，
+            从提升Pokemon能力的特制料理，到恢复体力的美味便当，再到增进亲密度的甜点——
+            你的菜单丰富多彩。每一道菜都是用心烹制，每一份料理都蕴含着你对美食的热爱。
+            来你店里的客户，不仅是为了给Pokemon补充营养，更是为了品尝那份独特的美味！
+          </div>
+          <div class="career-features">
+            <span class="career-tag">能力料理</span>
+            <span class="career-tag">恢复便当</span>
+            <span class="career-tag">亲密甜点</span>
+            <span class="career-tag">定制菜单</span>
+          </div>
+        </div>
+        
+        <!-- 探险家 -->
+        <div class="career-card explorer" data-aos="fade-up" data-aos-delay="450">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-compass"></i></div>
+            <div class="career-title">
+              <h3>秘境探险家</h3>
+              <span>Secret Explorer</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            服务器的每一个角落你都了如指掌！隐藏的矿洞、神秘的遗迹、稀有Pokemon的刷新点——
+            这些对别人来说是秘密，对你来说是日常。你可以带领客户进行探险之旅，
+            分享那些不为人知的宝藏地点，或者代客探索危险区域带回珍贵物资。
+            每一次探险都是一场冒险，而你，就是最可靠的向导！
+          </div>
+          <div class="career-features">
+            <span class="career-tag">带队探险</span>
+            <span class="career-tag">地图导航</span>
+            <span class="career-tag">资源代采</span>
+            <span class="career-tag">秘境攻略</span>
+          </div>
+        </div>
+        
+        <!-- 道具商人 -->
+        <div class="career-card merchant" data-aos="fade-up" data-aos-delay="500">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-bag-check"></i></div>
+            <div class="career-title">
+              <h3>道具商人</h3>
+              <span>Item Merchant</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            进化石、携带道具、稀有材料……你的店铺就像一个百宝箱，应有尽有！
+            你深谙市场行情，知道什么时候进货，什么时候出货，如何定价才能既赚钱又吸引客户。
+            从新手需要的基础道具，到高玩追求的稀有物品，你都能提供。
+            经商之道，在于诚信；致富之路，在于勤奋。你就是服务器里的商业传奇！
+          </div>
+          <div class="career-features">
+            <span class="career-tag">进化道具</span>
+            <span class="career-tag">携带物品</span>
+            <span class="career-tag">稀有材料</span>
+            <span class="career-tag">批发零售</span>
+          </div>
+        </div>
+        
+        <!-- 装饰设计师 -->
+        <div class="career-card decorator" data-aos="fade-up" data-aos-delay="550">
+          <div class="career-header">
+            <div class="career-icon"><i class="bi bi-palette"></i></div>
+            <div class="career-title">
+              <h3>家居装饰师</h3>
+              <span>Interior Designer</span>
+            </div>
+          </div>
+          <div class="career-desc">
+            房子建好了，但总觉得少了点什么？那就是你登场的时候了！
+            作为家居装饰师，你专注于室内软装和氛围营造。灯光怎么布置才温馨？
+            家具怎么摆放才协调？色彩怎么搭配才好看？这些问题你都有答案。
+            你能把一个冷冰冰的空间变成温暖的港湾，让每一位客户回家时都能感受到幸福。
+            你装饰的不只是房子，而是生活的态度！
+          </div>
+          <div class="career-features">
+            <span class="career-tag">软装设计</span>
+            <span class="career-tag">氛围营造</span>
+            <span class="career-tag">家具定制</span>
+            <span class="career-tag">主题装修</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 温馨提示 -->
+      <div class="tip-box" data-aos="fade-up">
+        <i class="bi bi-lightbulb"></i>
+        <div class="tip-content">
+          <h4>温馨提示</h4>
+          <p>
+            以上只是一些热门职业的例子，实际上你可以经营任何你擅长的业务！
+            也许你是红石大师，可以帮人设计自动化农场；也许你是地图画高手，可以制作定制画作；
+            也许你就是喜欢和人聊天，可以开一家咖啡馆当个倾听者……
+            在Galaxy商业街，<strong style="color: #27ae60;">只要有需求，就有市场；只要有技能，就能变现！</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container">
+      <p>© 2024 GalaxyPokemon. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // 页面加载完成后隐藏加载动画
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 50
+    });
+    
+    // 商业街轮播图功能
+    let streetCurrentSlide = 0;
+    const streetSlides = document.querySelectorAll('.street-carousel .carousel-slide');
+    const streetTotalSlides = streetSlides.length;
+    const streetSlidesContainer = document.getElementById('streetCarouselSlides');
+    const streetDotsContainer = document.getElementById('streetCarouselDots');
+    
+    // 创建指示点
+    for (let i = 0; i < streetTotalSlides; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goToStreetSlide(i);
+      streetDotsContainer.appendChild(dot);
+    }
+    
+    function updateStreetCarousel() {
+      streetSlidesContainer.style.transform = `translateX(-${streetCurrentSlide * 100}%)`;
+      document.querySelectorAll('.street-carousel .carousel-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === streetCurrentSlide);
+      });
+    }
+    
+    function nextStreetSlide() {
+      streetCurrentSlide = (streetCurrentSlide + 1) % streetTotalSlides;
+      updateStreetCarousel();
+    }
+    
+    function prevStreetSlide() {
+      streetCurrentSlide = (streetCurrentSlide - 1 + streetTotalSlides) % streetTotalSlides;
+      updateStreetCarousel();
+    }
+    
+    function goToStreetSlide(index) {
+      streetCurrentSlide = index;
+      updateStreetCarousel();
+    }
+    
+    // 自动轮播
+    setInterval(nextStreetSlide, 5000);
+  </script>
+</body>
+</html>

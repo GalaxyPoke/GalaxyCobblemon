@@ -1,0 +1,13 @@
+node_modules/
+.env
+*.db
+.DS_Store
+Thumbs.db
+server/uploads/*
+!server/uploads/.gitkeep
+
+# 排除 Minecraft 相关大文件
+Cobblemon-fabric-*/
+1.21.1-Fabric*/
+*.jar
+*.zip

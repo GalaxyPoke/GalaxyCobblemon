@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>家园系统 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/carousel.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+    }
+    
+    body {
+      font-family: '中华薪火体', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+    }
+    
+    /* 顶部大标题区 */
+    .page-hero {
+      padding: 160px 0 100px;
+      text-align: center;
+      background: linear-gradient(180deg, #1c1814 0%, #252019 100%);
+    }
+    
+    .page-icon {
+      font-size: 4rem;
+      color: #d4a574;
+      margin-bottom: 20px;
+    }
+    
+    .page-title {
+      font-size: 4rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 8px;
+    }
+    
+    .page-subtitle {
+      font-size: 1.4rem;
+      color: #888;
+      max-width: 600px;
+      margin: 0 auto 3rem;
+      line-height: 1.8;
+    }
+    
+    .page-stats {
+      display: flex;
+      justify-content: center;
+      gap: 80px;
+      flex-wrap: wrap;
+    }
+    
+    .page-stat {
+      text-align: center;
+    }
+    
+    .page-stat-num {
+      font-size: 2.5rem;
+      color: #d4a574;
+      line-height: 1;
+    }
+    
+    .page-stat-label {
+      color: #666;
+      font-size: 0.95rem;
+      margin-top: 5px;
+    }
+    
+    /* 文字段落区块 */
+    .text-section {
+      padding: 80px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.03);
+    }
+    
+    .text-section:last-of-type {
+      border-bottom: none;
+    }
+    
+    .section-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    .section-num {
+      font-size: 0.9rem;
+      color: #d4a574;
+      letter-spacing: 3px;
+      margin-bottom: 15px;
+    }
+    
+    .section-title {
+      font-size: 2rem;
+      color: #e0e0e0;
+      margin-bottom: 15px;
+    }
+    
+    .section-line {
+      width: 50px;
+      height: 2px;
+      background: #d4a574;
+      margin: 0 auto;
+    }
+    
+    .prose {
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 1.15rem;
+      color: #999;
+      line-height: 2.2;
+    }
+    
+    .prose p {
+      margin-bottom: 1.5rem;
+    }
+    
+    .prose p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .prose .highlight {
+      color: #d4a574;
+    }
+    
+    .prose .quote {
+      border-left: 3px solid #d4a574;
+      padding-left: 20px;
+      margin: 2rem 0;
+      font-style: italic;
+      color: #aaa;
+    }
+    
+    /* 功能网格 */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .feature-box {
+      text-align: center;
+      padding: 40px 25px;
+      background: rgba(40, 35, 30, 0.3);
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    
+    .feature-box:hover {
+      background: rgba(40, 35, 30, 0.5);
+      transform: translateY(-5px);
+    }
+    
+    .feature-box i {
+      font-size: 2rem;
+      color: #d4a574;
+      margin-bottom: 15px;
+    }
+    
+    .feature-box h4 {
+      color: #e0e0e0;
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+    
+    .feature-box p {
+      color: #777;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+    
+    /* 场景卡片 */
+    .scene-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    
+    .scene-card {
+      padding: 35px;
+      border: 1px solid rgba(212, 165, 116, 0.15);
+      border-radius: 12px;
+    }
+    
+    .scene-card h4 {
+      color: #d4a574;
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .scene-card p {
+      color: #888;
+      font-size: 1rem;
+      line-height: 1.9;
+      margin: 0;
+    }
+    
+    /* 时间线 */
+    .timeline {
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+    }
+    
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(212, 165, 116, 0.2);
+    }
+    
+    .timeline-item {
+      padding-left: 60px;
+      padding-bottom: 40px;
+      position: relative;
+    }
+    
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+    
+    .timeline-dot {
+      position: absolute;
+      left: 12px;
+      top: 5px;
+      width: 18px;
+      height: 18px;
+      background: #d4a574;
+      border-radius: 50%;
+    }
+    
+    .timeline-title {
+      color: #e0e0e0;
+      font-size: 1.15rem;
+      margin-bottom: 8px;
+    }
+    
+    .timeline-desc {
+      color: #777;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    
+    /* CTA */
+    .cta-section {
+      padding: 100px 0;
+      text-align: center;
+      background: rgba(255,255,255,0.01);
+    }
+    
+    .cta-title {
+      font-size: 2rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-text {
+      color: #888;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+    
+    .cta-section .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 40px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      color: #1c1814;
+      text-decoration: none;
+      font-size: 1.1rem;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+    
+    .cta-section .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(212, 165, 116, 0.3);
+      color: #1c1814;
+    }
+    
+    @media (max-width: 768px) {
+      .page-stats { gap: 40px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .scene-cards { grid-template-columns: 1fr; }
+      .page-title { font-size: 2.5rem; }
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-content { text-align: center; }
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-house-heart-fill"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 顶部 -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-icon" data-aos="fade-up"><i class="bi bi-house-heart-fill"></i></div>
+      <h1 class="page-title" data-aos="fade-up" data-aos-delay="100">家园系统</h1>
+      <p class="page-subtitle" data-aos="fade-up" data-aos-delay="200">
+        在这个宝可梦世界里，你值得拥有一个完全属于自己的小天地
+      </p>
+      <div class="page-stats" data-aos="fade-up" data-aos-delay="300">
+        <div class="page-stat">
+          <div class="page-stat-num">1:1</div>
+          <div class="page-stat-label">一人一世界</div>
+        </div>
+        <div class="page-stat">
+          <div class="page-stat-num">100%</div>
+          <div class="page-stat-label">私人空间</div>
+        </div>
+        <div class="page-stat">
+          <div class="page-stat-num">∞</div>
+          <div class="page-stat-label">创意可能</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 什么是家园 -->
+  <section class="text-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-num">01</div>
+        <h2 class="section-title">什么是家园？</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="prose" data-aos="fade-up" data-aos-delay="100">
+        <p>
+          还记得你第一次玩 Minecraft 时，在野外搭建的那个小木屋吗？那时候天快黑了，僵尸的声音越来越近，
+          你手忙脚乱地挖了个洞钻进去，用泥土把入口堵上，蹲在黑暗中等待天亮。
+        </p>
+        <p>
+          后来，那个洞变成了一间小屋，小屋变成了一座房子，房子变成了一个家。
+          你在门口种上了花，在屋顶装上了火把，在墙上挂满了画。
+          <span class="highlight">那是你在这个方块世界里的第一个家。</span>
+        </p>
+        <p>
+          在 GalaxyPokemon，我们希望每个人都能拥有这样一个家——不是临时的避难所，
+          而是一个真正属于你的、可以长久居住的地方。
+          <span class="highlight">家园系统，就是为此而生。</span>
+        </p>
+        <div class="quote">
+          "每个玩家都有一个独立的世界，那里只有你和你邀请的人。在那里，你是这片土地的主人。"
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 为什么需要家园 -->
+  <section class="text-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-num">02</div>
+        <h2 class="section-title">为什么需要家园？</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="prose" data-aos="fade-up" data-aos-delay="100">
+        <p>
+          在公共世界里建造，你可能遇到过这些烦恼：辛辛苦苦建了一栋房子，第二天上线发现被人拆了；
+          好不容易收集的钻石，放在箱子里不敢离开；想安静地种个田，旁边总有人跑来跑去。
+        </p>
+        <p>
+          <span class="highlight">家园是你的避风港。</span>在这里，没有人能破坏你的建筑，没有人能偷走你的物品，
+          没有人能打扰你的宁静。你可以安心地建造、种植、养殖，把这里打造成你梦想中的样子。
+        </p>
+        <p>
+          更重要的是，家园是你在服务器里的"根据地"。累了，回家休息；想冒险了，再出发。
+          无论你在外面经历了什么，这里永远有一盏灯为你亮着。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 家园能做什么 -->
+  <section class="text-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-num">03</div>
+        <h2 class="section-title">在家园里，你可以...</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="feature-grid" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-box">
+          <i class="bi bi-hammer"></i>
+          <h4>自由建造</h4>
+          <p>别墅、城堡、花园，想建什么就建什么</p>
+        </div>
+        <div class="feature-box">
+          <i class="bi bi-tree"></i>
+          <h4>田园生活</h4>
+          <p>开辟农田、养殖动物，享受悠闲时光</p>
+        </div>
+        <div class="feature-box">
+          <i class="bi bi-safe"></i>
+          <h4>安全存储</h4>
+          <p>珍贵物品放在家里，再也不怕丢失</p>
+        </div>
+        <div class="feature-box">
+          <i class="bi bi-people"></i>
+          <h4>邀请好友</h4>
+          <p>把朋友加入白名单，一起建设家园</p>
+        </div>
+        <div class="feature-box">
+          <i class="bi bi-door-open"></i>
+          <h4>拜访邻居</h4>
+          <p>去看看别人的家园，获取灵感</p>
+        </div>
+        <div class="feature-box">
+          <i class="bi bi-arrows-fullscreen"></i>
+          <h4>扩大领地</h4>
+          <p>随着成长，不断扩大你的家园范围</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 家园的故事 -->
+  <section class="text-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-num">04</div>
+        <h2 class="section-title">家园里的故事</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="scene-cards" data-aos="fade-up" data-aos-delay="100">
+        <div class="scene-card">
+          <h4><i class="bi bi-sunrise"></i> 清晨</h4>
+          <p>
+            阳光透过玻璃窗洒进来，你从床上醒来，推开门，院子里的小麦已经成熟了。
+            收割完庄稼，喂完门口的宝可梦，新的一天开始了。
+          </p>
+        </div>
+        <div class="scene-card">
+          <h4><i class="bi bi-cup-hot"></i> 午后</h4>
+          <p>
+            朋友来做客了，你带他参观你新建的温室花园。他说想在自己家也建一个，
+            你们坐在院子里，一边喝着药水一边讨论设计方案。
+          </p>
+        </div>
+        <div class="scene-card">
+          <h4><i class="bi bi-moon-stars"></i> 夜晚</h4>
+          <p>
+            冒险归来，背包里装满了战利品。把东西放进仓库，站在阳台上看着星空，
+            远处传来宝可梦的叫声。这里真好，这里是家。
+          </p>
+        </div>
+        <div class="scene-card">
+          <h4><i class="bi bi-calendar-heart"></i> 某一天</h4>
+          <p>
+            你突然想起第一次来到这里时，这里还是一片空地。现在，这里有了房子、花园、农田，
+            还有那棵你亲手种下的橡树。原来不知不觉，已经过了这么久。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 如何开始 -->
+  <section class="text-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-num">05</div>
+        <h2 class="section-title">如何拥有你的家园？</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="timeline" data-aos="fade-up" data-aos-delay="100">
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">打开家园菜单</div>
+          <div class="timeline-desc">在游戏中输入指令或点击菜单，打开家园系统界面</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">创建你的家园</div>
+          <div class="timeline-desc">选择超平坦或默认地形，系统会为你生成一个全新的世界</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">传送回家</div>
+          <div class="timeline-desc">随时随地，一键回到你的家园</div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-title">开始你的故事</div>
+          <div class="timeline-desc">建造、种植、邀请朋友......你的家园故事，从这里开始</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 贴心设计 -->
+  <section class="text-section">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-num">06</div>
+        <h2 class="section-title">贴心的设计</h2>
+        <div class="section-line"></div>
+      </div>
+      <div class="prose" data-aos="fade-up" data-aos-delay="100">
+        <p>
+          我们知道，家园对你来说意味着什么。所以我们做了很多贴心的设计，让你可以安心地享受家园生活：
+        </p>
+        <p>
+          <span class="highlight">自动保存</span> —— 你的家园会定期自动保存，不用担心意外丢失。
+          就算服务器出了问题，我们也有备份，你的心血不会白费。
+        </p>
+        <p>
+          <span class="highlight">死亡不掉落</span> —— 在家园里，就算不小心摔死了，物品也不会掉落。
+          放心大胆地建造高楼吧，不用担心手滑。
+        </p>
+        <p>
+          <span class="highlight">天气控制</span> —— 不喜欢下雨？在家园里，你可以自己控制天气和时间。
+          想要永远阳光明媚？没问题！
+        </p>
+        <p>
+          <span class="highlight">怪物管理</span> —— 家园里不会自然刷怪，你可以安心建造，不用担心被偷袭。
+          当然，如果你想要刺激一点，也可以自己调整设置。
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>家园风采</h2>
+        <p>玩家们的精彩家园展示</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <img src="static/image/hero-bg.png" alt="家园风景">
+              <div class="carousel-caption">
+                <h4>温馨小屋</h4>
+                <p>玩家的温馨家园</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <img src="static/image/trainer-bg.png" alt="训练师家园">
+              <div class="carousel-caption">
+                <h4>豪华庄园</h4>
+                <p>精心设计的大型家园</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <img src="static/image/us-bg.png" alt="创意建筑">
+              <div class="carousel-caption">
+                <h4>创意建筑</h4>
+                <p>独特的创意家园设计</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title" data-aos="fade-up">准备好拥有你的家园了吗？</h2>
+      <p class="cta-text" data-aos="fade-up" data-aos-delay="100">加入服务器，开始建造属于你的小天地</p>
+      <a href="guide.html" class="btn-primary" data-aos="fade-up" data-aos-delay="200">
+        <i class="bi bi-play-circle"></i> 立即加入服务器
+      </a>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="static/js/carousel.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    AOS.init({ duration: 800, once: true });
+  </script>
+</body>
+</html>

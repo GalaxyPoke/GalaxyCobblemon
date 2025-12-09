@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>训练师对战 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    
+    body {
+      font-family: '中华薪火体', sans-serif;
+      background: #0d0b09;
+      color: #e0e0e0;
+    }
+    
+    /* 全屏Hero */
+    .hero-full {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: radial-gradient(ellipse at center, #1a1510 0%, #0d0b09 70%);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .hero-full::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, rgba(212, 165, 116, 0.05) 0%, transparent 70%);
+      transform: translate(-50%, -50%);
+    }
+    
+    .hero-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .hero-badge {
+      display: inline-block;
+      padding: 8px 25px;
+      border: 1px solid rgba(212, 165, 116, 0.4);
+      color: #d4a574;
+      font-size: 0.9rem;
+      letter-spacing: 3px;
+      margin-bottom: 30px;
+    }
+    
+    .hero-title {
+      font-size: 5rem;
+      color: #d4a574;
+      letter-spacing: 15px;
+      margin-bottom: 30px;
+      text-shadow: 0 0 60px rgba(212, 165, 116, 0.3);
+    }
+    
+    .hero-desc {
+      font-size: 1.3rem;
+      color: #777;
+      max-width: 600px;
+      margin: 0 auto 50px;
+      line-height: 2;
+    }
+    
+    .scroll-hint {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #555;
+      font-size: 0.9rem;
+      animation: bounce 2s infinite;
+    }
+    
+    .scroll-hint i {
+      display: block;
+      font-size: 1.5rem;
+      margin-top: 10px;
+    }
+    
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+    
+    /* 横向滚动区域 */
+    .horizontal-section {
+      padding: 100px 0;
+      overflow: hidden;
+    }
+    
+    .section-intro {
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    
+    .section-intro h2 {
+      font-size: 2.5rem;
+      color: #d4a574;
+      margin-bottom: 15px;
+      letter-spacing: 5px;
+    }
+    
+    .section-intro p {
+      color: #666;
+      font-size: 1.1rem;
+    }
+    
+    .scroll-container {
+      display: flex;
+      gap: 30px;
+      padding: 20px 50px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    
+    .scroll-container::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* 天气队弧形围墙布局 */
+    .weather-wall {
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      gap: 15px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      perspective: 1000px;
+    }
+    
+    .weather-card {
+      width: 260px;
+      height: 380px;
+      background: linear-gradient(180deg, #1a1714 0%, #151210 100%);
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+    }
+    
+    .weather-card:nth-child(1) {
+      transform: rotateY(15deg) translateY(20px);
+    }
+    
+    .weather-card:nth-child(2) {
+      transform: rotateY(5deg) translateY(0);
+      height: 400px;
+    }
+    
+    .weather-card:nth-child(3) {
+      transform: rotateY(-5deg) translateY(0);
+      height: 400px;
+    }
+    
+    .weather-card:nth-child(4) {
+      transform: rotateY(-15deg) translateY(20px);
+    }
+    
+    .weather-card:hover {
+      transform: rotateY(0) translateY(-15px) scale(1.05);
+      z-index: 10;
+      box-shadow: 0 20px 60px rgba(212, 165, 116, 0.2);
+    }
+    
+    .weather-bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      opacity: 0.2;
+      transition: opacity 0.3s;
+    }
+    
+    .weather-card:hover .weather-bg {
+      opacity: 0.35;
+    }
+    
+    .weather-card.sun .weather-bg { background: linear-gradient(180deg, #ff6b00, transparent); }
+    .weather-card.rain .weather-bg { background: linear-gradient(180deg, #4169e1, transparent); }
+    .weather-card.sand .weather-bg { background: linear-gradient(180deg, #c2b280, transparent); }
+    .weather-card.hail .weather-bg { background: linear-gradient(180deg, #87ceeb, transparent); }
+    
+    .weather-content {
+      position: relative;
+      z-index: 1;
+      padding: 30px 22px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .weather-icon {
+      font-size: 2.8rem;
+      margin-bottom: 15px;
+      transition: transform 0.3s;
+    }
+    
+    .weather-card:hover .weather-icon {
+      transform: scale(1.15);
+    }
+    
+    .weather-card.sun .weather-icon { color: #ff8c00; }
+    .weather-card.rain .weather-icon { color: #6495ed; }
+    .weather-card.sand .weather-icon { color: #daa520; }
+    .weather-card.hail .weather-icon { color: #b0e0e6; }
+    
+    .weather-name {
+      font-size: 1.5rem;
+      color: #e0e0e0;
+      margin-bottom: 8px;
+    }
+    
+    .weather-effect {
+      color: #777;
+      font-size: 0.85rem;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .weather-desc {
+      color: #666;
+      font-size: 0.85rem;
+      line-height: 1.7;
+      flex: 1;
+    }
+    
+    .weather-pokemon {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin-top: auto;
+    }
+    
+    .poke-tag {
+      background: rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      color: #d4a574;
+      padding: 4px 10px;
+      border-radius: 15px;
+      font-size: 0.75rem;
+    }
+    
+    /* 战术卡片布局 */
+    .tactics-section {
+      padding: 100px 0;
+      background: #0a0908;
+    }
+    
+    .tactics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    
+    .tactic-card {
+      background: linear-gradient(180deg, #151210 0%, #121010 100%);
+      border-radius: 16px;
+      padding: 30px 25px;
+      transition: all 0.3s;
+      border-left: 3px solid #d4a574;
+    }
+    
+    .tactic-card:hover {
+      background: #1a1714;
+      transform: translateX(5px);
+    }
+    
+    .tactic-header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .tactic-header i {
+      font-size: 1.8rem;
+      color: #d4a574;
+    }
+    
+    .tactic-header h4 {
+      color: #e0e0e0;
+      font-size: 1.2rem;
+      margin: 0;
+    }
+    
+    .tactic-desc {
+      color: #888;
+      font-size: 0.95rem;
+      line-height: 1.8;
+      margin-bottom: 15px;
+    }
+    
+    .tactic-tips {
+      color: #666;
+      font-size: 0.85rem;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .tactic-tips span {
+      color: #d4a574;
+    }
+    
+    /* 训练师 - 弧形围墙布局 */
+    .trainer-wall {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      perspective: 2000px;
+    }
+    
+    .trainer-card {
+      width: 130px;
+      height: 190px;
+      background: linear-gradient(180deg, #1a1714 0%, #151210 100%);
+      border-radius: 14px;
+      padding: 20px 12px;
+      text-align: center;
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      border-bottom: 3px solid transparent;
+    }
+    
+    .trainer-card:nth-child(1) { transform: rotateY(12deg); }
+    .trainer-card:nth-child(2) { transform: rotateY(8deg); }
+    .trainer-card:nth-child(3) { transform: rotateY(4deg); }
+    .trainer-card:nth-child(4) { transform: rotateY(1deg); }
+    .trainer-card:nth-child(5) { transform: rotateY(-1deg); }
+    .trainer-card:nth-child(6) { transform: rotateY(-4deg); }
+    .trainer-card:nth-child(7) { transform: rotateY(-8deg); }
+    .trainer-card:nth-child(8) { transform: rotateY(-12deg); }
+    
+    .trainer-card:hover {
+      transform: rotateY(0) translateY(-10px) scale(1.08);
+      z-index: 10;
+      box-shadow: 0 15px 50px rgba(212, 165, 116, 0.25);
+    }
+    
+    .trainer-card.fire { border-color: #f08030; }
+    .trainer-card.water { border-color: #6890f0; }
+    .trainer-card.grass { border-color: #78c850; }
+    .trainer-card.electric { border-color: #f8d030; }
+    .trainer-card.psychic { border-color: #f85888; }
+    .trainer-card.dragon { border-color: #7038f8; }
+    .trainer-card.dark { border-color: #705848; }
+    .trainer-card.normal { border-color: #a8a878; }
+    
+    .trainer-avatar {
+      width: 60px;
+      height: 60px;
+      background: rgba(212, 165, 116, 0.08);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+      transition: transform 0.3s;
+    }
+    
+    .trainer-card:hover .trainer-avatar {
+      transform: scale(1.15);
+    }
+    
+    .trainer-avatar i {
+      font-size: 1.6rem;
+      color: #d4a574;
+    }
+    
+    .trainer-card h4 {
+      color: #e0e0e0;
+      font-size: 1rem;
+      margin-bottom: 5px;
+    }
+    
+    .trainer-type {
+      color: #777;
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+    
+    .trainer-desc {
+      color: #555;
+      font-size: 0.7rem;
+      line-height: 1.5;
+    }
+    
+    /* 对战模式 - 大块区域 */
+    .modes-section {
+      padding: 100px 0;
+    }
+    
+    .mode-blocks {
+      display: flex;
+      gap: 0;
+    }
+    
+    .mode-block {
+      flex: 1;
+      padding: 80px 50px;
+      background: #151210;
+      text-align: center;
+      transition: all 0.3s;
+      border-right: 1px solid #0d0b09;
+    }
+    
+    .mode-block:last-child {
+      border-right: none;
+    }
+    
+    .mode-block:hover {
+      background: #1a1714;
+    }
+    
+    .mode-block i {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 25px;
+    }
+    
+    .mode-block h3 {
+      color: #e0e0e0;
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+    }
+    
+    .mode-block p {
+      color: #666;
+      font-size: 1rem;
+      max-width: 300px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+    
+    /* 底部CTA */
+    .cta-section {
+      padding: 150px 0;
+      text-align: center;
+      background: radial-gradient(ellipse at center bottom, #1a1510 0%, #0d0b09 70%);
+    }
+    
+    .cta-title {
+      font-size: 2.5rem;
+      color: #d4a574;
+      margin-bottom: 20px;
+      letter-spacing: 5px;
+    }
+    
+    .cta-text {
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+    
+    .cta-section .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 50px;
+      background: transparent;
+      border: 1px solid #d4a574;
+      color: #d4a574;
+      text-decoration: none;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      transition: all 0.3s;
+    }
+    
+    .cta-section .btn-primary:hover {
+      background: #d4a574;
+      color: #0d0b09;
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #0d0b09;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-content { text-align: center; }
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    /* 轮播图样式 - 全宽无背景 */
+    .carousel-section {
+      padding: 0;
+      background: transparent;
+    }
+    
+    .carousel-section .section-intro {
+      display: none;
+    }
+    
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      border-radius: 0;
+      overflow: hidden;
+      box-shadow: none;
+    }
+    
+    .carousel-inner {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+    
+    .carousel-slides {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+    
+    .carousel-slide {
+      min-width: 100%;
+      position: relative;
+    }
+    
+    .carousel-slide img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .carousel-slide .slide-placeholder {
+      width: 100%;
+      height: 500px;
+      background: linear-gradient(135deg, rgba(40, 35, 30, 0.9), rgba(28, 24, 20, 1));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+    }
+    
+    .carousel-slide .slide-placeholder i {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+      color: rgba(212, 165, 116, 0.2);
+    }
+    
+    .carousel-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 30px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      color: #fff;
+    }
+    
+    .carousel-caption h4 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #d4a574;
+    }
+    
+    .carousel-caption p {
+      font-size: 0.95rem;
+      color: #888;
+      margin: 0;
+    }
+    
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.6);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .carousel-btn:hover {
+      background: rgba(212, 165, 116, 0.8);
+    }
+    
+    .carousel-btn.prev { left: 20px; }
+    .carousel-btn.next { right: 20px; }
+    
+    .carousel-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+    }
+    
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(212, 165, 116, 0.3);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .carousel-dot.active {
+      background: #d4a574;
+      transform: scale(1.2);
+    }
+    
+    @media (max-width: 768px) {
+      .carousel-slide img,
+      .carousel-slide .slide-placeholder {
+        height: 300px;
+      }
+      .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      .carousel-caption h4 {
+        font-size: 1.1rem;
+      }
+      .carousel-caption p {
+        font-size: 0.85rem;
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .hero-title { font-size: 3rem; letter-spacing: 8px; }
+      .weather-card { flex: 0 0 320px; height: 450px; }
+      .tactics-grid { grid-template-columns: repeat(2, 1fr); }
+      .trainer-card { flex: 0 0 250px; }
+      .mode-blocks { flex-direction: column; }
+      .mode-block { border-right: none; border-bottom: 1px solid #0d0b09; }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 全屏Hero -->
+  <section class="hero-full">
+    <div class="hero-content">
+      <div class="hero-badge" data-aos="fade-up">TRAINER BATTLE</div>
+      <h1 class="hero-title" data-aos="fade-up" data-aos-delay="100">训练师对战</h1>
+      <p class="hero-desc" data-aos="fade-up" data-aos-delay="200">
+        与NPC训练师切磋技艺，学习天气队、空间队等经典战术，成为真正的宝可梦大师
+      </p>
+    </div>
+    <div class="scroll-hint">
+      向下滚动探索
+      <i class="bi bi-chevron-down"></i>
+    </div>
+  </section>
+
+  <!-- 天气队 - 横向滚动 -->
+  <section class="horizontal-section">
+    <div class="section-intro" data-aos="fade-up">
+      <h2>天气队战术</h2>
+      <p>利用天气效果强化己方，是最经典的战术流派</p>
+    </div>
+    <div class="weather-wall" data-aos="fade-up">
+      <div class="weather-card sun">
+        <div class="weather-bg"></div>
+        <div class="weather-content">
+          <div class="weather-icon"><i class="bi bi-sun-fill"></i></div>
+          <div class="weather-name">晴天队</div>
+          <div class="weather-effect">火系+50% · 叶绿素翻倍</div>
+          <div class="weather-desc">
+            烈日下火系威力大增，叶绿素宝可梦速度翻倍，用喷火龙开晴天配合妙蛙花输出。
+          </div>
+          <div class="weather-pokemon">
+            <span class="poke-tag">喷火龙</span>
+            <span class="poke-tag">九尾</span>
+            <span class="poke-tag">妙蛙花</span>
+          </div>
+        </div>
+      </div>
+      <div class="weather-card rain">
+        <div class="weather-bg"></div>
+        <div class="weather-content">
+          <div class="weather-icon"><i class="bi bi-cloud-rain-fill"></i></div>
+          <div class="weather-name">雨天队</div>
+          <div class="weather-effect">水系+50% · 悠游自如翻倍</div>
+          <div class="weather-desc">
+            暴雨中水系威力大增，悠游自如速度翻倍，用暴鲤龙开雨天配合刺龙王压制。
+          </div>
+          <div class="weather-pokemon">
+            <span class="poke-tag">暴鲤龙</span>
+            <span class="poke-tag">盖欧卡</span>
+            <span class="poke-tag">刺龙王</span>
+          </div>
+        </div>
+      </div>
+      <div class="weather-card sand">
+        <div class="weather-bg"></div>
+        <div class="weather-content">
+          <div class="weather-icon"><i class="bi bi-wind"></i></div>
+          <div class="weather-name">沙暴队</div>
+          <div class="weather-effect">岩石特防+50% · 沙隐回避</div>
+          <div class="weather-desc">
+            沙暴中岩石系特防提升，非岩地钢系持续损失HP，班基拉斯配合龙头地鼠消耗。
+          </div>
+          <div class="weather-pokemon">
+            <span class="poke-tag">班基拉斯</span>
+            <span class="poke-tag">河马兽</span>
+            <span class="poke-tag">龙头地鼠</span>
+          </div>
+        </div>
+      </div>
+      <div class="weather-card hail">
+        <div class="weather-bg"></div>
+        <div class="weather-content">
+          <div class="weather-icon"><i class="bi bi-snow"></i></div>
+          <div class="weather-name">冰雹队</div>
+          <div class="weather-effect">暴风雪必中 · 雪隐回避</div>
+          <div class="weather-desc">
+            冰雹中非冰系持续损失HP，暴风雪必中，用雪天王开冰雹配合冰精灵群攻。
+          </div>
+          <div class="weather-pokemon">
+            <span class="poke-tag">雪天王</span>
+            <span class="poke-tag">冰鬼护</span>
+            <span class="poke-tag">暴雪王</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 战术网格 -->
+  <section class="tactics-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>更多战术</h2>
+        <p>除了天气队，还有许多有趣的战术等你探索</p>
+      </div>
+      <div class="tactics-grid" data-aos="fade-up" data-aos-delay="100">
+        <div class="tactic-card">
+          <div class="tactic-header">
+            <i class="bi bi-arrow-repeat"></i>
+            <h4>空间队</h4>
+          </div>
+          <div class="tactic-desc">
+            "速度？在我的空间里毫无意义。"开启戏法空间后，速度慢的宝可梦反而先手出击，让笨重的钢坦克变成闪电杀手。
+          </div>
+          <div class="tactic-tips"><span>核心招式：</span>戏法空间 · 适合慢速重炮手</div>
+        </div>
+        <div class="tactic-card">
+          <div class="tactic-header">
+            <i class="bi bi-arrow-up-circle"></i>
+            <h4>接力队</h4>
+          </div>
+          <div class="tactic-desc">
+            "一层不够？那就再叠一层！"用接力棒把剑舞、冥想的强化效果传递给队友，最终接力者带着六层强化横扫全场。
+          </div>
+          <div class="tactic-tips"><span>核心招式：</span>接力棒 · 需要精密的换人时机</div>
+        </div>
+        <div class="tactic-card">
+          <div class="tactic-header">
+            <i class="bi bi-shield-check"></i>
+            <h4>受队</h4>
+          </div>
+          <div class="tactic-desc">
+            "你打不死我，但我能慢慢磨死你。"用幸福蛋、河马兽等肉盾扛住伤害，配合剧毒、鬼火让对手在绝望中倒下。
+          </div>
+          <div class="tactic-tips"><span>核心招式：</span>剧毒 / 鬼火 / 自我再生</div>
+        </div>
+        <div class="tactic-card">
+          <div class="tactic-header">
+            <i class="bi bi-lightning"></i>
+            <h4>速攻队</h4>
+          </div>
+          <div class="tactic-desc">
+            "在你出手之前，战斗已经结束了。"全队高速高攻，用雷电兽、烈咬陆鲨等速度怪物在对手反应过来之前就收割比赛。
+          </div>
+          <div class="tactic-tips"><span>核心思路：</span>先手击杀 · 不给对手喘息机会</div>
+        </div>
+        <div class="tactic-card">
+          <div class="tactic-header">
+            <i class="bi bi-triangle"></i>
+            <h4>钉子队</h4>
+          </div>
+          <div class="tactic-desc">
+            "欢迎来到我的地盘，入场费了解一下？"撒下隐形岩、毒菱，每次换人都要扣血，配合吼叫强制换人，不战而屈人之兵。
+          </div>
+          <div class="tactic-tips"><span>核心招式：</span>隐形岩 / 毒菱 / 吼叫</div>
+        </div>
+        <div class="tactic-card">
+          <div class="tactic-header">
+            <i class="bi bi-stars"></i>
+            <h4>辅助队</h4>
+          </div>
+          <div class="tactic-desc">
+            "我不需要亲自动手，我的队友会替我解决一切。"用光墙减伤、顺风加速、治愈愿望回血，让队友在最佳状态下战斗。
+          </div>
+          <div class="tactic-tips"><span>核心招式：</span>光墙 / 反射壁 / 顺风</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 训练师 - 弧形围墙 -->
+  <section class="horizontal-section">
+    <div class="section-intro" data-aos="fade-up">
+      <h2>NPC训练师</h2>
+      <p>在服务器各地遇见他们，学习不同的战术</p>
+    </div>
+    <div class="trainer-wall" data-aos="fade-up">
+      <div class="trainer-card fire">
+        <div class="trainer-avatar"><i class="bi bi-fire"></i></div>
+        <h4>烈焰</h4>
+        <div class="trainer-type">火系 · 晴天队</div>
+        <div class="trainer-desc">喷火龙王牌</div>
+      </div>
+      <div class="trainer-card water">
+        <div class="trainer-avatar"><i class="bi bi-droplet-fill"></i></div>
+        <h4>碧波</h4>
+        <div class="trainer-type">水系 · 雨天队</div>
+        <div class="trainer-desc">暴鲤龙横扫</div>
+      </div>
+      <div class="trainer-card grass">
+        <div class="trainer-avatar"><i class="bi bi-tree-fill"></i></div>
+        <h4>森林</h4>
+        <div class="trainer-type">草系 · 叶绿素</div>
+        <div class="trainer-desc">妙蛙花高速</div>
+      </div>
+      <div class="trainer-card electric">
+        <div class="trainer-avatar"><i class="bi bi-lightning-fill"></i></div>
+        <h4>雷电</h4>
+        <div class="trainer-type">电系 · 速攻队</div>
+        <div class="trainer-desc">皮卡丘闪电</div>
+      </div>
+      <div class="trainer-card psychic">
+        <div class="trainer-avatar"><i class="bi bi-eye-fill"></i></div>
+        <h4>灵能</h4>
+        <div class="trainer-type">超能 · 空间队</div>
+        <div class="trainer-desc">胡地掌控</div>
+      </div>
+      <div class="trainer-card dragon">
+        <div class="trainer-avatar"><i class="bi bi-hurricane"></i></div>
+        <h4>龙族</h4>
+        <div class="trainer-type">龙系 · 最强</div>
+        <div class="trainer-desc">快龙无敌</div>
+      </div>
+      <div class="trainer-card dark">
+        <div class="trainer-avatar"><i class="bi bi-moon-fill"></i></div>
+        <h4>暗夜</h4>
+        <div class="trainer-type">恶系 · 沙暴队</div>
+        <div class="trainer-desc">班基拉斯</div>
+      </div>
+      <div class="trainer-card normal">
+        <div class="trainer-avatar"><i class="bi bi-star-fill"></i></div>
+        <h4>全能</h4>
+        <div class="trainer-type">均衡 · 无弱点</div>
+        <div class="trainer-desc">全面强大</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>对战精彩瞬间</h2>
+        <p>记录训练师们的高光时刻</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>对战截图 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>天气队对决</h4>
+                <p>晴天队与雨天队的巅峰对决</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>对战截图 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>空间队逆转</h4>
+                <p>戏法空间下的绝地反击</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>对战截图 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>龙族对决</h4>
+                <p>最强龙系训练师的较量</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 对战模式 -->
+  <section class="modes-section">
+    <div class="section-intro" data-aos="fade-up">
+      <h2>对战模式</h2>
+      <p>多种模式满足不同需求</p>
+    </div>
+    <div class="mode-blocks" data-aos="fade-up" data-aos-delay="100">
+      <div class="mode-block">
+        <i class="bi bi-person"></i>
+        <h3>单打对战</h3>
+        <p>经典1v1，考验对单体宝可梦的理解和预判</p>
+      </div>
+      <div class="mode-block">
+        <i class="bi bi-people"></i>
+        <h3>双打对战</h3>
+        <p>2v2同时出战，天气队空间队更能发挥威力</p>
+      </div>
+      <div class="mode-block">
+        <i class="bi bi-trophy"></i>
+        <h3>挑战赛</h3>
+        <p>连续挑战多位训练师，考验队伍续航能力</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 class="cta-title" data-aos="fade-up">准备好挑战了吗</h2>
+    <p class="cta-text" data-aos="fade-up" data-aos-delay="100">组建你的队伍，向最强训练师发起挑战</p>
+    <a href="guide.html" class="btn-primary" data-aos="fade-up" data-aos-delay="200">
+      <i class="bi bi-play-circle"></i> 立即加入服务器
+    </a>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    AOS.init({ duration: 800, once: true });
+    
+    // 轮播图功能
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const totalSlides = slides.length;
+    const slidesContainer = document.getElementById('carouselSlides');
+    const dotsContainer = document.getElementById('carouselDots');
+    
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+    
+    function updateCarousel() {
+      slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+      document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+    
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateCarousel();
+    }
+    
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+    }
+    
+    function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
+    }
+    
+    setInterval(nextSlide, 5000);
+  </script>
+</body>
+</html>

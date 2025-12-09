@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cobblemon 百科 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/cobblemon.css" rel="stylesheet">
+  <link href="static/css/carousel.css" rel="stylesheet">
+</head>
+<body style="background:#1c1814;">
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-controller"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+  <div id="particles-js"></div>
+  <!-- 导航栏（由navbar.js自动生成） -->
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/navbar.js"></script>
+
+  <section class="cobblemon-page">
+    <div class="container">
+      <div class="cobblemon-header" data-aos="fade-down">
+        <h1 class="cobblemon-title">Cobblemon 百科</h1>
+        <p class="cobblemon-subtitle">方块宝可梦 · 全方位攻略指南</p>
+      </div>
+
+      <div class="cobblemon-tabs" data-aos="fade-up">
+        <button class="cobblemon-tab active" data-tab="overview"><i class="bi bi-grid-3x3-gap"></i> 总览</button>
+        <button class="cobblemon-tab" data-tab="biomes"><i class="bi bi-map"></i> 生物群系</button>
+        <button class="cobblemon-tab" data-tab="items"><i class="bi bi-box-seam"></i> 物品图鉴</button>
+        <button class="cobblemon-tab" data-tab="evolution"><i class="bi bi-arrow-repeat"></i> 进化图鉴</button>
+        <button class="cobblemon-tab" data-tab="mounts"><i class="bi bi-bicycle"></i> 骑乘列表</button>
+        <button class="cobblemon-tab" data-tab="cooking"><i class="bi bi-fire"></i> 烹饪食谱</button>
+        <button class="cobblemon-tab" data-tab="models"><i class="bi bi-box"></i> 3D模型</button>
+        <button class="cobblemon-tab" data-tab="moves"><i class="bi bi-lightning-charge"></i> 招式图鉴</button>
+        <button class="cobblemon-tab" data-tab="abilities"><i class="bi bi-stars"></i> 特性图鉴</button>
+        <button class="cobblemon-tab" data-tab="typechart"><i class="bi bi-table"></i> 属性相克</button>
+      </div>
+
+      <div class="cobblemon-panel active" data-panel="overview">
+        <div class="feature-grid">
+          <div class="feature-card" data-aos="fade-up" onclick="switchTab('biomes')">
+            <div class="feature-icon"><i class="bi bi-map"></i></div>
+            <h3 class="feature-title">生物群系查询</h3>
+            <p class="feature-desc">查询宝可梦在哪些生物群系出现</p>
+            <span class="feature-badge">50+ 群系</span>
+          </div>
+          <div class="feature-card" data-aos="fade-up" data-aos-delay="100" onclick="switchTab('items')">
+            <div class="feature-icon"><i class="bi bi-box-seam"></i></div>
+            <h3 class="feature-title">物品图鉴</h3>
+            <p class="feature-desc">精灵球、进化石、治疗仪等物品</p>
+            <span class="feature-badge">700+ 物品</span>
+          </div>
+          <div class="feature-card" data-aos="fade-up" data-aos-delay="200" onclick="switchTab('evolution')">
+            <div class="feature-icon"><i class="bi bi-arrow-repeat"></i></div>
+            <h3 class="feature-title">进化图鉴</h3>
+            <p class="feature-desc">查询宝可梦进化条件</p>
+            <span class="feature-badge">进化链</span>
+          </div>
+          <div class="feature-card" data-aos="fade-up" data-aos-delay="300" onclick="switchTab('mounts')">
+            <div class="feature-icon"><i class="bi bi-bicycle"></i></div>
+            <h3 class="feature-title">骑乘列表</h3>
+            <p class="feature-desc">1.7.0新功能！可骑乘宝可梦</p>
+            <span class="feature-badge">NEW</span>
+          </div>
+          <div class="feature-card" data-aos="fade-up" data-aos-delay="400" onclick="switchTab('cooking')">
+            <div class="feature-icon"><i class="bi bi-fire"></i></div>
+            <h3 class="feature-title">烹饪食谱</h3>
+            <p class="feature-desc">1.7.0新功能！篝火锅食谱</p>
+            <span class="feature-badge">NEW</span>
+          </div>
+          <a class="feature-card" data-aos="fade-up" data-aos-delay="500" href="pokedex.html">
+            <div class="feature-icon"><i class="bi bi-book"></i></div>
+            <h3 class="feature-title">宝可梦图鉴</h3>
+            <p class="feature-desc">完整的宝可梦图鉴</p>
+            <span class="feature-badge">1000+ 宝可梦</span>
+          </a>
+          <div class="feature-card" data-aos="fade-up" data-aos-delay="600" onclick="switchTab('moves')">
+            <div class="feature-icon"><i class="bi bi-lightning-charge"></i></div>
+            <h3 class="feature-title">招式图鉴</h3>
+            <p class="feature-desc">所有招式效果、威力、PP</p>
+            <span class="feature-badge">800+ 招式</span>
+          </div>
+          <div class="feature-card" data-aos="fade-up" data-aos-delay="700" onclick="switchTab('abilities')">
+            <div class="feature-icon"><i class="bi bi-stars"></i></div>
+            <h3 class="feature-title">特性图鉴</h3>
+            <p class="feature-desc">特性效果详解</p>
+            <span class="feature-badge">300+ 特性</span>
+          </div>
+          <div class="feature-card" data-aos="fade-up" data-aos-delay="800" onclick="switchTab('typechart')">
+            <div class="feature-icon"><i class="bi bi-table"></i></div>
+            <h3 class="feature-title">属性相克表</h3>
+            <p class="feature-desc">交互式属性克制查询</p>
+            <span class="feature-badge">18 属性</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cobblemon-panel" data-panel="biomes">
+        <div class="cobblemon-search"><input type="text" class="cobblemon-search-input" placeholder="搜索生物群系..." id="biomeSearch"></div>
+        <div class="category-filters">
+          <button class="category-btn active" data-category="all">全部</button>
+          <button class="category-btn" data-category="plains">平原</button>
+          <button class="category-btn" data-category="forest">森林</button>
+          <button class="category-btn" data-category="mountain">山地</button>
+          <button class="category-btn" data-category="ocean">海洋</button>
+          <button class="category-btn" data-category="desert">沙漠</button>
+          <button class="category-btn" data-category="snow">雪地</button>
+          <button class="category-btn" data-category="cave">洞穴</button>
+        </div>
+        <div class="biome-grid" id="biomeGrid"></div>
+      </div>
+
+      <div class="cobblemon-panel" data-panel="items">
+        <div class="cobblemon-search"><input type="text" class="cobblemon-search-input" placeholder="搜索物品..." id="itemSearch"></div>
+        <div class="category-filters">
+          <button class="category-btn active" data-category="all">全部</button>
+          <button class="category-btn" data-category="pokeball">精灵球</button>
+          <button class="category-btn" data-category="evolution">进化道具</button>
+          <button class="category-btn" data-category="held">携带物品</button>
+          <button class="category-btn" data-category="medicine">药品</button>
+          <button class="category-btn" data-category="berry">树果</button>
+        </div>
+        <div class="item-grid" id="itemGrid"></div>
+      </div>
+
+      <div class="cobblemon-panel" data-panel="evolution">
+        <div class="cobblemon-search"><input type="text" class="cobblemon-search-input" placeholder="搜索宝可梦..." id="evolutionSearch"></div>
+        <div class="category-filters">
+          <button class="category-btn active" data-category="all">全部</button>
+          <button class="category-btn" data-category="level">等级进化</button>
+          <button class="category-btn" data-category="stone">进化石</button>
+          <button class="category-btn" data-category="trade">交换进化</button>
+          <button class="category-btn" data-category="friendship">亲密度</button>
+        </div>
+        <div id="evolutionList"></div>
+      </div>
+
+      <div class="cobblemon-panel" data-panel="mounts">
+        <div class="cobblemon-search"><input type="text" class="cobblemon-search-input" placeholder="搜索可骑乘宝可梦..." id="mountSearch"></div>
+        <div class="category-filters">
+          <button class="category-btn active" data-category="all">全部</button>
+          <button class="category-btn" data-category="land">🏃 陆地</button>
+          <button class="category-btn" data-category="water">🌊 水上</button>
+          <button class="category-btn" data-category="fly">🦅 飞行</button>
+        </div>
+        <div class="mount-grid" id="mountGrid"></div>
+      </div>
+
+      <div class="cobblemon-panel" data-panel="models">
+        <div class="cobblemon-search"><input type="text" class="cobblemon-search-input" placeholder="搜索宝可梦模型..." id="modelSearch"></div>
+        <div class="model-viewer-container">
+          <div class="model-list" id="modelList"></div>
+          <div class="model-viewer" id="modelViewer">
+            <div class="model-placeholder">选择一个宝可梦查看3D模型</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 招式图鉴 -->
+      <div class="cobblemon-panel" data-panel="moves">
+        <div class="cobblemon-search"><input type="text" class="cobblemon-search-input" placeholder="搜索招式名称..." id="moveSearch"></div>
+        <div class="category-filters">
+          <button class="category-btn active" data-category="all">全部</button>
+          <button class="category-btn" data-category="physical">物理</button>
+          <button class="category-btn" data-category="special">特殊</button>
+          <button class="category-btn" data-category="status">变化</button>
+        </div>
+        <div class="type-filters" id="moveTypeFilters"></div>
+        <div class="move-list" id="moveList"></div>
+        <div class="load-more-container" id="moveLoadMore" style="display:none;">
+          <button class="load-more-btn" onclick="loadMoreMoves()">加载更多招式</button>
+        </div>
+      </div>
+
+      <!-- 特性图鉴 -->
+      <div class="cobblemon-panel" data-panel="abilities">
+        <div class="cobblemon-search"><input type="text" class="cobblemon-search-input" placeholder="搜索特性名称..." id="abilitySearch"></div>
+        <div class="ability-list" id="abilityList"></div>
+        <div class="load-more-container" id="abilityLoadMore" style="display:none;">
+          <button class="load-more-btn" onclick="loadMoreAbilities()">加载更多特性</button>
+        </div>
+      </div>
+
+      <!-- 属性相克表 -->
+      <div class="cobblemon-panel" data-panel="typechart">
+        <div class="typechart-intro">
+          <h3><i class="bi bi-info-circle"></i> 属性相克查询</h3>
+          <p>点击选择1-2个属性，查看双属性宝可梦的综合克制关系</p>
+        </div>
+        <div class="typechart-selector">
+          <div class="type-select-group">
+            <label>选择属性（最多2个）：</label>
+            <div class="type-buttons" id="typeChartButtons"></div>
+          </div>
+          <div class="selected-types" id="selectedTypes">
+            <span class="selected-label">已选：</span>
+            <span class="selected-none">未选择</span>
+          </div>
+          <button class="clear-types-btn" id="clearTypesBtn" onclick="clearTypeSelection()" style="display:none;">清除选择</button>
+        </div>
+        <div class="typechart-result" id="typeChartResult">
+          <div class="typechart-placeholder">
+            <i class="bi bi-hand-index"></i>
+            <p>点击上方属性按钮开始查询</p>
+          </div>
+        </div>
+        <div class="typechart-table-container">
+          <h4><i class="bi bi-grid-3x3"></i> 完整属性相克表</h4>
+          <div class="typechart-table" id="typeChartTable"></div>
+          <div class="typechart-legend">
+            <span class="legend-item"><span class="legend-color super"></span> 2× 效果绝佳</span>
+            <span class="legend-item"><span class="legend-color normal"></span> 1× 效果一般</span>
+            <span class="legend-item"><span class="legend-color not-very"></span> 0.5× 效果不好</span>
+            <span class="legend-item"><span class="legend-color immune"></span> 0× 没有效果</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="cobblemon-panel" data-panel="cooking">
+        <div class="cobblemon-search"><input type="text" class="cobblemon-search-input" placeholder="搜索食谱..." id="cookingSearch"></div>
+        <div class="category-filters">
+          <button class="category-btn active" data-category="all">全部</button>
+          <button class="category-btn" data-category="snack">Poké Snacks</button>
+          <button class="category-btn" data-category="curry">咖喱</button>
+          <button class="category-btn" data-category="soup">汤品</button>
+        </div>
+        <div class="recipe-grid" id="recipeGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>Cobblemon 风采</h2>
+        <p>精彩的游戏截图</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>Cobblemon 截图 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>宝可梦世界</h4>
+                <p>精美的宝可梦模型</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>Cobblemon 截图 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>对战场景</h4>
+                <p>精彩的对战画面</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>Cobblemon 截图 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>探索世界</h4>
+                <p>广阔的冒险地图</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p class="footer-copyright">&copy; 2024 GalaxyPokemon. All Rights Reserved.</p>
+        <p class="footer-note">本站与 Mojang Studios 和 The Pokémon Company 无关。</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script src="static/js/cobblemon.js"></script>
+  <script src="static/js/carousel.js"></script>
+  <script src="static/js/music-player.js"></script>
+</body>
+</html>

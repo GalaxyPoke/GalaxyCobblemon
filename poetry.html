@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>诗词文化 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&family=Noto+Serif+SC:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: block;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: '中华薪火体', 'Noto Sans SC', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+      line-height: 1.8;
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .loader-content {
+      text-align: center;
+    }
+    
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+    
+    /* 页面头部 - 诗意风格 */
+    .page-header {
+      background: linear-gradient(135deg, rgba(28, 24, 20, 0.9), rgba(40, 35, 30, 0.85)), 
+                  url('static/image/poetry-bg.png') center/cover;
+      padding: 140px 0 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse at center, transparent 0%, rgba(28, 24, 20, 0.8) 70%);
+    }
+    
+    .page-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 120px;
+      background: linear-gradient(to top, #1c1814, transparent);
+    }
+    
+    .header-decoration {
+      position: absolute;
+      font-size: 15rem;
+      color: rgba(212, 165, 116, 0.03);
+      pointer-events: none;
+    }
+    
+    .header-decoration.left { top: 10%; left: 5%; }
+    .header-decoration.right { bottom: 10%; right: 5%; }
+    
+    .page-title {
+      font-size: 3.5rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      text-shadow: 0 4px 20px rgba(212, 165, 116, 0.3);
+      letter-spacing: 0.2em;
+    }
+    
+    .page-subtitle {
+      color: #999;
+      font-size: 1.3rem;
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+    
+    .page-quote {
+      color: #777;
+      font-size: 1rem;
+      margin-top: 1.5rem;
+    }
+    
+    .breadcrumb-nav {
+      margin-bottom: 1.5rem;
+    }
+    
+    .breadcrumb-nav a {
+      color: #888;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .breadcrumb-nav a:hover {
+      color: #d4a574;
+    }
+    
+    .breadcrumb-nav span {
+      color: #666;
+      margin: 0 0.5rem;
+    }
+    
+    /* 区块样式 */
+    .section {
+      padding: 80px 0;
+    }
+    
+    .section-dark {
+      background: #1c1814;
+    }
+    
+    .section-light {
+      background: linear-gradient(180deg, #201c18 0%, #1c1814 100%);
+    }
+    
+    .section-title {
+      font-size: 2rem;
+      color: #d4a574;
+      text-align: center;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    .section-subtitle {
+      text-align: center;
+      color: #888;
+      margin-bottom: 3rem;
+      font-size: 1.1rem;
+    }
+    
+    /* 诗词展示卡片 */
+    .poetry-showcase {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.6), rgba(30, 25, 20, 0.8));
+      border: 1px solid rgba(212, 165, 116, 0.15);
+      border-radius: 20px;
+      padding: 3rem;
+      margin-bottom: 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .poetry-showcase::before {
+      content: '"';
+      position: absolute;
+      top: 20px;
+      left: 30px;
+      font-size: 8rem;
+      color: rgba(212, 165, 116, 0.08);
+      font-family: 'Noto Serif SC', serif;
+      line-height: 1;
+    }
+    
+    .poetry-content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .poetry-text {
+      font-size: 1.8rem;
+      color: #e8d5c4;
+      line-height: 2.2;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.1em;
+    }
+    
+    .poetry-author {
+      color: #d4a574;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .poetry-title {
+      color: #888;
+      font-size: 0.95rem;
+    }
+    
+    /* 功能介绍卡片 */
+    .feature-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .feature-card {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.8), rgba(30, 25, 20, 0.9));
+      border: 1px solid rgba(212, 165, 116, 0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, #d4a574, transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(212, 165, 116, 0.4);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+    
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.2), rgba(212, 165, 116, 0.1));
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      color: #d4a574;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s ease;
+    }
+    
+    .feature-card:hover .feature-icon {
+      transform: scale(1.1) rotate(5deg);
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.3), rgba(212, 165, 116, 0.15));
+    }
+    
+    .feature-card h3 {
+      color: #d4a574;
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      transition: color 0.3s;
+    }
+    
+    .feature-card:hover h3 {
+      color: #e8c49a;
+    }
+    
+    .feature-card p {
+      color: #aaa;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    
+    .feature-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    
+    .feature-tag {
+      background: rgba(212, 165, 116, 0.1);
+      color: #d4a574;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+    }
+    
+    .feature-card:hover .feature-tag {
+      background: rgba(212, 165, 116, 0.2);
+    }
+    
+    /* 内容分类展示 */
+    .content-categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+    
+    .category-card {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.7), rgba(30, 25, 20, 0.8));
+      border: 1px solid rgba(212, 165, 116, 0.1);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    
+    .category-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(212, 165, 116, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+    
+    .category-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    
+    .category-card h4 {
+      color: #d4a574;
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .category-card p {
+      color: #888;
+      font-size: 0.85rem;
+      margin: 0;
+    }
+    
+    .category-count {
+      display: inline-block;
+      background: rgba(212, 165, 116, 0.15);
+      color: #d4a574;
+      padding: 0.2rem 0.6rem;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      margin-top: 0.8rem;
+    }
+    
+    /* 活动展示 */
+    .activity-showcase {
+      background: linear-gradient(145deg, rgba(212, 165, 116, 0.1), rgba(184, 149, 110, 0.05));
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 20px;
+      padding: 2.5rem;
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease;
+    }
+    
+    .activity-showcase:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+    }
+    
+    .activity-icon {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      color: #1c1814;
+      flex-shrink: 0;
+    }
+    
+    .activity-content h3 {
+      color: #d4a574;
+      font-size: 1.5rem;
+      margin-bottom: 0.8rem;
+    }
+    
+    .activity-content p {
+      color: #aaa;
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+    
+    .activity-features {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    
+    .activity-feature {
+      background: rgba(212, 165, 116, 0.15);
+      color: #d4a574;
+      padding: 0.4rem 1rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    
+    /* 社区互动 */
+    .community-features {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+    
+    .community-item {
+      text-align: center;
+      padding: 2rem 1rem;
+      background: rgba(40, 35, 30, 0.5);
+      border-radius: 16px;
+      border: 1px solid rgba(212, 165, 116, 0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .community-item:hover {
+      transform: translateY(-5px);
+      border-color: rgba(212, 165, 116, 0.3);
+    }
+    
+    .community-item i {
+      font-size: 2rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      display: block;
+    }
+    
+    .community-item h4 {
+      color: #e0e0e0;
+      font-size: 1rem;
+      margin-bottom: 0.5rem;
+    }
+    
+    .community-item p {
+      color: #888;
+      font-size: 0.85rem;
+      margin: 0;
+    }
+    
+    /* 一言展示 */
+    .hitokoto-box {
+      background: linear-gradient(145deg, rgba(40, 35, 30, 0.8), rgba(30, 25, 20, 0.9));
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      position: relative;
+    }
+    
+    .hitokoto-box::before,
+    .hitokoto-box::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border: 2px solid rgba(212, 165, 116, 0.3);
+    }
+    
+    .hitokoto-box::before {
+      top: 15px;
+      left: 15px;
+      border-right: none;
+      border-bottom: none;
+    }
+    
+    .hitokoto-box::after {
+      bottom: 15px;
+      right: 15px;
+      border-left: none;
+      border-top: none;
+    }
+    
+    .hitokoto-text {
+      font-size: 1.3rem;
+      color: #e8d5c4;
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+    
+    .hitokoto-from {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    .hitokoto-type {
+      display: inline-block;
+      background: rgba(212, 165, 116, 0.15);
+      color: #d4a574;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      margin-top: 1rem;
+    }
+    
+    /* 温馨提示 */
+    .tip-box {
+      background: linear-gradient(145deg, rgba(46, 204, 113, 0.1), rgba(39, 174, 96, 0.05));
+      border: 1px solid rgba(46, 204, 113, 0.2);
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+    
+    .tip-box > i {
+      font-size: 2rem;
+      color: #2ecc71;
+      flex-shrink: 0;
+    }
+    
+    .tip-content h4 {
+      color: #2ecc71;
+      margin-bottom: 0.5rem;
+    }
+    
+    .tip-content p {
+      color: #aaa;
+      margin: 0;
+    }
+    
+    /* 页脚 */
+    footer {
+      background: #151210;
+      padding: 40px 0;
+      text-align: center;
+      border-top: 1px solid rgba(212, 165, 116, 0.1);
+    }
+    
+    footer p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    /* 响应式 */
+    @media (max-width: 992px) {
+      .community-features {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .activity-showcase {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .page-title {
+        font-size: 2.5rem;
+      }
+      
+      .section {
+        padding: 50px 0;
+      }
+      
+      .poetry-text {
+        font-size: 1.3rem;
+      }
+      
+      .tip-box {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-book"></i></div>
+      <div class="loader-text">品读诗词中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <!-- 导航栏 -->
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 页面头部 -->
+  <header class="page-header">
+    <div class="header-decoration left">诗</div>
+    <div class="header-decoration right">词</div>
+    <div class="container" style="position: relative; z-index: 1;">
+      <h1 class="page-title" data-aos="fade-up">诗 词 雅 韵</h1>
+      <p class="page-subtitle" data-aos="fade-up" data-aos-delay="100">在方块世界中，邂逅千年文化之美</p>
+      <p class="page-quote" data-aos="fade-up" data-aos-delay="200">—— 腹有诗书气自华 ——</p>
+    </div>
+  </header>
+
+  <!-- 诗词展示 -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="poetry-showcase" data-aos="fade-up">
+        <div class="poetry-content">
+          <div class="poetry-text" id="poetryText">
+            海上生明月，天涯共此时。<br>
+            情人怨遥夜，竟夕起相思。
+          </div>
+          <div class="poetry-author" id="poetryAuthor">—— 张九龄</div>
+          <div class="poetry-title" id="poetryTitle">《望月怀远》</div>
+        </div>
+      </div>
+      
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-journal-richtext"></i>
+        诗词典藏
+      </div>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+        收录中华古典诗词，让文化在游戏中传承
+      </p>
+      
+      <div class="feature-cards">
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="feature-icon"><i class="bi bi-book"></i></div>
+          <h3>海量诗词库</h3>
+          <p>
+            基于 chinese-poetry 开源项目，我们收录了从《诗经》到清代的数万首经典诗词。
+            唐诗三百首、宋词精选、元曲名篇……在游戏中随时品读，感受文字之美。
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">唐诗</span>
+            <span class="feature-tag">宋词</span>
+            <span class="feature-tag">元曲</span>
+            <span class="feature-tag">诗经</span>
+          </div>
+        </div>
+        
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="feature-icon"><i class="bi bi-translate"></i></div>
+          <h3>详尽注释</h3>
+          <p>
+            每首诗词都配有白话翻译、情感解析和创作背景介绍。
+            不只是读诗，更是理解诗人的心境，走进那个时代的故事。
+            让古典文学不再晦涩难懂！
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">白话翻译</span>
+            <span class="feature-tag">情感解析</span>
+            <span class="feature-tag">创作背景</span>
+          </div>
+        </div>
+        
+        <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+          <div class="feature-icon"><i class="bi bi-heart"></i></div>
+          <h3>互动收藏</h3>
+          <p>
+            遇到喜欢的诗词？点个赞，加入收藏！
+            还可以写下你的感悟和评论，与其他玩家分享你对诗词的理解。
+            在这里，每个人都是诗词的传承者。
+          </p>
+          <div class="feature-tags">
+            <span class="feature-tag">点赞</span>
+            <span class="feature-tag">收藏</span>
+            <span class="feature-tag">评论</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 内容分类 -->
+  <section class="section section-light">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-grid-3x3-gap"></i>
+        多元内容
+      </div>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+        不只是诗词，更多精彩内容等你探索
+      </p>
+      
+      <div class="content-categories">
+        <div class="category-card" data-aos="fade-up" data-aos-delay="100">
+          <span class="category-icon">📜</span>
+          <h4>古典诗词</h4>
+          <p>唐诗宋词元曲，千年文化精粹</p>
+          <span class="category-count">50000+ 首</span>
+        </div>
+        
+        <div class="category-card" data-aos="fade-up" data-aos-delay="150">
+          <span class="category-icon">🎌</span>
+          <h4>动漫语录</h4>
+          <p>二次元经典台词，热血与感动</p>
+          <span class="category-count">一言 API</span>
+        </div>
+        
+        <div class="category-card" data-aos="fade-up" data-aos-delay="200">
+          <span class="category-icon">💭</span>
+          <h4>人生哲言</h4>
+          <p>智慧箴言，启迪心灵的文字</p>
+          <span class="category-count">一言 API</span>
+        </div>
+        
+        <div class="category-card" data-aos="fade-up" data-aos-delay="250">
+          <span class="category-icon">📖</span>
+          <h4>文学名句</h4>
+          <p>中外名著经典语句摘录</p>
+          <span class="category-count">一言 API</span>
+        </div>
+        
+        <div class="category-card" data-aos="fade-up" data-aos-delay="300">
+          <span class="category-icon">🎮</span>
+          <h4>游戏台词</h4>
+          <p>游戏中的经典对白与独白</p>
+          <span class="category-count">一言 API</span>
+        </div>
+        
+      </div>
+      
+      <!-- 一言展示 -->
+      <div class="hitokoto-box" data-aos="fade-up">
+        <div class="hitokoto-text" id="hitokotoText">
+          "我们仰望着同一片天空，却看着不同的地方。"
+        </div>
+        <div class="hitokoto-from" id="hitokotoFrom">—— 《秒速五厘米》</div>
+        <div class="hitokoto-type">动漫</div>
+      </div>
+      
+      <!-- 玩家投稿 - 重点突出 -->
+      <div style="margin-top: 4rem;">
+        <div class="section-title" data-aos="fade-up">
+          <i class="bi bi-pencil-square"></i>
+          玩家投稿
+        </div>
+        <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+          这里不只有经典，更有你的声音
+        </p>
+        
+        <!-- 投稿亮点 -->
+        <div style="background: linear-gradient(145deg, rgba(212, 165, 116, 0.1), rgba(184, 149, 110, 0.05)); border: 1px solid rgba(212, 165, 116, 0.25); border-radius: 20px; padding: 2.5rem; margin-bottom: 3rem;" data-aos="fade-up">
+          <div style="text-align: center; margin-bottom: 2rem;">
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #d4a574, #b8956e); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; font-size: 2rem; color: #1c1814;">
+              <i class="bi bi-cloud-upload"></i>
+            </div>
+            <h3 style="color: #d4a574; font-size: 1.5rem; margin-bottom: 0.5rem;">分享你的收藏</h3>
+            <p style="color: #aaa; max-width: 600px; margin: 0 auto;">
+              每个人心中都有那么几句话，在某个瞬间触动了你。<br>
+              现在，你可以把它们分享给所有人！
+            </p>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem;">
+            <div style="background: rgba(28, 24, 20, 0.5); border-radius: 12px; padding: 1.5rem; text-align: center;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">📜</span>
+              <h4 style="color: #e0e0e0; font-size: 1rem; margin-bottom: 0.3rem;">诗词佳句</h4>
+              <p style="color: #888; font-size: 0.85rem; margin: 0;">你珍藏的古典诗词</p>
+            </div>
+            <div style="background: rgba(28, 24, 20, 0.5); border-radius: 12px; padding: 1.5rem; text-align: center;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">🎌</span>
+              <h4 style="color: #e0e0e0; font-size: 1rem; margin-bottom: 0.3rem;">动漫台词</h4>
+              <p style="color: #888; font-size: 0.85rem; margin: 0;">那些让你热血沸腾的话</p>
+            </div>
+            <div style="background: rgba(28, 24, 20, 0.5); border-radius: 12px; padding: 1.5rem; text-align: center;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">🎵</span>
+              <h4 style="color: #e0e0e0; font-size: 1rem; margin-bottom: 0.3rem;">音乐歌词</h4>
+              <p style="color: #888; font-size: 0.85rem; margin: 0;">触动心弦的歌词片段</p>
+            </div>
+            <div style="background: rgba(28, 24, 20, 0.5); border-radius: 12px; padding: 1.5rem; text-align: center;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">💭</span>
+              <h4 style="color: #e0e0e0; font-size: 1rem; margin-bottom: 0.3rem;">人生感悟</h4>
+              <p style="color: #888; font-size: 0.85rem; margin: 0;">你的原创或收藏的哲言</p>
+            </div>
+            <div style="background: rgba(28, 24, 20, 0.5); border-radius: 12px; padding: 1.5rem; text-align: center;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">📖</span>
+              <h4 style="color: #e0e0e0; font-size: 1rem; margin-bottom: 0.3rem;">书籍摘录</h4>
+              <p style="color: #888; font-size: 0.85rem; margin: 0;">小说、散文中的金句</p>
+            </div>
+            <div style="background: rgba(28, 24, 20, 0.5); border-radius: 12px; padding: 1.5rem; text-align: center;">
+              <span style="font-size: 2rem; display: block; margin-bottom: 0.5rem;">✨</span>
+              <h4 style="color: #e0e0e0; font-size: 1rem; margin-bottom: 0.3rem;">更多内容</h4>
+              <p style="color: #888; font-size: 0.85rem; margin: 0;">任何你想分享的文字</p>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 高赞系统 -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+          <div style="background: linear-gradient(145deg, rgba(40, 35, 30, 0.8), rgba(30, 25, 20, 0.9)); border: 1px solid rgba(212, 165, 116, 0.15); border-radius: 16px; padding: 2rem;" data-aos="fade-up" data-aos-delay="100">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+              <div style="width: 50px; height: 50px; background: rgba(231, 76, 60, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #e74c3c;">
+                <i class="bi bi-heart-fill"></i>
+              </div>
+              <h3 style="color: #d4a574; font-size: 1.2rem; margin: 0;">点赞系统</h3>
+            </div>
+            <p style="color: #aaa; line-height: 1.8; margin: 0;">
+              看到喜欢的内容？给它点个赞！你的每一次点赞都是对分享者的鼓励。
+              高赞内容会被更多人看到，让好的文字传播得更远。
+            </p>
+          </div>
+          
+          <div style="background: linear-gradient(145deg, rgba(40, 35, 30, 0.8), rgba(30, 25, 20, 0.9)); border: 1px solid rgba(212, 165, 116, 0.15); border-radius: 16px; padding: 2rem;" data-aos="fade-up" data-aos-delay="200">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+              <div style="width: 50px; height: 50px; background: rgba(241, 196, 15, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #f1c40f;">
+                <i class="bi bi-trophy-fill"></i>
+              </div>
+              <h3 style="color: #d4a574; font-size: 1.2rem; margin: 0;">高赞精选</h3>
+            </div>
+            <p style="color: #aaa; line-height: 1.8; margin: 0;">
+              获得高赞的投稿会进入精选榜单，在游戏中随机展示给所有玩家。
+              也许你分享的那句话，会成为某个人今天的治愈！
+            </p>
+          </div>
+          
+          <div style="background: linear-gradient(145deg, rgba(40, 35, 30, 0.8), rgba(30, 25, 20, 0.9)); border: 1px solid rgba(212, 165, 116, 0.15); border-radius: 16px; padding: 2rem;" data-aos="fade-up" data-aos-delay="300">
+            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+              <div style="width: 50px; height: 50px; background: rgba(52, 152, 219, 0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #3498db;">
+                <i class="bi bi-chat-quote-fill"></i>
+              </div>
+              <h3 style="color: #d4a574; font-size: 1.2rem; margin: 0;">评论互动</h3>
+            </div>
+            <p style="color: #aaa; line-height: 1.8; margin: 0;">
+              在每条内容下留下你的感悟和评论，与其他玩家交流。
+              高赞评论同样会被展示，让思想的碰撞产生更多火花！
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 诗词大会 -->
+  <section class="section section-dark">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-trophy"></i>
+        诗词大会
+      </div>
+      <p class="section-subtitle" data-aos="fade-up" data-aos-delay="100">
+        以诗会友，展现你的文学底蕴
+      </p>
+      
+      <div class="activity-showcase" data-aos="fade-up">
+        <div class="activity-icon"><i class="bi bi-mic"></i></div>
+        <div class="activity-content">
+          <h3>飞花令挑战</h3>
+          <p>
+            还记得《中国诗词大会》的飞花令吗？现在你也可以在服务器里体验！
+            系统随机给出一个字，玩家轮流说出包含这个字的诗句。
+            考验的不只是记忆力，更是你的诗词储备量。快来挑战，看看谁才是真正的诗词达人！
+          </p>
+          <div class="activity-features">
+            <span class="activity-feature"><i class="bi bi-people"></i> 多人对战</span>
+            <span class="activity-feature"><i class="bi bi-clock"></i> 限时作答</span>
+            <span class="activity-feature"><i class="bi bi-award"></i> 排行榜</span>
+            <span class="activity-feature"><i class="bi bi-gift"></i> 丰厚奖励</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="activity-showcase" data-aos="fade-up" data-aos-delay="100">
+        <div class="activity-icon"><i class="bi bi-pencil"></i></div>
+        <div class="activity-content">
+          <h3>诗词接龙</h3>
+          <p>
+            用上一句诗的最后一个字，作为下一句诗的开头。
+            这是一场文字的接力赛，需要你对诗词有足够的了解。
+            可以是经典诗句，也可以是自己创作的诗句——只要押韵、有意境，都可以！
+          </p>
+          <div class="activity-features">
+            <span class="activity-feature"><i class="bi bi-arrow-repeat"></i> 接龙模式</span>
+            <span class="activity-feature"><i class="bi bi-chat-quote"></i> 原创支持</span>
+            <span class="activity-feature"><i class="bi bi-star"></i> 精选展示</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="activity-showcase" data-aos="fade-up" data-aos-delay="200">
+        <div class="activity-icon"><i class="bi bi-question-circle"></i></div>
+        <div class="activity-content">
+          <h3>诗词竞猜</h3>
+          <p>
+            给出诗句的上半句，猜下半句；给出诗句，猜作者和出处；
+            根据描述，猜是哪首诗……多种题型，全方位考验你的诗词功底！
+            答对越多，积分越高，还有机会获得专属称号和奖励。
+          </p>
+          <div class="activity-features">
+            <span class="activity-feature"><i class="bi bi-list-check"></i> 多种题型</span>
+            <span class="activity-feature"><i class="bi bi-bar-chart"></i> 难度分级</span>
+            <span class="activity-feature"><i class="bi bi-trophy"></i> 段位系统</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 感谢 -->
+  <section style="background: linear-gradient(180deg, #1c1814 0%, #151210 100%); padding: 50px 0 30px; border-top: 1px solid rgba(212, 165, 116, 0.1);">
+    <div class="container">
+      <div style="text-align: center; max-width: 700px; margin: 0 auto;">
+        <h4 style="color: #d4a574; font-size: 1.2rem; margin-bottom: 1rem;">致谢</h4>
+        <p style="color: #888; font-size: 0.95rem; line-height: 1.8; margin-bottom: 1.5rem;">
+          诗词数据来源于开源项目 
+          <a href="https://github.com/chinese-poetry/chinese-poetry" target="_blank" style="color: #d4a574; text-decoration: none; border-bottom: 1px dashed #d4a574;">chinese-poetry</a>，
+          感谢项目维护者和所有贡献者的无私奉献，让中华古典诗词得以数字化传承。
+        </p>
+        <p style="color: #666; font-size: 0.85rem; margin-bottom: 1rem;">
+          一言数据由 <a href="https://hitokoto.cn/" target="_blank" style="color: #888; text-decoration: none;">Hitokoto</a> 提供支持
+        </p>
+        <p style="color: #555; font-size: 0.8rem; font-style: italic;">
+          "文化的传承，需要每一个人的参与"
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 页脚 -->
+  <footer>
+    <div class="container">
+      <p>© 2024 GalaxyPokemon. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    // 页面加载完成后隐藏加载动画
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    
+    AOS.init({
+      duration: 800,
+      once: true,
+      offset: 50
+    });
+    
+    // 诗词库（精选名句）
+    const poetryList = [
+      { text: '海上生明月，天涯共此时。', author: '张九龄', title: '望月怀远' },
+      { text: '床前明月光，疑是地上霜。<br>举头望明月，低头思故乡。', author: '李白', title: '静夜思' },
+      { text: '春眠不觉晓，处处闻啼鸟。<br>夜来风雨声，花落知多少。', author: '孟浩然', title: '春晓' },
+      { text: '白日依山尽，黄河入海流。<br>欲穷千里目，更上一层楼。', author: '王之涣', title: '登鹳雀楼' },
+      { text: '大漠孤烟直，长河落日圆。', author: '王维', title: '使至塞上' },
+      { text: '会当凌绝顶，一览众山小。', author: '杜甫', title: '望岳' },
+      { text: '两个黄鹂鸣翠柳，一行白鹭上青天。', author: '杜甫', title: '绝句' },
+      { text: '千山鸟飞绝，万径人踪灭。<br>孤舟蓑笠翁，独钓寒江雪。', author: '柳宗元', title: '江雪' },
+      { text: '春风又绿江南岸，明月何时照我还。', author: '王安石', title: '泊船瓜洲' },
+      { text: '不识庐山真面目，只缘身在此山中。', author: '苏轼', title: '题西林壁' },
+      { text: '人生自古谁无死，留取丹心照汗青。', author: '文天祥', title: '过零丁洋' },
+      { text: '落霞与孤鹜齐飞，秋水共长天一色。', author: '王勃', title: '滕王阁序' },
+      { text: '问君能有几多愁，恰似一江春水向东流。', author: '李煜', title: '虞美人' },
+      { text: '但愿人长久，千里共婵娟。', author: '苏轼', title: '水调歌头' },
+      { text: '人生若只如初见，何事秋风悲画扇。', author: '纳兰性德', title: '木兰词' },
+      { text: '曾经沧海难为水，除却巫山不是云。', author: '元稹', title: '离思' },
+      { text: '采菊东篱下，悠然见南山。', author: '陶渊明', title: '饮酒' },
+      { text: '山重水复疑无路，柳暗花明又一村。', author: '陆游', title: '游山西村' },
+      { text: '众里寻他千百度，蓦然回首，那人却在灯火阑珊处。', author: '辛弃疾', title: '青玉案' },
+      { text: '长风破浪会有时，直挂云帆济沧海。', author: '李白', title: '行路难' }
+    ];
+    
+    // 随机显示诗词
+    function randomPoetry() {
+      const poetry = poetryList[Math.floor(Math.random() * poetryList.length)];
+      document.getElementById('poetryText').innerHTML = poetry.text;
+      document.getElementById('poetryAuthor').textContent = `—— ${poetry.author}`;
+      document.getElementById('poetryTitle').textContent = `《${poetry.title}》`;
+    }
+    
+    // 获取一言
+    async function fetchHitokoto() {
+      try {
+        const response = await fetch('https://v1.hitokoto.cn/?c=a&c=b&c=d&c=h&c=k');
+        const data = await response.json();
+        document.getElementById('hitokotoText').textContent = `"${data.hitokoto}"`;
+        document.getElementById('hitokotoFrom').textContent = data.from ? `—— 《${data.from}》` : '';
+        // 根据类型显示标签
+        const typeMap = { a: '动漫', b: '漫画', c: '游戏', d: '文学', e: '原创', f: '网络', g: '其他', h: '影视', i: '诗词', j: '网易云', k: '哲学', l: '抖机灵' };
+        document.querySelector('.hitokoto-type').textContent = typeMap[data.type] || '语录';
+      } catch (error) {
+        console.log('获取一言失败');
+      }
+    }
+    
+    // 页面加载时随机显示
+    randomPoetry();
+    fetchHitokoto();
+  </script>
+</body>
+</html>

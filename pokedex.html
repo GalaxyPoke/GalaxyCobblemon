@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>宝可梦图鉴 - GalaxyPokemon</title>
+  
+  <!-- 预加载字体 -->
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- AOS Animation -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <!-- Custom CSS -->
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/carousel.css" rel="stylesheet">
+
+  <style>
+    .pokedex-page {
+      min-height: 100vh;
+      padding: 120px 0 60px;
+      background: var(--gradient-dark);
+    }
+
+    .pokedex-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .pokedex-title {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 3rem;
+      color: var(--primary-light);
+      margin-bottom: 0.5rem;
+      letter-spacing: 8px;
+    }
+
+    .pokedex-subtitle {
+      color: var(--gray-light);
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+    }
+
+    /* 搜索和筛选 */
+    .pokedex-filters {
+      margin: 0 auto 2rem;
+    }
+
+    .pokedex-search-box {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .pokedex-search-input {
+      flex: 1;
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid var(--glass-border);
+      border-radius: 4px;
+      padding: 0.875rem 1.25rem;
+      color: var(--white);
+      font-size: 1rem;
+      transition: var(--transition);
+    }
+
+    .pokedex-search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(139, 115, 85, 0.3);
+    }
+
+    .pokedex-search-input::placeholder {
+      color: var(--gray);
+    }
+
+    .pokedex-search-btn {
+      background: var(--gradient-primary);
+      border: none;
+      border-radius: 4px;
+      padding: 0.875rem 1.5rem;
+      color: var(--white);
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .pokedex-search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-glow);
+    }
+
+    /* 世代选择 */
+    .gen-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin: 1rem 0 0.5rem;
+    }
+
+    .gen-btn {
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      border: 1px solid var(--glass-border);
+      background: rgba(28, 24, 20, 0.6);
+      color: var(--gray-light);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .gen-btn:hover {
+      border-color: var(--primary);
+      color: var(--white);
+    }
+
+    .gen-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: var(--white);
+    }
+
+    .gen-info {
+      text-align: center;
+      color: var(--gray);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+    }
+
+    /* 属性筛选 */
+    .type-filters {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 0.4rem;
+      margin-top: 1rem;
+    }
+
+    .type-btn {
+      background: rgba(28, 24, 20, 0.6);
+      border: 1px solid var(--primary);
+      border-radius: 4px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: var(--transition);
+      opacity: 0.85;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .type-btn span {
+      font-size: 0.75rem;
+      color: var(--primary-light);
+      font-weight: 500;
+    }
+
+    .type-btn img {
+      height: 18px;
+      object-fit: contain;
+    }
+
+    .type-btn:hover {
+      opacity: 1;
+      background: rgba(139, 115, 85, 0.3);
+      border-color: var(--primary-light);
+    }
+    
+    .type-btn.active {
+      opacity: 1;
+      background: rgba(139, 115, 85, 0.4);
+      border-color: var(--primary-light);
+      box-shadow: 0 0 8px rgba(212, 165, 116, 0.4);
+    }
+
+    .type-btn.active span {
+      color: #fff;
+    }
+
+    /* 图鉴网格 */
+    .pokedex-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    /* 宝可梦卡片 */
+    .pokemon-card {
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid var(--glass-border);
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .pokemon-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--primary);
+      box-shadow: var(--shadow-glow);
+    }
+
+    .pokemon-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(180deg, rgba(139, 115, 85, 0.1) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    .pokemon-id {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 0.75rem;
+      color: var(--gray);
+      font-weight: 600;
+    }
+
+    .pokemon-img {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      margin-bottom: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .pokemon-card:hover .pokemon-img {
+      transform: scale(1.1);
+    }
+
+    .pokemon-name {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 1.1rem;
+      color: var(--white);
+      margin-bottom: 0.25rem;
+      letter-spacing: 2px;
+    }
+
+    .pokemon-name-en {
+      font-size: 0.75rem;
+      color: var(--gray);
+      margin-bottom: 0.5rem;
+    }
+
+    .pokemon-types {
+      display: flex;
+      gap: 0.35rem;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pokemon-type-icon {
+      height: 14px;
+      object-fit: contain;
+      opacity: 0.9;
+    }
+
+    /* 加载更多 */
+    .load-more {
+      text-align: center;
+      margin-top: 2rem;
+    }
+
+    .load-more-btn {
+      background: rgba(139, 115, 85, 0.3);
+      border: 1px solid var(--glass-border);
+      border-radius: 4px;
+      padding: 0.75rem 2rem;
+      color: var(--white);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .load-more-btn:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    /* 加载动画 */
+    .pokedex-loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray);
+    }
+
+    .pokedex-loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(139, 115, 85, 0.3);
+      border-top-color: var(--primary-light);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* 详情模态框 */
+    .pokemon-modal .modal-content {
+      background: rgba(28, 24, 20, 0.98);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+    }
+
+    .pokemon-modal .modal-header {
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1.5rem 2rem;
+    }
+
+    .pokemon-modal .modal-title {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      font-size: 1.8rem;
+      color: #d4a574;
+      letter-spacing: 4px;
+    }
+
+    .pokemon-modal .modal-body {
+      padding: 2rem;
+      max-height: 70vh;
+      overflow-y: auto;
+    }
+
+    .pokemon-modal .btn-close {
+      filter: invert(1);
+    }
+
+    .pokemon-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    @media (max-width: 768px) {
+      .pokemon-detail {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .pokemon-detail-img {
+      text-align: center;
+    }
+
+    .pokemon-detail-img img {
+      width: 200px;
+      height: 200px;
+      object-fit: contain;
+    }
+
+    .pokemon-detail-info h4 {
+      font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 2px;
+    }
+
+    .pokemon-stats {
+      margin-top: 1rem;
+    }
+
+    .stat-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-name {
+      width: 80px;
+      color: var(--gray-light);
+      font-size: 0.85rem;
+    }
+
+    .stat-bar {
+      flex: 1;
+      height: 8px;
+      background: rgba(139, 115, 85, 0.2);
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 0 0.5rem;
+    }
+
+    .stat-fill {
+      height: 100%;
+      background: var(--gradient-primary);
+      border-radius: 4px;
+      transition: width 0.5s ease;
+    }
+
+    .stat-value {
+      width: 40px;
+      text-align: right;
+      color: var(--white);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .pokemon-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .pokemon-info-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem;
+      background: rgba(139, 115, 85, 0.1);
+      border-radius: 4px;
+    }
+
+    .pokemon-info-label {
+      color: var(--gray);
+      font-size: 0.85rem;
+    }
+
+    .pokemon-info-value {
+      color: var(--white);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+
+<body style="background:#1c1814;">
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-controller"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <!-- 粒子背景 -->
+  <div id="particles-js"></div>
+
+  <!-- 导航栏（由navbar.js自动生成） -->
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 图鉴页面 -->
+  <section class="pokedex-page">
+    <div class="container">
+      <div class="pokedex-header" data-aos="fade-up">
+        <h1 class="pokedex-title">宝可梦图鉴</h1>
+        <p class="pokedex-subtitle">收录全部宝可梦 · 探索精灵世界</p>
+      </div>
+
+      <!-- 搜索和筛选 -->
+      <div class="pokedex-filters" data-aos="fade-up" data-aos-delay="100">
+        <div class="pokedex-search-box">
+          <input type="text" class="pokedex-search-input" id="searchInput" placeholder="搜索宝可梦名称或编号..." onkeypress="if(event.keyCode==13)searchPokemon()">
+          <button class="pokedex-search-btn" onclick="searchPokemon()">
+            <i class="bi bi-search"></i> 搜索
+          </button>
+        </div>
+        
+        <!-- 世代选择 -->
+        <div class="gen-filters">
+          <button class="gen-btn active" data-gen="1" onclick="switchGeneration(1)">第一世代</button>
+          <button class="gen-btn" data-gen="2" onclick="switchGeneration(2)">第二世代</button>
+          <button class="gen-btn" data-gen="3" onclick="switchGeneration(3)">第三世代</button>
+          <button class="gen-btn" data-gen="4" onclick="switchGeneration(4)">第四世代</button>
+          <button class="gen-btn" data-gen="5" onclick="switchGeneration(5)">第五世代</button>
+          <button class="gen-btn" data-gen="6" onclick="switchGeneration(6)">第六世代</button>
+          <button class="gen-btn" data-gen="7" onclick="switchGeneration(7)">第七世代</button>
+          <button class="gen-btn" data-gen="8" onclick="switchGeneration(8)">第八世代</button>
+          <button class="gen-btn" data-gen="9" onclick="switchGeneration(9)">第九世代</button>
+        </div>
+        <div class="gen-info" id="genInfo">第一世代 · 关都地区 · #001-#151</div>
+        
+        <div class="type-filters">
+          <button class="type-btn active" data-type="all" onclick="filterByType('all')"><span>全部</span></button>
+          <button class="type-btn" data-type="normal" onclick="filterByType('normal')" title="一般"><img src="static/image/types/normal.png" alt="一般"></button>
+          <button class="type-btn" data-type="fire" onclick="filterByType('fire')" title="火"><img src="static/image/types/fire.png" alt="火"></button>
+          <button class="type-btn" data-type="water" onclick="filterByType('water')" title="水"><img src="static/image/types/water.png" alt="水"></button>
+          <button class="type-btn" data-type="grass" onclick="filterByType('grass')" title="草"><img src="static/image/types/grass.png" alt="草"></button>
+          <button class="type-btn" data-type="electric" onclick="filterByType('electric')" title="电"><img src="static/image/types/electric.png" alt="电"></button>
+          <button class="type-btn" data-type="ice" onclick="filterByType('ice')" title="冰"><img src="static/image/types/ice.png" alt="冰"></button>
+          <button class="type-btn" data-type="fighting" onclick="filterByType('fighting')" title="格斗"><img src="static/image/types/fighting.png" alt="格斗"></button>
+          <button class="type-btn" data-type="poison" onclick="filterByType('poison')" title="毒"><img src="static/image/types/poison.png" alt="毒"></button>
+          <button class="type-btn" data-type="ground" onclick="filterByType('ground')" title="地面"><img src="static/image/types/ground.png" alt="地面"></button>
+          <button class="type-btn" data-type="flying" onclick="filterByType('flying')" title="飞行"><img src="static/image/types/flying.png" alt="飞行"></button>
+          <button class="type-btn" data-type="psychic" onclick="filterByType('psychic')" title="超能"><img src="static/image/types/psychic.png" alt="超能"></button>
+          <button class="type-btn" data-type="bug" onclick="filterByType('bug')" title="虫"><img src="static/image/types/bug.png" alt="虫"></button>
+          <button class="type-btn" data-type="rock" onclick="filterByType('rock')" title="岩石"><img src="static/image/types/rock.png" alt="岩石"></button>
+          <button class="type-btn" data-type="ghost" onclick="filterByType('ghost')" title="幽灵"><img src="static/image/types/ghost.png" alt="幽灵"></button>
+          <button class="type-btn" data-type="dragon" onclick="filterByType('dragon')" title="龙"><img src="static/image/types/dragon.png" alt="龙"></button>
+          <button class="type-btn" data-type="dark" onclick="filterByType('dark')" title="恶"><img src="static/image/types/dark.png" alt="恶"></button>
+          <button class="type-btn" data-type="steel" onclick="filterByType('steel')" title="钢"><img src="static/image/types/steel.png" alt="钢"></button>
+          <button class="type-btn" data-type="fairy" onclick="filterByType('fairy')" title="妖精"><img src="static/image/types/fairy.png" alt="妖精"></button>
+        </div>
+      </div>
+
+      <!-- 加载动画 -->
+      <div class="pokedex-loading" id="pokedexLoading">
+        <div class="pokedex-loading-spinner"></div>
+        <p>正在加载图鉴数据...</p>
+      </div>
+
+      <!-- 图鉴网格 -->
+      <div class="pokedex-grid" id="pokedexGrid" data-aos="fade-up"></div>
+
+      <!-- 加载更多 -->
+      <div class="load-more" id="loadMore" style="display: none;">
+        <button class="load-more-btn" onclick="loadMore()">
+          <i class="bi bi-arrow-down-circle"></i> 加载更多
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 详情模态框 -->
+  <div class="modal fade pokemon-modal" id="pokemonModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalTitle">宝可梦详情</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- 动态内容 -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>宝可梦风采</h2>
+        <p>精彩的宝可梦截图</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>宝可梦截图 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>精美模型</h4>
+                <p>高清宝可梦模型展示</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>宝可梦截图 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>对战场景</h4>
+                <p>精彩的对战画面</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>宝可梦截图 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>探索世界</h4>
+                <p>广阔的冒险地图</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script src="static/js/carousel.js"></script>
+  
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+
+  <script>
+    // 初始化 AOS
+    AOS.init({
+      duration: 800,
+      easing: 'ease-out-cubic',
+      once: true
+    });
+
+    // 初始化粒子背景
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 30, density: { enable: true, value_area: 1000 } },
+        color: { value: '#d4a574' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.2, random: true },
+        size: { value: 2, random: true },
+        line_linked: { enable: true, distance: 200, color: '#8b7355', opacity: 0.15, width: 1 },
+        move: { enable: true, speed: 1, direction: 'none', random: true, out_mode: 'out' }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: { onhover: { enable: true, mode: 'grab' }, resize: true },
+        modes: { grab: { distance: 180, line_linked: { opacity: 0.3 } } }
+      }
+    });
+
+    // 属性中文名映射
+    const typeNames = {
+      normal: '一般', fire: '火', water: '水', electric: '电', grass: '草',
+      ice: '冰', fighting: '格斗', poison: '毒', ground: '地面', flying: '飞行',
+      psychic: '超能', bug: '虫', rock: '岩石', ghost: '幽灵', dragon: '龙',
+      dark: '恶', steel: '钢', fairy: '妖精'
+    };
+
+    // 状态名映射
+    const statNames = {
+      hp: 'HP', attack: '攻击', defense: '防御',
+      'special-attack': '特攻', 'special-defense': '特防', speed: '速度'
+    };
+
+    // 特性中文名映射
+    const abilityNames = {
+      'overgrow': '茂盛', 'chlorophyll': '叶绿素', 'blaze': '猛火', 'solar-power': '太阳之力',
+      'torrent': '激流', 'rain-dish': '雨盘', 'shield-dust': '鳞粉', 'run-away': '逃跑',
+      'shed-skin': '蜕皮', 'compound-eyes': '复眼', 'tinted-lens': '有色眼镜', 'swarm': '虫之预感',
+      'sniper': '狙击手', 'keen-eye': '锐利目光', 'tangled-feet': '蹒跚', 'big-pecks': '胸甲',
+      'guts': '毅力', 'hustle': '活力', 'intimidate': '威吓', 'unnerve': '紧张感',
+      'static': '静电', 'lightning-rod': '避雷针', 'sand-veil': '沙隐', 'sand-rush': '拨沙',
+      'poison-point': '毒刺', 'rivalry': '斗争心', 'sheer-force': '强行', 'hustle': '活力',
+      'cute-charm': '迷人之躯', 'magic-guard': '魔法防守', 'friend-guard': '友情防守',
+      'unaware': '纯朴', 'flash-fire': '引火', 'drought': '日照', 'competitive': '好胜',
+      'frisk': '察觉', 'inner-focus': '精神力', 'infiltrator': '穿透', 'telepathy': '心灵感应',
+      'levitate': '飘浮', 'effect-spore': '孢子', 'dry-skin': '干燥皮肤', 'damp': '湿气',
+      'wonder-skin': '奇迹皮肤', 'arena-trap': '沙穴', 'sand-force': '沙之力', 'pickup': '捡拾',
+      'technician': '技术高手', 'limber': '柔软', 'cloud-nine': '无关天气', 'swift-swim': '悠游自如',
+      'vital-spirit': '干劲', 'anger-point': '愤怒穴位', 'defiant': '不服输', 'justified': '正义之心',
+      'water-absorb': '储水', 'synchronize': '同步', 'no-guard': '无防守', 'steadfast': '不屈之心',
+      'gluttony': '贪吃鬼', 'clear-body': '恒净之躯', 'liquid-ooze': '污泥浆', 'rock-head': '坚硬脑袋',
+      'sturdy': '结实', 'flame-body': '火焰之躯', 'oblivious': '迟钝', 'own-tempo': '我行我素',
+      'regenerator': '再生力', 'thick-fat': '厚脂肪', 'hydration': '湿润之躯', 'ice-body': '冰冻之躯',
+      'shell-armor': '硬壳盔甲', 'skill-link': '连续攻击', 'overcoat': '防尘', 'poison-touch': '毒手',
+      'cursed-body': '诅咒之躯', 'weak-armor': '碎裂铠甲', 'insomnia': '不眠', 'forewarn': '预知梦',
+      'super-luck': '超幸运', 'aftermath': '引爆', 'harvest': '收获', 'battle-armor': '战斗盔甲',
+      'reckless': '舍身', 'unburden': '轻装', 'iron-fist': '铁拳', 'natural-cure': '自然回复',
+      'serene-grace': '天恩', 'leaf-guard': '叶子防守', 'scrappy': '胆量', 'motor-drive': '电气引擎',
+      'mold-breaker': '破格', 'super-luck': '超幸运', 'prankster': '恶作剧之心', 'sand-stream': '扬沙',
+      'pressure': '压迫感', 'immunity': '免疫', 'snow-warning': '降雪', 'snow-cloak': '雪隐',
+      'honey-gather': '采蜜', 'quick-feet': '飞毛腿', 'adaptability': '适应力', 'poison-heal': '毒疗',
+      'download': '下载', 'trace': '复制', 'huge-power': '大力士', 'speed-boost': '加速',
+      'magic-bounce': '魔法镜', 'sap-sipper': '食草', 'marvel-scale': '神奇鳞片', 'multiscale': '多重鳞片',
+      'pixilate': '妖精皮肤', 'refrigerate': '冰冻皮肤', 'aerilate': '飞行皮肤', 'galvanize': '电气皮肤',
+      'protean': '变幻自如', 'libero': '自由者', 'beast-boost': '异兽提升', 'soul-heart': '魂心',
+      'electric-surge': '电气制造者', 'psychic-surge': '精神制造者', 'grassy-surge': '青草制造者', 'misty-surge': '薄雾制造者'
+    };
+
+    let allPokemon = [];
+    let displayedPokemon = [];
+    let currentOffset = 0;
+    let currentType = 'all';
+    let currentGen = 1;
+    const limit = 24;
+
+    // 世代信息
+    const generations = {
+      1: { name: '第一世代', region: '关都地区', start: 1, end: 151 },
+      2: { name: '第二世代', region: '城都地区', start: 152, end: 251 },
+      3: { name: '第三世代', region: '丰缘地区', start: 252, end: 386 },
+      4: { name: '第四世代', region: '神奥地区', start: 387, end: 493 },
+      5: { name: '第五世代', region: '合众地区', start: 494, end: 649 },
+      6: { name: '第六世代', region: '卡洛斯地区', start: 650, end: 721 },
+      7: { name: '第七世代', region: '阿罗拉地区', start: 722, end: 809 },
+      8: { name: '第八世代', region: '伽勒尔地区', start: 810, end: 905 },
+      9: { name: '第九世代', region: '帕底亚地区', start: 906, end: 1025 }
+    };
+
+    // 缓存已加载的世代数据
+    const genCache = {};
+
+    // 初始化加载
+    document.addEventListener('DOMContentLoaded', () => {
+      // 检查URL参数
+      const urlParams = new URLSearchParams(window.location.search);
+      const genParam = urlParams.get('gen');
+      const initialGen = genParam ? parseInt(genParam) : 1;
+      
+      // 更新按钮状态
+      document.querySelectorAll('.gen-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (parseInt(btn.dataset.gen) === initialGen) {
+          btn.classList.add('active');
+        }
+      });
+      
+      loadGeneration(initialGen);
+    });
+
+    // 切换世代
+    async function switchGeneration(gen) {
+      if (gen === currentGen) return;
+      
+      currentGen = gen;
+      currentOffset = 0;
+      currentType = 'all';
+      
+      // 更新按钮状态
+      document.querySelectorAll('.gen-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.gen == gen) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // 重置属性筛选
+      document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.type === 'all') {
+          btn.classList.add('active');
+        }
+      });
+      
+      // 更新世代信息
+      const genData = generations[gen];
+      document.getElementById('genInfo').textContent = 
+        `${genData.name} · ${genData.region} · #${String(genData.start).padStart(3, '0')}-#${String(genData.end).padStart(3, '0')}`;
+      
+      await loadGeneration(gen);
+    }
+
+    // 加载指定世代
+    async function loadGeneration(gen) {
+      const genData = generations[gen];
+      
+      // 检查缓存
+      if (genCache[gen]) {
+        allPokemon = genCache[gen];
+        displayedPokemon = [...allPokemon];
+        document.getElementById('pokedexLoading').style.display = 'none';
+        renderPokemon();
+        return;
+      }
+      
+      // 显示加载
+      document.getElementById('pokedexLoading').style.display = 'block';
+      document.getElementById('pokedexLoading').innerHTML = `
+        <div class="pokedex-loading-spinner"></div>
+        <p>正在加载图鉴数据...</p>
+      `;
+      document.getElementById('pokedexGrid').innerHTML = '';
+      document.getElementById('loadMore').style.display = 'none';
+      
+      try {
+        const count = genData.end - genData.start + 1;
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon?limit=${count}&offset=${genData.start - 1}`);
+        const data = await response.json();
+        
+        // 获取每个宝可梦的详细信息
+        const pokemonPromises = data.results.map(pokemon => 
+          fetch(pokemon.url).then(res => res.json())
+        );
+        
+        const pokemonList = await Promise.all(pokemonPromises);
+        
+        // 更新加载提示
+        document.getElementById('pokedexLoading').innerHTML = `
+          <div class="pokedex-loading-spinner"></div>
+          <p>正在获取中文名称...</p>
+        `;
+        
+        // 获取中文名
+        const speciesPromises = pokemonList.map(pokemon => 
+          fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.id}`)
+            .then(res => res.json())
+            .then(species => {
+              const zhName = species.names.find(n => n.language.name === 'zh-Hans') || 
+                             species.names.find(n => n.language.name === 'zh-Hant');
+              pokemon.chineseName = zhName ? zhName.name : pokemon.name;
+              return pokemon;
+            })
+            .catch(() => {
+              pokemon.chineseName = pokemon.name;
+              return pokemon;
+            })
+        );
+        
+        allPokemon = await Promise.all(speciesPromises);
+        displayedPokemon = [...allPokemon];
+        
+        // 缓存数据
+        genCache[gen] = allPokemon;
+        
+        document.getElementById('pokedexLoading').style.display = 'none';
+        renderPokemon();
+        document.getElementById('loadMore').style.display = 'block';
+        
+      } catch (error) {
+        console.error('加载失败:', error);
+        document.getElementById('pokedexLoading').innerHTML = `
+          <i class="bi bi-exclamation-triangle" style="font-size: 3rem;"></i>
+          <p>加载失败，请刷新重试</p>
+        `;
+      }
+    }
+
+    // 渲染宝可梦卡片
+    function renderPokemon() {
+      const grid = document.getElementById('pokedexGrid');
+      const pokemonToShow = displayedPokemon.slice(0, currentOffset + limit);
+      
+      grid.innerHTML = pokemonToShow.map(pokemon => {
+        const types = pokemon.types.map(t => t.type.name);
+        const typeBadges = types.map(type => 
+          `<img class="pokemon-type-icon" src="static/image/types/${type}.png" alt="${typeNames[type] || type}" title="${typeNames[type] || type}">`
+        ).join('');
+        
+        // 使用已获取的中文名
+        const chineseName = pokemon.chineseName || pokemon.name;
+        
+        return `
+          <div class="pokemon-card" onclick="showDetail(${pokemon.id})">
+            <span class="pokemon-id">#${String(pokemon.id).padStart(3, '0')}</span>
+            <img class="pokemon-img" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemon.id}.png" 
+                 alt="${pokemon.name}"
+                 loading="lazy"
+                 onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png'">
+            <div class="pokemon-name">${chineseName}</div>
+            <div class="pokemon-name-en">${pokemon.name}</div>
+            <div class="pokemon-types">${typeBadges}</div>
+          </div>
+        `;
+      }).join('');
+      
+      currentOffset = pokemonToShow.length;
+      
+      // 隐藏加载更多按钮
+      if (currentOffset >= displayedPokemon.length) {
+        document.getElementById('loadMore').style.display = 'none';
+      } else {
+        document.getElementById('loadMore').style.display = 'block';
+      }
+    }
+
+    // 加载更多
+    function loadMore() {
+      renderPokemon();
+    }
+
+    // 按属性筛选
+    function filterByType(type) {
+      currentType = type;
+      currentOffset = 0;
+      
+      // 更新按钮状态
+      document.querySelectorAll('.type-btn').forEach(btn => {
+        btn.classList.remove('active');
+        if (btn.dataset.type === type) {
+          btn.classList.add('active');
+        }
+      });
+      
+      if (type === 'all') {
+        displayedPokemon = [...allPokemon];
+      } else {
+        displayedPokemon = allPokemon.filter(pokemon => 
+          pokemon.types.some(t => t.type.name === type)
+        );
+      }
+      
+      renderPokemon();
+    }
+
+    // 搜索宝可梦
+    async function searchPokemon() {
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      currentOffset = 0;
+      
+      if (!query) {
+        displayedPokemon = [...allPokemon];
+        renderPokemon();
+        return;
+      }
+      
+      // 搜索时先清空列表，显示加载
+      document.getElementById('pokedexGrid').innerHTML = '';
+      document.getElementById('loadMore').style.display = 'none';
+      document.getElementById('pokedexLoading').style.display = 'block';
+      document.getElementById('pokedexLoading').innerHTML = `<p>正在搜索 "${query}"...</p>`;
+      
+      // 先在本地搜索
+      displayedPokemon = allPokemon.filter(pokemon => {
+        const chineseName = (pokemon.chineseName || '').toLowerCase();
+        return pokemon.name.includes(query) || 
+               chineseName.includes(query) ||
+               String(pokemon.id) === query;
+      });
+      
+      // 如果本地没找到，尝试从API搜索
+      if (displayedPokemon.length === 0) {
+        try {
+          document.getElementById('pokedexLoading').style.display = 'block';
+          document.getElementById('pokedexLoading').innerHTML = `<p>正在搜索...</p>`;
+          
+          let searchId = null;
+          
+          // 如果是数字，直接用ID
+          if (/^\d+$/.test(query)) {
+            searchId = parseInt(query);
+          } else {
+            // 尝试从中文名映射表查找ID
+            const chineseNames = {
+              1: '妙蛙种子', 2: '妙蛙草', 3: '妙蛙花', 4: '小火龙', 5: '火恐龙', 6: '喷火龙', 7: '杰尼龟', 8: '卡咪龟', 9: '水箭龟',
+              10: '绿毛虫', 11: '铁甲蛹', 12: '巴大蝶', 13: '独角虫', 14: '铁壳蛹', 15: '大针蜂', 16: '波波', 17: '比比鸟', 18: '大比鸟',
+              19: '小拉达', 20: '拉达', 21: '烈雀', 22: '大嘴雀', 23: '阿柏蛇', 24: '阿柏怪', 25: '皮卡丘', 26: '雷丘', 27: '穿山鼠',
+              28: '穿山王', 29: '尼多兰', 30: '尼多娜', 31: '尼多后', 32: '尼多朗', 33: '尼多力诺', 34: '尼多王', 35: '皮皮', 36: '皮可西',
+              37: '六尾', 38: '九尾', 39: '胖丁', 40: '胖可丁', 41: '超音蝠', 42: '大嘴蝠', 43: '走路草', 44: '臭臭花', 45: '霸王花',
+              46: '派拉斯', 47: '派拉斯特', 48: '毛球', 49: '摩鲁蛾', 50: '地鼠', 51: '三地鼠', 52: '喵喵', 53: '猫老大', 54: '可达鸭',
+              55: '哥达鸭', 56: '猴怪', 57: '火暴猴', 58: '卡蒂狗', 59: '风速狗', 60: '蚊香蝌蚪', 61: '蚊香君', 62: '蚊香泳士', 63: '凯西',
+              64: '勇基拉', 65: '胡地', 66: '腕力', 67: '豪力', 68: '怪力', 69: '喇叭芽', 70: '口呆花', 71: '大食花', 72: '玛瑙水母',
+              73: '毒刺水母', 74: '小拳石', 75: '隆隆石', 76: '隆隆岩', 77: '小火马', 78: '烈焰马', 79: '呆呆兽', 80: '呆壳兽', 81: '小磁怪',
+              82: '三合一磁怪', 83: '大葱鸭', 84: '嘟嘟', 85: '嘟嘟利', 86: '小海狮', 87: '白海狮', 88: '臭泥', 89: '臭臭泥', 90: '大舌贝',
+              91: '刺甲贝', 92: '鬼斯', 93: '鬼斯通', 94: '耿鬼', 95: '大岩蛇', 96: '催眠貘', 97: '引梦貘人', 98: '大钳蟹', 99: '巨钳蟹',
+              100: '霹雳电球', 101: '顽皮雷弹', 102: '蛋蛋', 103: '椰蛋树', 104: '卡拉卡拉', 105: '嘎啦嘎啦', 106: '飞腿郎', 107: '快拳郎',
+              108: '大舌头', 109: '瓦斯弹', 110: '双弹瓦斯', 111: '独角犀牛', 112: '钻角犀兽', 113: '吉利蛋', 114: '蔓藤怪', 115: '袋兽',
+              116: '墨海马', 117: '海刺龙', 118: '角金鱼', 119: '金鱼王', 120: '海星星', 121: '宝石海星', 122: '魔墙人偶', 123: '飞天螳螂',
+              124: '迷唇姐', 125: '电击兽', 126: '鸭嘴火兽', 127: '凯罗斯', 128: '肯泰罗', 129: '鲤鱼王', 130: '暴鲤龙', 131: '拉普拉斯',
+              132: '百变怪', 133: '伊布', 134: '水伊布', 135: '雷伊布', 136: '火伊布', 137: '多边兽', 138: '菊石兽', 139: '多刺菊石兽',
+              140: '化石盔', 141: '镰刀盔', 142: '化石翼龙', 143: '卡比兽', 144: '急冻鸟', 145: '闪电鸟', 146: '火焰鸟', 147: '迷你龙',
+              148: '哈克龙', 149: '快龙', 150: '超梦', 151: '梦幻'
+            };
+            
+            // 查找匹配的中文名
+            for (const [id, name] of Object.entries(chineseNames)) {
+              if (name.includes(query) || query.includes(name)) {
+                searchId = parseInt(id);
+                break;
+              }
+            }
+            
+            // 如果中文名没找到，尝试用英文名搜索API
+            if (!searchId) {
+              searchId = query;
+            }
+          }
+          
+          if (searchId) {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${searchId}`);
+            if (response.ok) {
+              const pokemon = await response.json();
+              
+              // 获取中文名
+              try {
+                const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${pokemon.id}`);
+                const species = await speciesRes.json();
+                const zhName = species.names.find(n => n.language.name === 'zh-Hans') || 
+                               species.names.find(n => n.language.name === 'zh-Hant');
+                pokemon.chineseName = zhName ? zhName.name : pokemon.name;
+              } catch {
+                pokemon.chineseName = pokemon.name;
+              }
+              
+              displayedPokemon = [pokemon];
+            }
+          }
+          
+          document.getElementById('pokedexLoading').style.display = 'none';
+        } catch {
+          document.getElementById('pokedexLoading').style.display = 'none';
+        }
+      } else {
+        // 本地找到了，隐藏加载
+        document.getElementById('pokedexLoading').style.display = 'none';
+      }
+      
+      // 如果还是没找到，显示提示
+      if (displayedPokemon.length === 0) {
+        document.getElementById('pokedexLoading').style.display = 'block';
+        document.getElementById('pokedexLoading').innerHTML = `<p style="color:#888;">未找到 "${query}" 相关的宝可梦</p>`;
+        return;
+      }
+      
+      renderPokemon();
+    }
+
+    // 显示详情
+    async function showDetail(id) {
+      // 重置3D模式状态
+      is3DMode = false;
+      
+      // 播放叫声
+      const cry = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`);
+      cry.volume = 0.3;
+      cry.play().catch(() => {}); // 忽略自动播放限制错误
+      
+      // 先从显示列表找，再从全部列表找
+      let pokemon = displayedPokemon.find(p => p.id === id);
+      if (!pokemon) pokemon = allPokemon.find(p => p.id === id);
+      if (!pokemon) return;
+      
+      const chineseName = pokemon.chineseName || pokemon.name;
+      const types = pokemon.types.map(t => t.type.name);
+      const typeBadges = types.map(type => 
+        `<img class="pokemon-type-icon" src="static/image/types/${type}.png" alt="${typeNames[type] || type}" title="${typeNames[type] || type}" style="height: 28px;">`
+      ).join(' ');
+      
+      document.getElementById('modalTitle').innerHTML = `
+        #${String(id).padStart(3, '0')} ${chineseName}
+        <span style="font-size: 1rem; color: var(--gray); margin-left: 0.5rem;">${pokemon.name}</span>
+      `;
+      
+      const statsHtml = pokemon.stats.map(stat => {
+        const percentage = Math.min((stat.base_stat / 255) * 100, 100);
+        return `
+          <div class="stat-row">
+            <span class="stat-name">${statNames[stat.stat.name] || stat.stat.name}</span>
+            <div class="stat-bar">
+              <div class="stat-fill" style="width: ${percentage}%"></div>
+            </div>
+            <span class="stat-value">${stat.base_stat}</span>
+          </div>
+        `;
+      }).join('');
+      
+      document.getElementById('modalBody').innerHTML = `
+        <div class="pokemon-detail" style="display:grid; grid-template-columns:1fr 1fr; gap:1.5rem;">
+          <!-- 左侧：图片+按钮+进化链+种族值 -->
+          <div class="pokemon-detail-left">
+            <div style="width:200px; height:200px; margin:0 auto; position:relative; overflow:visible;">
+              <img id="pokemonImage" src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png" alt="${pokemon.name}" style="width:200px; height:200px; object-fit:contain;">
+              <div id="model3DViewer" style="display:none; width:320px; height:200px; position:absolute; top:0; left:-60px; border-radius:8px;"></div>
+            </div>
+            <p id="model3DStatus" style="color:#888; font-size:0.7rem; height:1.2rem; margin-top:0.5rem; text-align:center;"></p>
+            <div class="pokemon-types" style="margin-top: 0.75rem;">${typeBadges}</div>
+            <div style="margin-top: 0.5rem; display:flex; gap:0.5rem; justify-content:center;">
+              <button id="toggle3DBtn" class="btn btn-outline-light btn-sm" onclick="toggle3DModel('${pokemon.name}', ${id})">
+                <i class="bi bi-box"></i> 3D模型
+              </button>
+              <button class="btn btn-outline-light btn-sm" onclick="playCry(${id})">
+                <i class="bi bi-volume-up"></i> 叫声
+              </button>
+            </div>
+            
+            <!-- 种族值 -->
+            <div style="margin-top:1rem;">
+              <h4 style="font-size:0.9rem; color:#d4a574; margin-bottom:0.5rem;">种族值</h4>
+              <div class="pokemon-stats">
+                ${statsHtml}
+              </div>
+            </div>
+          </div>
+          
+          <!-- 右侧：基本信息+图鉴描述+招式 -->
+          <div class="pokemon-detail-right">
+            <h4>基本信息</h4>
+            <div class="pokemon-info-grid">
+              <div class="pokemon-info-item">
+                <span class="pokemon-info-label">身高</span>
+                <span class="pokemon-info-value">${(pokemon.height / 10).toFixed(1)} m</span>
+              </div>
+              <div class="pokemon-info-item">
+                <span class="pokemon-info-label">体重</span>
+                <span class="pokemon-info-value">${(pokemon.weight / 10).toFixed(1)} kg</span>
+              </div>
+              <div class="pokemon-info-item">
+                <span class="pokemon-info-label">基础经验</span>
+                <span class="pokemon-info-value">${pokemon.base_experience || '-'}</span>
+              </div>
+              <div class="pokemon-info-item">
+                <span class="pokemon-info-label">特性</span>
+                <span class="pokemon-info-value">${pokemon.abilities.map(a => abilityNames[a.ability.name] || a.ability.name).join(', ')}</span>
+              </div>
+              <div class="pokemon-info-item">
+                <span class="pokemon-info-label">蛋组</span>
+                <span class="pokemon-info-value" id="eggGroups">加载中...</span>
+              </div>
+              <div class="pokemon-info-item">
+                <span class="pokemon-info-label">孵化步数</span>
+                <span class="pokemon-info-value" id="hatchSteps">加载中...</span>
+              </div>
+            </div>
+            
+            <h4 style="margin-top:1rem;">图鉴描述</h4>
+            <p id="flavorText" style="color:#aaa; font-size:0.85rem; line-height:1.5;">加载中...</p>
+            
+            <h4 style="margin-top:1rem;">可学招式</h4>
+            <div id="movesContainer" style="max-height:150px; overflow-y:auto;">
+              <span style="color:#888; font-size:0.8rem;">加载中...</span>
+            </div>
+            
+            <!-- 进化链 -->
+            <div id="evolutionChain" style="margin-top:1rem;">
+              <h4 style="font-size:0.9rem; color:#d4a574; margin-bottom:0.5rem;">进化链</h4>
+              <div id="evoChainContent" style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap;">
+                <span style="color:#888; font-size:0.8rem;">加载中...</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      new bootstrap.Modal(document.getElementById('pokemonModal')).show();
+      
+      // 异步加载额外信息
+      loadSpeciesInfo(id);
+    }
+    
+    // 加载物种信息（蛋组、孵化、图鉴描述、进化链）
+    async function loadSpeciesInfo(id) {
+      try {
+        const speciesRes = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+        const species = await speciesRes.json();
+        
+        // 蛋组
+        const eggGroupNames = {
+          'monster': '怪兽', 'water1': '水中1', 'water2': '水中2', 'water3': '水中3',
+          'bug': '虫', 'flying': '飞行', 'ground': '陆上', 'fairy': '妖精',
+          'plant': '植物', 'humanshape': '人型', 'mineral': '矿物', 'indeterminate': '不定形',
+          'ditto': '百变怪', 'dragon': '龙', 'no-eggs': '未发现'
+        };
+        const eggGroups = species.egg_groups.map(g => eggGroupNames[g.name] || g.name).join(', ');
+        document.getElementById('eggGroups').textContent = eggGroups || '-';
+        
+        // 孵化步数 (hatch_counter * 255)
+        const hatchSteps = species.hatch_counter ? (species.hatch_counter * 255) : '-';
+        document.getElementById('hatchSteps').textContent = hatchSteps;
+        
+        // 图鉴描述（中文优先）
+        const flavorEntry = species.flavor_text_entries.find(f => f.language.name === 'zh-Hans') ||
+                           species.flavor_text_entries.find(f => f.language.name === 'zh-Hant') ||
+                           species.flavor_text_entries.find(f => f.language.name === 'en');
+        const flavorText = flavorEntry ? flavorEntry.flavor_text.replace(/\n|\f/g, ' ') : '-';
+        document.getElementById('flavorText').textContent = flavorText;
+        
+        // 进化链
+        if (species.evolution_chain) {
+          const evoRes = await fetch(species.evolution_chain.url);
+          const evoData = await evoRes.json();
+          renderEvolutionChain(evoData.chain);
+        }
+        
+        // 加载招式
+        loadMoves(id);
+      } catch (e) {
+        console.error('加载物种信息失败', e);
+      }
+    }
+    
+    // 加载招式详情
+    async function loadMoves(pokemonId) {
+      try {
+        // 从displayedPokemon或allPokemon获取pokemon数据
+        let pokemon = displayedPokemon.find(p => p.id === pokemonId);
+        if (!pokemon) pokemon = allPokemon.find(p => p.id === pokemonId);
+        if (!pokemon) return;
+        
+        // 获取升级招式（取前6个）
+        const levelUpMoves = pokemon.moves
+          .filter(m => m.version_group_details.some(v => v.move_learn_method.name === 'level-up'))
+          .slice(0, 6);
+        
+        if (levelUpMoves.length === 0) {
+          document.getElementById('movesContainer').innerHTML = '<span style="color:#888;">暂无招式数据</span>';
+          return;
+        }
+        
+        // 并行获取招式详情
+        const moveDetails = await Promise.all(
+          levelUpMoves.map(async (m) => {
+            try {
+              const res = await fetch(m.move.url);
+              return await res.json();
+            } catch {
+              return null;
+            }
+          })
+        );
+        
+        // 招式分类中文
+        const damageClassNames = { 'physical': '物理', 'special': '特殊', 'status': '变化' };
+        
+        // 表头
+        let movesHtml = `
+          <div style="display:grid; grid-template-columns:20px 1fr 40px 40px 35px; align-items:center; gap:0.3rem; padding:0.25rem 0.5rem; border-bottom:1px solid rgba(255,255,255,0.15); font-size:0.65rem; color:#888;">
+            <span></span>
+            <span>招式</span>
+            <span style="text-align:center;">分类</span>
+            <span style="text-align:center;">威力</span>
+            <span style="text-align:center;">PP</span>
+          </div>
+        `;
+        
+        movesHtml += moveDetails.filter(Boolean).map(move => {
+          const type = move.type.name;
+          const power = move.power || '-';
+          const accuracy = move.accuracy || '-';
+          const pp = move.pp || '-';
+          const damageClass = damageClassNames[move.damage_class.name] || move.damage_class.name;
+          
+          // 获取中文名
+          const zhName = move.names.find(n => n.language.name === 'zh-Hans') ||
+                        move.names.find(n => n.language.name === 'zh-Hant');
+          const moveName = zhName ? zhName.name : move.name.replace(/-/g, ' ');
+          
+          return `
+            <div style="display:grid; grid-template-columns:20px 1fr 40px 40px 35px; align-items:center; gap:0.3rem; padding:0.35rem 0.5rem; border-bottom:1px solid rgba(255,255,255,0.08); font-size:0.75rem;">
+              <img src="static/image/types/${type}.png" style="height:16px;" alt="${type}" title="${typeNames[type] || type}">
+              <span style="color:#fff; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${moveName}</span>
+              <span style="color:#aaa; text-align:center;">${damageClass}</span>
+              <span style="color:#e8a; text-align:center;">${power}</span>
+              <span style="color:#8cf; text-align:center;">${pp}</span>
+            </div>
+          `;
+        }).join('');
+        
+        document.getElementById('movesContainer').innerHTML = movesHtml || '<span style="color:#888;">暂无招式数据</span>';
+      } catch (e) {
+        console.error('加载招式失败', e);
+        document.getElementById('movesContainer').innerHTML = '<span style="color:#888;">加载失败</span>';
+      }
+    }
+    
+    // 渲染进化链
+    function renderEvolutionChain(chain) {
+      const evolutions = [];
+      let current = chain;
+      
+      while (current) {
+        const id = current.species.url.split('/').filter(Boolean).pop();
+        evolutions.push({
+          id: id,
+          name: current.species.name
+        });
+        current = current.evolves_to[0];
+      }
+      
+      if (evolutions.length <= 1) {
+        document.getElementById('evoChainContent').innerHTML = '<span style="color:#888; font-size:0.8rem;">无进化</span>';
+        return;
+      }
+      
+      const html = evolutions.map((evo, i) => {
+        const arrow = i < evolutions.length - 1 ? '<span style="color:#888; margin:0 0.25rem;">→</span>' : '';
+        return `
+          <div style="text-align:center; cursor:pointer;" onclick="switchToEvolution(${evo.id})">
+            <img src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${evo.id}.png" 
+                 style="width:50px; height:50px;" alt="${evo.name}">
+          </div>
+          ${arrow}
+        `;
+      }).join('');
+      
+      document.getElementById('evoChainContent').innerHTML = html;
+    }
+    
+    // 切换到进化形态（先关闭当前弹窗再打开新的）
+    async function switchToEvolution(id) {
+      // 关闭当前弹窗
+      const modal = bootstrap.Modal.getInstance(document.getElementById('pokemonModal'));
+      if (modal) {
+        modal.hide();
+      }
+      // 等待弹窗关闭动画完成后再打开新的
+      setTimeout(() => {
+        showDetail(id);
+      }, 300);
+    }
+
+    // 中文名缓存
+    const chineseNameCache = {};
+
+    // 获取宝可梦中文名
+    async function fetchChineseName(id) {
+      if (chineseNameCache[id]) return chineseNameCache[id];
+      
+      try {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon-species/${id}`);
+        const data = await response.json();
+        const zhName = data.names.find(n => n.language.name === 'zh-Hans' || n.language.name === 'zh-Hant');
+        const name = zhName ? zhName.name : data.name;
+        chineseNameCache[id] = name;
+        return name;
+      } catch (e) {
+        return `#${id}`;
+      }
+    }
+
+    // 宝可梦中文名（内置常用的）
+    function getPokemonChineseName(id) {
+      const names = {
+        // 第一世代
+        1: '妙蛙种子', 2: '妙蛙草', 3: '妙蛙花', 4: '小火龙', 5: '火恐龙', 6: '喷火龙', 7: '杰尼龟', 8: '卡咪龟', 9: '水箭龟',
+        10: '绿毛虫', 11: '铁甲蛹', 12: '巴大蝶', 13: '独角虫', 14: '铁壳蛹', 15: '大针蜂', 16: '波波', 17: '比比鸟', 18: '大比鸟',
+        19: '小拉达', 20: '拉达', 21: '烈雀', 22: '大嘴雀', 23: '阿柏蛇', 24: '阿柏怪', 25: '皮卡丘', 26: '雷丘', 27: '穿山鼠',
+        28: '穿山王', 29: '尼多兰', 30: '尼多娜', 31: '尼多后', 32: '尼多朗', 33: '尼多力诺', 34: '尼多王', 35: '皮皮', 36: '皮可西',
+        37: '六尾', 38: '九尾', 39: '胖丁', 40: '胖可丁', 41: '超音蝠', 42: '大嘴蝠', 43: '走路草', 44: '臭臭花', 45: '霸王花',
+        46: '派拉斯', 47: '派拉斯特', 48: '毛球', 49: '摩鲁蛾', 50: '地鼠', 51: '三地鼠', 52: '喵喵', 53: '猫老大', 54: '可达鸭',
+        55: '哥达鸭', 56: '猴怪', 57: '火暴猴', 58: '卡蒂狗', 59: '风速狗', 60: '蚊香蝌蚪', 61: '蚊香君', 62: '蚊香泳士', 63: '凯西',
+        64: '勇基拉', 65: '胡地', 66: '腕力', 67: '豪力', 68: '怪力', 69: '喇叭芽', 70: '口呆花', 71: '大食花', 72: '玛瑙水母',
+        73: '毒刺水母', 74: '小拳石', 75: '隆隆石', 76: '隆隆岩', 77: '小火马', 78: '烈焰马', 79: '呆呆兽', 80: '呆壳兽', 81: '小磁怪',
+        82: '三合一磁怪', 83: '大葱鸭', 84: '嘟嘟', 85: '嘟嘟利', 86: '小海狮', 87: '白海狮', 88: '臭泥', 89: '臭臭泥', 90: '大舌贝',
+        91: '刺甲贝', 92: '鬼斯', 93: '鬼斯通', 94: '耿鬼', 95: '大岩蛇', 96: '催眠貘', 97: '引梦貘人', 98: '大钳蟹', 99: '巨钳蟹',
+        100: '霹雳电球', 101: '顽皮雷弹', 102: '蛋蛋', 103: '椰蛋树', 104: '卡拉卡拉', 105: '嘎啦嘎啦', 106: '飞腿郎', 107: '快拳郎',
+        108: '大舌头', 109: '瓦斯弹', 110: '双弹瓦斯', 111: '独角犀牛', 112: '钻角犀兽', 113: '吉利蛋', 114: '蔓藤怪', 115: '袋兽',
+        116: '墨海马', 117: '海刺龙', 118: '角金鱼', 119: '金鱼王', 120: '海星星', 121: '宝石海星', 122: '魔墙人偶', 123: '飞天螳螂',
+        124: '迷唇姐', 125: '电击兽', 126: '鸭嘴火兽', 127: '凯罗斯', 128: '肯泰罗', 129: '鲤鱼王', 130: '暴鲤龙', 131: '拉普拉斯',
+        132: '百变怪', 133: '伊布', 134: '水伊布', 135: '雷伊布', 136: '火伊布', 137: '多边兽', 138: '菊石兽', 139: '多刺菊石兽',
+        140: '化石盔', 141: '镰刀盔', 142: '化石翼龙', 143: '卡比兽', 144: '急冻鸟', 145: '闪电鸟', 146: '火焰鸟', 147: '迷你龙',
+        148: '哈克龙', 149: '快龙', 150: '超梦', 151: '梦幻',
+        // 第二世代（部分热门）
+        152: '菊草叶', 153: '月桂叶', 154: '大竺葵', 155: '火球鼠', 156: '火岩鼠', 157: '火暴兽', 158: '小锯鳄', 159: '蓝鳄', 160: '大力鳄',
+        172: '皮丘', 173: '皮宝宝', 175: '波克比', 176: '波克基古', 179: '咩利羊', 180: '茸茸羊', 181: '电龙', 196: '太阳伊布', 197: '月亮伊布',
+        243: '雷公', 244: '炎帝', 245: '水君', 249: '洛奇亚', 250: '凤王', 251: '时拉比',
+        // 第三世代（部分热门）
+        252: '木守宫', 253: '森林蜥蜴', 254: '蜥蜴王', 255: '火稚鸡', 256: '力壮鸡', 257: '火焰鸡', 258: '水跃鱼', 259: '沼跃鱼', 260: '巨沼怪',
+        282: '沙奈朵', 302: '勾魂眼', 359: '阿勃梭鲁', 373: '暴飞龙', 376: '巨金怪', 380: '拉帝亚斯', 381: '拉帝欧斯', 382: '盖欧卡', 383: '固拉多', 384: '烈空坐', 385: '基拉祈', 386: '代欧奇希斯',
+        // 第四世代（部分热门）
+        387: '草苗龟', 390: '小火焰猴', 393: '波加曼', 403: '小猫怪', 405: '伦琴猫', 445: '烈咬陆鲨', 448: '路卡利欧', 470: '叶伊布', 471: '冰伊布',
+        480: '由克希', 481: '艾姆利多', 482: '亚克诺姆', 483: '帝牙卢卡', 484: '帕路奇亚', 487: '骑拉帝纳', 491: '达克莱伊', 492: '谢米', 493: '阿尔宙斯',
+        // 第五世代（部分热门）
+        494: '比克提尼', 643: '莱希拉姆', 644: '捷克罗姆', 646: '酋雷姆', 649: '盖诺赛克特',
+        // 第六世代（部分热门）
+        650: '哈力栗', 653: '火狐狸', 656: '呱呱泡蛙', 700: '仙子伊布', 716: '哲尔尼亚斯', 717: '伊裴尔塔尔', 718: '基格尔德', 719: '蒂安希', 720: '胡帕', 721: '波尔凯尼恩',
+        // 第七世代（部分热门）
+        722: '木木枭', 725: '火斑喵', 728: '球球海狮', 785: '卡璞・鸣鸣', 786: '卡璞・蝶蝶', 787: '卡璞・哞哞', 788: '卡璞・鳍鳍',
+        789: '科斯莫古', 791: '索尔迦雷欧', 792: '露奈雅拉', 800: '奈克洛兹玛', 801: '玛机雅娜', 802: '玛夏多', 807: '捷拉奥拉', 808: '美录坦', 809: '美录梅塔',
+        // 第八世代（部分热门）
+        810: '敲音猴', 813: '炎兔儿', 816: '泪眼蜥', 888: '苍响', 889: '藏玛然特', 890: '无极汰那', 891: '熊徒弟', 892: '武道熊师', 893: '萨戮德', 894: '雷吉艾勒奇', 895: '雷吉铎拉戈', 896: '灵幽马', 897: '蕾冠王', 898: '蕾冠王',
+        // 第九世代（部分热门）
+        906: '新叶喵', 909: '呆火鳄', 912: '润水鸭', 1000: '赛富豪', 1007: '故勒顿', 1008: '密勒顿'
+      };
+      return names[id] || `#${id}`;
+    }
+
+    // 播放叫声
+    function playCry(id) {
+      const cry = new Audio(`https://raw.githubusercontent.com/PokeAPI/cries/main/cries/pokemon/latest/${id}.ogg`);
+      cry.volume = 0.3;
+      cry.play().catch(() => {});
+    }
+    
+    // 3D模型查看器
+    let pokedex3DScene, pokedex3DCamera, pokedex3DRenderer, pokedex3DControls;
+    let is3DMode = false;
+    let model3DLoaded = false;
+    
+    async function toggle3DModel(pokemonName, pokemonId) {
+      const viewer = document.getElementById('model3DViewer');
+      const status = document.getElementById('model3DStatus');
+      const imgElement = document.getElementById('pokemonImage');
+      const btn = document.getElementById('toggle3DBtn');
+      
+      // 如果已经是3D模式，切换回2D
+      if (is3DMode) {
+        viewer.style.display = 'none';
+        imgElement.style.display = 'block';
+        btn.innerHTML = '<i class="bi bi-box"></i> 查看3D模型';
+        status.textContent = '';
+        is3DMode = false;
+        return;
+      }
+      
+      status.textContent = '加载中...';
+      
+      // 尝试多种文件名格式
+      const possibleFiles = [
+        `./static/models/${pokemonName}.glb`,
+        `./static/models/${pokemonName}.geo.glb`,
+        `./static/models/${pokemonName}_male.geo.glb`,
+        `./static/models/${pokemonName}_female.geo.glb`
+      ];
+      
+      let modelFile = null;
+      
+      try {
+        // 检查哪个文件存在
+        for (const file of possibleFiles) {
+          const response = await fetch(file, { method: 'HEAD' });
+          if (response.ok) {
+            modelFile = file;
+            break;
+          }
+        }
+        
+        if (!modelFile) {
+          status.innerHTML = `<span style="color:#888;">暂未添加该宝可梦的3D模型</span>`;
+          return;
+        }
+        
+        // 隐藏原图，显示3D模型
+        if (imgElement) imgElement.style.display = 'none';
+        viewer.style.display = 'block';
+        
+        // 动态导入 Three.js
+        const THREE = await import('three');
+        const { OrbitControls } = await import('three/addons/controls/OrbitControls.js');
+        const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+        
+        // 清空容器
+        viewer.innerHTML = '';
+        
+        // 创建场景 - 使用深棕色背景匹配整体风格
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x1c1814);
+        
+        // 相机
+        const camera = new THREE.PerspectiveCamera(45, viewer.clientWidth / viewer.clientHeight, 0.1, 1000);
+        camera.position.set(0, 50, -150);
+        
+        // 渲染器
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(viewer.clientWidth, viewer.clientHeight);
+        viewer.appendChild(renderer.domElement);
+        
+        // 控制器
+        const controls = new OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.target.set(0, 30, 0);
+        
+        // 灯光
+        scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+        const light = new THREE.DirectionalLight(0xffffff, 0.8);
+        light.position.set(10, 20, 10);
+        scene.add(light);
+        
+        // 加载模型
+        const loader = new GLTFLoader();
+        loader.load(modelFile, (gltf) => {
+          const model = gltf.scene;
+          
+          // 自动缩放 - 根据容器大小动态计算
+          const box = new THREE.Box3().setFromObject(model);
+          const size = box.getSize(new THREE.Vector3());
+          const center = box.getCenter(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z);
+          
+          // 根据容器尺寸和相机视角计算最佳缩放
+          const containerSize = Math.min(viewer.clientWidth, viewer.clientHeight);
+          const fov = camera.fov * (Math.PI / 180);
+          const cameraDistance = 150;
+          const visibleHeight = 2 * Math.tan(fov / 2) * cameraDistance;
+          const scale = (visibleHeight * 0.7) / maxDim; // 占视图70%
+          
+          model.scale.set(scale, scale, scale);
+          
+          // 居中
+          const newBox = new THREE.Box3().setFromObject(model);
+          const newCenter = newBox.getCenter(new THREE.Vector3());
+          controls.target.copy(newCenter);
+          camera.position.set(newCenter.x, newCenter.y, newCenter.z - cameraDistance);
+          
+          // 像素风格
+          model.traverse((child) => {
+            if (child.isMesh && child.material.map) {
+              child.material.map.magFilter = THREE.NearestFilter;
+              child.material.map.minFilter = THREE.NearestFilter;
+            }
+          });
+          
+          scene.add(model);
+          status.textContent = '🖱️ 拖动旋转 | 滚轮缩放';
+          
+          // 更新状态和按钮
+          is3DMode = true;
+          btn.innerHTML = '<i class="bi bi-image"></i> 查看原图';
+        });
+        
+        // 动画
+        function animate() {
+          requestAnimationFrame(animate);
+          controls.update();
+          renderer.render(scene, camera);
+        }
+        animate();
+        
+      } catch (e) {
+        status.innerHTML = `<span style="color:#e74c3c;">加载失败</span>`;
+        console.error(e);
+      }
+    }
+
+    // 页面加载完成后隐藏加载动画
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+  </script>
+  
+  <!-- 全局背景音乐播放器 -->
+  <script src="static/js/music-player.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1702 @@
+/* Cobblemon 百科样式 */
+.cobblemon-page {
+  min-height: 100vh;
+  padding: 120px 0 60px;
+  background: var(--gradient-dark);
+}
+
+.cobblemon-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.cobblemon-title {
+  font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+  font-size: 3rem;
+  color: var(--primary-light);
+  text-shadow: 0 0 30px rgba(212, 165, 116, 0.5);
+  margin-bottom: 0.5rem;
+}
+
+.cobblemon-subtitle {
+  color: var(--gray-light);
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}
+
+/* 标签页 */
+.cobblemon-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.cobblemon-tab {
+  background: rgba(139, 115, 85, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  color: var(--gray-light);
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.cobblemon-tab:hover {
+  background: rgba(139, 115, 85, 0.3);
+  border-color: var(--primary);
+}
+
+.cobblemon-tab.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+}
+
+.cobblemon-panel {
+  display: none;
+}
+
+.cobblemon-panel.active {
+  display: block;
+}
+
+/* 功能卡片 */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.feature-card {
+  background: rgba(28, 24, 20, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: var(--transition);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  color: var(--primary-light);
+  margin-bottom: 1rem;
+}
+
+.feature-title {
+  font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+  font-size: 1.5rem;
+  color: var(--white);
+  margin-bottom: 0.5rem;
+}
+
+.feature-desc {
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+.feature-badge {
+  display: inline-block;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+}
+
+/* 搜索框 */
+.cobblemon-search {
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+
+.cobblemon-search-input {
+  width: 100%;
+  background: rgba(28, 24, 20, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  color: var(--white);
+  font-size: 1rem;
+}
+
+.cobblemon-search-input:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+/* 分类筛选 */
+.category-filters {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.category-btn {
+  background: rgba(139, 115, 85, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 0.5rem 1rem;
+  color: var(--gray-light);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.category-btn:hover,
+.category-btn.active {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+}
+
+/* 生物群系 */
+.biome-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.biome-card {
+  background: rgba(28, 24, 20, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 1rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.biome-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-2px);
+}
+
+.biome-name {
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 0.25rem;
+}
+
+.biome-count {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+/* 物品网格 */
+.item-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.item-card {
+  background: rgba(28, 24, 20, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.item-card:hover {
+  border-color: var(--primary);
+}
+
+.item-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+  image-rendering: pixelated;
+}
+
+.item-name {
+  font-size: 0.85rem;
+  color: var(--white);
+}
+
+.item-name-en {
+  font-size: 0.7rem;
+  color: var(--gray);
+}
+
+/* 进化链 */
+.evolution-chain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 1.5rem;
+  background: rgba(28, 24, 20, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.evolution-pokemon {
+  text-align: center;
+}
+
+.evolution-pokemon img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.evolution-pokemon-name {
+  font-size: 0.85rem;
+  color: var(--white);
+  margin-top: 0.25rem;
+}
+
+.evolution-arrow {
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.evolution-condition {
+  font-size: 0.7rem;
+  color: var(--gray);
+  text-align: center;
+  max-width: 80px;
+}
+
+/* 骑乘列表 */
+.mount-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+
+.mount-card {
+  background: rgba(28, 24, 20, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.mount-card:hover {
+  border-color: var(--primary);
+}
+
+.mount-card img {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+}
+
+.mount-name {
+  font-size: 0.8rem;
+  color: var(--white);
+  margin-top: 0.25rem;
+}
+
+.mount-type {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-top: 0.25rem;
+  display: inline-block;
+}
+
+.mount-type.land { background: #8B4513; color: #fff; }
+.mount-type.water { background: #1E90FF; color: #fff; }
+.mount-type.fly { background: #87CEEB; color: #333; }
+
+/* 食谱 */
+.recipe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.recipe-card {
+  background: rgba(28, 24, 20, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.recipe-title {
+  font-size: 1.1rem;
+  color: var(--white);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.recipe-ingredients {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.recipe-ingredient {
+  background: rgba(139, 115, 85, 0.3);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  color: var(--gray-light);
+}
+
+.recipe-result {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--glass-border);
+  color: var(--primary-light);
+  font-size: 0.9rem;
+}
+
+/* 3D 模型查看器 */
+.model-viewer-container {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1.5rem;
+  min-height: 500px;
+}
+
+.model-list {
+  background: rgba(28, 24, 20, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1rem;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.model-item {
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-bottom: 0.5rem;
+  color: var(--gray-light);
+  font-size: 0.9rem;
+  text-transform: capitalize;
+}
+
+.model-item:hover {
+  background: rgba(139, 115, 85, 0.3);
+  color: var(--white);
+}
+
+.model-item.active {
+  background: var(--primary);
+  color: var(--dark);
+  font-weight: 600;
+}
+
+.model-viewer {
+  background: rgba(28, 24, 20, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.model-viewer canvas {
+  width: 100% !important;
+  height: 100% !important;
+  display: block;
+}
+
+.model-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--gray);
+  font-size: 1.1rem;
+}
+
+.model-info {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  color: var(--white);
+  font-size: 0.85rem;
+}
+
+.model-controls {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  color: var(--gray);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 768px) {
+  .model-viewer-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .model-list {
+    max-height: 150px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  
+  .model-item {
+    margin-bottom: 0;
+  }
+}
+
+/* 物品详情弹窗 */
+.item-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+}
+
+.item-modal.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.item-modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+.item-modal-content {
+  position: relative;
+  background: rgba(28, 24, 20, 0.98);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  transform: scale(0.95);
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.item-modal.show .item-modal-content {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.item-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(139, 115, 85, 0.3);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  color: var(--white);
+  cursor: pointer;
+  transition: var(--transition);
+  z-index: 10;
+}
+
+.item-modal-close:hover {
+  background: var(--primary);
+  transform: rotate(90deg);
+}
+
+.item-modal-body {
+  padding: 2rem;
+}
+
+/* 物品详情头部 */
+.item-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.item-detail-icon {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  image-rendering: pixelated;
+  background: rgba(139, 115, 85, 0.1);
+  border-radius: 12px;
+  padding: 0.5rem;
+}
+
+.item-detail-title h3 {
+  font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+  font-size: 1.8rem;
+  color: var(--primary-light);
+  margin: 0 0 0.25rem;
+  letter-spacing: 2px;
+}
+
+.item-detail-en {
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+/* 物品属性统计 */
+.item-detail-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.item-stat {
+  flex: 1;
+  background: rgba(139, 115, 85, 0.15);
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.item-stat-label {
+  display: block;
+  color: var(--gray);
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.item-stat-value {
+  display: block;
+  color: var(--white);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.item-stat-value.catch-rate {
+  color: var(--primary-light);
+  font-size: 1.3rem;
+}
+
+/* 物品详情区块 */
+.item-detail-desc,
+.item-detail-craft,
+.item-detail-evolves {
+  margin-bottom: 1.25rem;
+}
+
+.item-detail-desc h4,
+.item-detail-craft h4,
+.item-detail-evolves h4 {
+  font-family: 'ZhongHuaXinHuo', 'Ma Shan Zheng', cursive;
+  color: var(--primary-light);
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 1px;
+}
+
+.item-detail-desc h4 i,
+.item-detail-craft h4 i,
+.item-detail-evolves h4 i {
+  font-size: 1rem;
+}
+
+.item-detail-desc p,
+.item-detail-craft p,
+.item-detail-evolves p {
+  color: var(--gray-light);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.item-detail-craft {
+  background: rgba(139, 115, 85, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 3px solid var(--primary);
+}
+
+/* 合成配方 - 3x3工作台样式 (官网风格) */
+.crafting-table-container {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-top: 0.75rem;
+  padding: 1.25rem;
+  background: rgba(28, 24, 20, 0.6);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  justify-content: center;
+}
+
+.crafting-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  grid-template-rows: repeat(3, 44px);
+  gap: 4px;
+  background: rgba(139, 115, 85, 0.15);
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(198, 166, 100, 0.3);
+}
+
+.craft-item, .craft-slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(28, 24, 20, 0.7);
+  border: 1px solid rgba(198, 166, 100, 0.4);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.craft-item:hover {
+  background: rgba(198, 166, 100, 0.2);
+  border-color: var(--primary);
+  transform: scale(1.05);
+}
+
+.craft-slot.empty {
+  background: rgba(28, 24, 20, 0.4);
+  border: 1px dashed rgba(198, 166, 100, 0.2);
+}
+
+.craft-item img {
+  width: 32px;
+  height: 32px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+.craft-count {
+  position: absolute;
+  bottom: 2px;
+  right: 3px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  color: var(--white);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.crafting-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  color: var(--primary);
+  padding: 0 0.5rem;
+}
+
+.crafting-result {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  background: rgba(28, 24, 20, 0.7);
+  border: 2px solid var(--primary);
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(198, 166, 100, 0.3);
+}
+
+.crafting-result .result-icon {
+  width: 40px;
+  height: 40px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+.craft-text {
+  font-size: 0.7rem;
+  color: var(--gray-light);
+  text-align: center;
+  padding: 0.25rem;
+  word-break: break-all;
+}
+
+.item-detail-evolves {
+  background: rgba(100, 150, 100, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  border-left: 3px solid #5d8a66;
+}
+
+.evolves-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.evolve-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(93, 138, 102, 0.2);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: var(--gray-light);
+  border: 1px solid rgba(93, 138, 102, 0.3);
+}
+
+.evolve-pair i {
+  color: #5d8a66;
+  font-size: 0.75rem;
+}
+
+/* 带图片的进化列表 */
+.evolves-list-img {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.evolve-pair-with-img {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(93, 138, 102, 0.15);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid rgba(93, 138, 102, 0.3);
+}
+
+.evolve-pokemon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.evolve-pokemon img {
+  width: 48px;
+  height: 48px;
+  image-rendering: pixelated;
+  object-fit: contain;
+}
+
+.evolve-pokemon span {
+  font-size: 0.75rem;
+  color: var(--gray-light);
+  text-align: center;
+  max-width: 60px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.evolve-arrow {
+  color: #5d8a66;
+  font-size: 1rem;
+  margin: 0 0.25rem;
+}
+
+.item-detail-evolves h4 {
+  color: #7cb686;
+}
+
+/* 物品卡片悬停效果增强 */
+.item-card {
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.item-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(139, 115, 85, 0.2);
+}
+
+.item-card:active {
+  transform: translateY(-1px);
+}
+
+/* 生物群系弹窗额外样式 */
+.biome-icon-box {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(93, 138, 102, 0.3), rgba(139, 115, 85, 0.3));
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  color: var(--primary-light);
+}
+
+.biome-pokemon-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.biome-pokemon-tag {
+  background: rgba(139, 115, 85, 0.2);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  color: var(--white);
+  transition: var(--transition);
+}
+
+.biome-pokemon-tag:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+/* 生物群系卡片增强 */
+.biome-card {
+  cursor: pointer;
+}
+
+.biome-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(139, 115, 85, 0.2);
+}
+
+/* 骑乘卡片点击效果 */
+.mount-card {
+  cursor: pointer;
+}
+
+.mount-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(139, 115, 85, 0.2);
+}
+
+/* 食谱卡片点击效果 */
+.recipe-card {
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.recipe-card:hover {
+  border-color: var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 20px rgba(139, 115, 85, 0.2);
+}
+
+/* ========== 招式图鉴样式 ========== */
+.type-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.type-btn {
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  border: 1px solid var(--glass-border);
+  background: rgba(139, 115, 85, 0.1);
+  color: var(--gray-light);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.type-btn:hover,
+.type-btn.active {
+  transform: scale(1.05);
+}
+
+.type-btn[data-type="normal"] { background: #A8A878; color: #fff; }
+.type-btn[data-type="fire"] { background: #F08030; color: #fff; }
+.type-btn[data-type="water"] { background: #6890F0; color: #fff; }
+.type-btn[data-type="electric"] { background: #F8D030; color: #333; }
+.type-btn[data-type="grass"] { background: #78C850; color: #fff; }
+.type-btn[data-type="ice"] { background: #98D8D8; color: #333; }
+.type-btn[data-type="fighting"] { background: #C03028; color: #fff; }
+.type-btn[data-type="poison"] { background: #A040A0; color: #fff; }
+.type-btn[data-type="ground"] { background: #E0C068; color: #333; }
+.type-btn[data-type="flying"] { background: #A890F0; color: #fff; }
+.type-btn[data-type="psychic"] { background: #F85888; color: #fff; }
+.type-btn[data-type="bug"] { background: #A8B820; color: #fff; }
+.type-btn[data-type="rock"] { background: #B8A038; color: #fff; }
+.type-btn[data-type="ghost"] { background: #705898; color: #fff; }
+.type-btn[data-type="dragon"] { background: #7038F8; color: #fff; }
+.type-btn[data-type="dark"] { background: #705848; color: #fff; }
+.type-btn[data-type="steel"] { background: #B8B8D0; color: #333; }
+.type-btn[data-type="fairy"] { background: #EE99AC; color: #333; }
+
+.move-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.move-card {
+  background: rgba(28, 24, 20, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 1rem;
+  align-items: center;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.move-card:hover {
+  border-color: var(--primary);
+  transform: translateX(5px);
+}
+
+.move-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.move-name {
+  font-size: 1.1rem;
+  color: var(--white);
+  font-weight: 500;
+}
+
+.move-name-en {
+  font-size: 0.8rem;
+  color: var(--gray);
+}
+
+.move-type {
+  padding: 0.3rem 0.8rem;
+  border-radius: 15px;
+  font-size: 0.75rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+.move-category {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+}
+
+.move-category.physical {
+  background: #C92112;
+  color: #fff;
+}
+
+.move-category.special {
+  background: #4F5870;
+  color: #fff;
+}
+
+.move-category.status {
+  background: #8C888C;
+  color: #fff;
+}
+
+.move-stats {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.85rem;
+}
+
+.move-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+}
+
+.move-stat-label {
+  color: var(--gray);
+  font-size: 0.7rem;
+}
+
+.move-stat-value {
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .move-card {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+  
+  .move-stats {
+    justify-content: flex-start;
+  }
+}
+
+/* ========== 特性图鉴样式 ========== */
+.ability-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ability-card {
+  background: rgba(28, 24, 20, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  transition: var(--transition);
+  cursor: pointer;
+}
+
+.ability-card:hover {
+  border-color: var(--primary);
+  transform: translateX(5px);
+}
+
+.ability-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.ability-name {
+  font-size: 1.1rem;
+  color: var(--white);
+  font-weight: 500;
+}
+
+.ability-name-en {
+  font-size: 0.85rem;
+  color: var(--gray);
+  margin-left: 0.5rem;
+}
+
+.ability-tag {
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  background: rgba(139, 115, 85, 0.3);
+  color: var(--primary-light);
+}
+
+.ability-desc {
+  color: var(--gray-light);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.ability-pokemon {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--glass-border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ability-pokemon-tag {
+  background: rgba(93, 138, 102, 0.2);
+  border: 1px solid rgba(93, 138, 102, 0.3);
+  border-radius: 15px;
+  padding: 0.2rem 0.6rem;
+  font-size: 0.75rem;
+  color: #7cb686;
+}
+
+/* ========== 属性相克表样式 ========== */
+.typechart-intro {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: rgba(139, 115, 85, 0.1);
+  border-radius: 12px;
+  border: 1px solid var(--glass-border);
+}
+
+.typechart-intro h3 {
+  color: var(--primary-light);
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.typechart-intro p {
+  color: var(--gray-light);
+  font-size: 0.95rem;
+}
+
+.typechart-selector {
+  margin-bottom: 2rem;
+}
+
+.type-select-group {
+  text-align: center;
+}
+
+.type-select-group label {
+  display: block;
+  color: var(--gray-light);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.type-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.type-buttons .type-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+}
+
+.type-buttons .type-btn.selected {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+  transform: scale(1.1);
+}
+
+.typechart-result {
+  background: rgba(28, 24, 20, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  min-height: 200px;
+}
+
+.typechart-placeholder {
+  text-align: center;
+  color: var(--gray);
+  padding: 3rem;
+}
+
+.typechart-placeholder i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.type-result-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.type-result-icon {
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.type-result-title {
+  color: var(--white);
+  font-size: 1.3rem;
+}
+
+.type-result-section {
+  margin-bottom: 1.5rem;
+}
+
+.type-result-section h4 {
+  color: var(--primary-light);
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.type-result-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.type-result-tag {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.type-result-tag.super { box-shadow: 0 0 10px rgba(76, 175, 80, 0.5); }
+.type-result-tag.weak { box-shadow: 0 0 10px rgba(244, 67, 54, 0.5); }
+.type-result-tag.resist { box-shadow: 0 0 10px rgba(33, 150, 243, 0.5); }
+.type-result-tag.immune { box-shadow: 0 0 10px rgba(158, 158, 158, 0.5); }
+
+.type-result-empty {
+  color: var(--gray);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* 完整相克表 */
+.typechart-table-container {
+  background: rgba(28, 24, 20, 0.8);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+.typechart-table-container h4 {
+  color: var(--primary-light);
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.typechart-table {
+  display: grid;
+  grid-template-columns: repeat(19, minmax(40px, 1fr));
+  gap: 2px;
+  font-size: 0.7rem;
+}
+
+.typechart-cell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  font-weight: 600;
+  min-width: 35px;
+}
+
+.typechart-cell.header {
+  background: rgba(139, 115, 85, 0.3);
+  color: var(--white);
+  font-size: 0.6rem;
+}
+
+.typechart-cell.super {
+  background: #4CAF50;
+  color: #fff;
+}
+
+.typechart-cell.normal {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--gray);
+}
+
+.typechart-cell.not-very {
+  background: #F44336;
+  color: #fff;
+}
+
+.typechart-cell.immune {
+  background: #333;
+  color: #666;
+}
+
+.typechart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--gray-light);
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+}
+
+.legend-color.super { background: #4CAF50; }
+.legend-color.normal { background: rgba(255, 255, 255, 0.2); }
+.legend-color.not-very { background: #F44336; }
+.legend-color.immune { background: #333; }
+
+@media (max-width: 768px) {
+  .typechart-table {
+    font-size: 0.6rem;
+  }
+  
+  .typechart-cell {
+    min-width: 28px;
+  }
+  
+  .typechart-cell.header {
+    font-size: 0.5rem;
+  }
+}
+
+/* ========== 加载指示器 ========== */
+.loading-indicator {
+  text-align: center;
+  padding: 3rem;
+  color: var(--gray-light);
+}
+
+.loading-indicator .spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(212, 165, 116, 0.2);
+  border-top-color: var(--primary-light);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-indicator p {
+  margin: 0.5rem 0;
+}
+
+.loading-progress {
+  color: var(--primary-light);
+  font-weight: 600;
+}
+
+.error-message {
+  text-align: center;
+  padding: 3rem;
+  color: #e74c3c;
+}
+
+.error-message i {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.empty-message {
+  text-align: center;
+  padding: 2rem;
+  color: var(--gray);
+}
+
+.result-count {
+  text-align: center;
+  color: var(--gray);
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+  background: rgba(139, 115, 85, 0.1);
+  border-radius: 6px;
+}
+
+/* 加载更多按钮 */
+.load-more-container {
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.load-more-btn {
+  background: linear-gradient(135deg, var(--primary), #a08060);
+  border: none;
+  color: #fff;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.load-more-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 20px rgba(139, 115, 85, 0.4);
+}
+
+.load-more-btn:active {
+  transform: translateY(0);
+}
+
+/* 招式属性筛选图标按钮 */
+.type-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.type-btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: var(--transition);
+  opacity: 0.7;
+}
+
+.type-btn-icon:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.type-btn-icon.active {
+  opacity: 1;
+  border-color: var(--primary-light);
+  box-shadow: 0 0 10px rgba(212, 165, 116, 0.5);
+  transform: scale(1.15);
+}
+
+/* 已选属性显示 */
+.selected-types {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 0.8rem;
+  background: rgba(139, 115, 85, 0.1);
+  border-radius: 8px;
+}
+
+.selected-label {
+  color: var(--gray);
+  font-size: 0.9rem;
+}
+
+.selected-none {
+  color: var(--gray);
+  font-style: italic;
+}
+
+.clear-types-btn {
+  display: block;
+  margin: 0 auto 1rem;
+  padding: 0.5rem 1.5rem;
+  background: rgba(231, 76, 60, 0.2);
+  border: 1px solid rgba(231, 76, 60, 0.5);
+  color: #e74c3c;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.clear-types-btn:hover {
+  background: rgba(231, 76, 60, 0.3);
+}
+
+/* ========== 属性图标样式（使用精灵图） ========== */
+.type-icon {
+  display: inline-block;
+  width: 36px;
+  height: 36px;
+  background-image: url('../image/types/types.png');
+  background-repeat: no-repeat;
+  background-size: 648px 36px; /* 18个图标 x 36px */
+  vertical-align: middle;
+}
+
+/* 属性图标位置 */
+.type-icon.normal { background-position: 0 0; }
+.type-icon.fire { background-position: -36px 0; }
+.type-icon.water { background-position: -72px 0; }
+.type-icon.electric { background-position: -108px 0; }
+.type-icon.grass { background-position: -144px 0; }
+.type-icon.ice { background-position: -180px 0; }
+.type-icon.fighting { background-position: -216px 0; }
+.type-icon.poison { background-position: -252px 0; }
+.type-icon.ground { background-position: -288px 0; }
+.type-icon.flying { background-position: -324px 0; }
+.type-icon.psychic { background-position: -360px 0; }
+.type-icon.bug { background-position: -396px 0; }
+.type-icon.rock { background-position: -432px 0; }
+.type-icon.ghost { background-position: -468px 0; }
+.type-icon.dragon { background-position: -504px 0; }
+.type-icon.dark { background-position: -540px 0; }
+.type-icon.steel { background-position: -576px 0; }
+.type-icon.fairy { background-position: -612px 0; }
+
+/* 小尺寸图标 */
+.type-icon.small {
+  width: 24px;
+  height: 24px;
+  background-size: 432px 24px;
+}
+
+.type-icon.small.normal { background-position: 0 0; }
+.type-icon.small.fire { background-position: -24px 0; }
+.type-icon.small.water { background-position: -48px 0; }
+.type-icon.small.electric { background-position: -72px 0; }
+.type-icon.small.grass { background-position: -96px 0; }
+.type-icon.small.ice { background-position: -120px 0; }
+.type-icon.small.fighting { background-position: -144px 0; }
+.type-icon.small.poison { background-position: -168px 0; }
+.type-icon.small.ground { background-position: -192px 0; }
+.type-icon.small.flying { background-position: -216px 0; }
+.type-icon.small.psychic { background-position: -240px 0; }
+.type-icon.small.bug { background-position: -264px 0; }
+.type-icon.small.rock { background-position: -288px 0; }
+.type-icon.small.ghost { background-position: -312px 0; }
+.type-icon.small.dragon { background-position: -336px 0; }
+.type-icon.small.dark { background-position: -360px 0; }
+.type-icon.small.steel { background-position: -384px 0; }
+.type-icon.small.fairy { background-position: -408px 0; }
+
+/* 属性按钮样式 */
+.type-btn-img {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.type-btn-img:hover {
+  transform: scale(1.15);
+}
+
+.type-btn-img.selected {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 15px rgba(212, 165, 116, 0.6);
+  transform: scale(1.2);
+}
+
+/* 属性相克结果 */
+.type-result-tag {
+  display: inline-block;
+  margin: 0.25rem;
+}
+
+/* 相克表格图标 */
+.typechart-cell.header {
+  padding: 2px;
+}
+
+.typechart-cell .type-icon {
+  width: 28px;
+  height: 28px;
+  background-size: 504px 28px;
+}
+
+.typechart-cell .type-icon.normal { background-position: 0 0; }
+.typechart-cell .type-icon.fire { background-position: -28px 0; }
+.typechart-cell .type-icon.water { background-position: -56px 0; }
+.typechart-cell .type-icon.electric { background-position: -84px 0; }
+.typechart-cell .type-icon.grass { background-position: -112px 0; }
+.typechart-cell .type-icon.ice { background-position: -140px 0; }
+.typechart-cell .type-icon.fighting { background-position: -168px 0; }
+.typechart-cell .type-icon.poison { background-position: -196px 0; }
+.typechart-cell .type-icon.ground { background-position: -224px 0; }
+.typechart-cell .type-icon.flying { background-position: -252px 0; }
+.typechart-cell .type-icon.psychic { background-position: -280px 0; }
+.typechart-cell .type-icon.bug { background-position: -308px 0; }
+.typechart-cell .type-icon.rock { background-position: -336px 0; }
+.typechart-cell .type-icon.ghost { background-position: -364px 0; }
+.typechart-cell .type-icon.dragon { background-position: -392px 0; }
+.typechart-cell .type-icon.dark { background-position: -420px 0; }
+.typechart-cell .type-icon.steel { background-position: -448px 0; }
+.typechart-cell .type-icon.fairy { background-position: -476px 0; }
+
+@media (max-width: 768px) {
+  .type-icon {
+    width: 28px;
+    height: 28px;
+    background-size: 504px 28px;
+  }
+  
+  .type-icon.normal { background-position: 0 0; }
+  .type-icon.fire { background-position: -28px 0; }
+  .type-icon.water { background-position: -56px 0; }
+  .type-icon.electric { background-position: -84px 0; }
+  .type-icon.grass { background-position: -112px 0; }
+  .type-icon.ice { background-position: -140px 0; }
+  .type-icon.fighting { background-position: -168px 0; }
+  .type-icon.poison { background-position: -196px 0; }
+  .type-icon.ground { background-position: -224px 0; }
+  .type-icon.flying { background-position: -252px 0; }
+  .type-icon.psychic { background-position: -280px 0; }
+  .type-icon.bug { background-position: -308px 0; }
+  .type-icon.rock { background-position: -336px 0; }
+  .type-icon.ghost { background-position: -364px 0; }
+  .type-icon.dragon { background-position: -392px 0; }
+  .type-icon.dark { background-position: -420px 0; }
+  .type-icon.steel { background-position: -448px 0; }
+  .type-icon.fairy { background-position: -476px 0; }
+  
+  .typechart-cell .type-icon {
+    width: 22px;
+    height: 22px;
+    background-size: 396px 22px;
+  }
+  
+  .typechart-cell .type-icon.normal { background-position: 0 0; }
+  .typechart-cell .type-icon.fire { background-position: -22px 0; }
+  .typechart-cell .type-icon.water { background-position: -44px 0; }
+  .typechart-cell .type-icon.electric { background-position: -66px 0; }
+  .typechart-cell .type-icon.grass { background-position: -88px 0; }
+  .typechart-cell .type-icon.ice { background-position: -110px 0; }
+  .typechart-cell .type-icon.fighting { background-position: -132px 0; }
+  .typechart-cell .type-icon.poison { background-position: -154px 0; }
+  .typechart-cell .type-icon.ground { background-position: -176px 0; }
+  .typechart-cell .type-icon.flying { background-position: -198px 0; }
+  .typechart-cell .type-icon.psychic { background-position: -220px 0; }
+  .typechart-cell .type-icon.bug { background-position: -242px 0; }
+  .typechart-cell .type-icon.rock { background-position: -264px 0; }
+  .typechart-cell .type-icon.ghost { background-position: -286px 0; }
+  .typechart-cell .type-icon.dragon { background-position: -308px 0; }
+  .typechart-cell .type-icon.dark { background-position: -330px 0; }
+  .typechart-cell .type-icon.steel { background-position: -352px 0; }
+  .typechart-cell .type-icon.fairy { background-position: -374px 0; }
+}

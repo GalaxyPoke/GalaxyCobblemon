@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>公会系统 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+    }
+    
+    body {
+      font-family: '中华薪火体', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+    }
+    
+    .hero-section {
+      padding: 140px 0 80px;
+      background: #1c1814;
+    }
+    
+    .hero-content {
+      display: flex;
+      align-items: center;
+      gap: 80px;
+    }
+    
+    .hero-text {
+      flex: 1;
+    }
+    
+    .hero-title {
+      font-size: 3.5rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 5px;
+    }
+    
+    .hero-subtitle {
+      font-size: 1.3rem;
+      color: #888;
+      margin-bottom: 2rem;
+      line-height: 1.8;
+    }
+    
+    .hero-features {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    
+    .hero-feature {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #999;
+      font-size: 1.05rem;
+    }
+    
+    .hero-feature i {
+      color: #d4a574;
+      font-size: 1.2rem;
+    }
+    
+    .hero-visual {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .guild-icon-box {
+      width: 300px;
+      height: 300px;
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(212, 165, 116, 0.02));
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .guild-icon-box i {
+      font-size: 8rem;
+      color: rgba(212, 165, 116, 0.3);
+    }
+    
+    .split-section {
+      padding: 100px 0;
+    }
+    
+    .split-section:nth-child(even) {
+      background: rgba(255,255,255,0.015);
+    }
+    
+    .split-content {
+      display: flex;
+      align-items: center;
+      gap: 80px;
+    }
+    
+    .split-content.reverse {
+      flex-direction: row-reverse;
+    }
+    
+    .split-text {
+      flex: 1;
+    }
+    
+    .split-visual {
+      flex: 1;
+    }
+    
+    .section-label {
+      color: #d4a574;
+      font-size: 0.9rem;
+      letter-spacing: 3px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    
+    .section-title {
+      font-size: 2.2rem;
+      color: #e0e0e0;
+      margin-bottom: 1.5rem;
+      line-height: 1.4;
+    }
+    
+    .section-desc {
+      color: #888;
+      font-size: 1.1rem;
+      line-height: 2;
+      margin-bottom: 2rem;
+    }
+    
+    .rank-cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    
+    .rank-card {
+      background: rgba(40, 35, 30, 0.5);
+      padding: 25px;
+      border-left: 3px solid;
+      transition: all 0.3s;
+    }
+    
+    .rank-card:hover {
+      background: rgba(40, 35, 30, 0.8);
+    }
+    
+    .rank-card.leader { border-color: #FFD700; }
+    .rank-card.elder { border-color: #C0C0C0; }
+    .rank-card.officer { border-color: #CD7F32; }
+    .rank-card.member { border-color: #4A90A4; }
+    
+    .rank-name {
+      color: #d4a574;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    
+    .rank-desc {
+      color: #777;
+      font-size: 0.9rem;
+    }
+    
+    .command-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .command-table tr {
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .command-table tr:last-child {
+      border-bottom: none;
+    }
+    
+    .command-table td {
+      padding: 18px 0;
+      vertical-align: top;
+    }
+    
+    .command-table td:first-child {
+      width: 200px;
+      color: #d4a574;
+      font-family: Consolas, monospace;
+      font-size: 0.95rem;
+    }
+    
+    .command-table td:last-child {
+      color: #888;
+    }
+    
+    .feature-list {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+    
+    .feature-item {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    
+    .feature-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(212, 165, 116, 0.1);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    
+    .feature-icon i {
+      font-size: 1.3rem;
+      color: #d4a574;
+    }
+    
+    .feature-content h4 {
+      color: #e0e0e0;
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    
+    .feature-content p {
+      color: #777;
+      font-size: 0.95rem;
+      margin: 0;
+      line-height: 1.6;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+    }
+    
+    .stat-box {
+      text-align: center;
+      padding: 30px;
+      background: rgba(40, 35, 30, 0.4);
+    }
+    
+    .stat-num {
+      font-size: 2.5rem;
+      color: #d4a574;
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    
+    .stat-label {
+      color: #666;
+      font-size: 0.95rem;
+    }
+    
+    .cta-section {
+      padding: 100px 0;
+      text-align: center;
+    }
+    
+    .cta-title {
+      font-size: 2rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-text {
+      color: #888;
+      margin-bottom: 2rem;
+    }
+    
+    .cta-section .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 35px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      color: #1c1814;
+      text-decoration: none;
+      font-size: 1.1rem;
+      transition: all 0.3s;
+    }
+    
+    .cta-section .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(212, 165, 116, 0.3);
+    }
+    
+    /* 轮播图样式 - 全宽无背景 */
+    .carousel-section {
+      padding: 0;
+      background: transparent;
+    }
+    
+    .carousel-section .section-label,
+    .carousel-section .section-title {
+      display: none;
+    }
+    
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      border-radius: 0;
+      overflow: hidden;
+      box-shadow: none;
+    }
+    
+    .carousel-inner {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+    }
+    
+    .carousel-slides {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+    
+    .carousel-slide {
+      min-width: 100%;
+      position: relative;
+    }
+    
+    .carousel-slide img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .carousel-slide .slide-placeholder {
+      width: 100%;
+      height: 500px;
+      background: linear-gradient(135deg, rgba(40, 35, 30, 0.9), rgba(28, 24, 20, 1));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+    }
+    
+    .carousel-slide .slide-placeholder i {
+      font-size: 5rem;
+      margin-bottom: 1rem;
+      color: rgba(212, 165, 116, 0.2);
+    }
+    
+    .carousel-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 30px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.8));
+      color: #fff;
+    }
+    
+    .carousel-caption h4 {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: #d4a574;
+    }
+    
+    .carousel-caption p {
+      font-size: 0.95rem;
+      color: #aaa;
+      margin: 0;
+    }
+    
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 50px;
+      height: 50px;
+      background: rgba(0,0,0,0.5);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+    }
+    
+    .carousel-btn:hover {
+      background: rgba(212, 165, 116, 0.8);
+    }
+    
+    .carousel-btn.prev { left: 20px; }
+    .carousel-btn.next { right: 20px; }
+    
+    .carousel-dots {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      z-index: 10;
+    }
+    
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(212, 165, 116, 0.3);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .carousel-dot.active {
+      background: #d4a574;
+      transform: scale(1.2);
+    }
+    
+    @media (max-width: 768px) {
+      .carousel-slide img,
+      .carousel-slide .slide-placeholder {
+        height: 300px;
+      }
+      .carousel-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+      }
+      .carousel-caption h4 {
+        font-size: 1.1rem;
+      }
+      .carousel-caption p {
+        font-size: 0.85rem;
+      }
+    }
+    
+    @media (max-width: 992px) {
+      .hero-content, .split-content, .split-content.reverse {
+        flex-direction: column;
+        gap: 40px;
+      }
+      .hero-visual { order: -1; }
+      .guild-icon-box { width: 200px; height: 200px; }
+      .guild-icon-box i { font-size: 5rem; }
+      .stats-grid { grid-template-columns: 1fr; }
+      .rank-cards { grid-template-columns: 1fr; }
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-content { text-align: center; }
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-people-fill"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <script src="static/js/navbar.js"></script>
+
+  <section class="hero-section">
+    <div class="container">
+      <div class="hero-content">
+        <div class="hero-text" data-aos="fade-right">
+          <h1 class="hero-title">公会系统</h1>
+          <p class="hero-subtitle">独行快，众行远。创建或加入公会，与志同道合的伙伴一起征服宝可梦世界。</p>
+          <div class="hero-features">
+            <div class="hero-feature">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>基于 PlayerGuild 插件，功能完善</span>
+            </div>
+            <div class="hero-feature">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>支持公会聊天、公告、仓库等功能</span>
+            </div>
+            <div class="hero-feature">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>四级职位体系，权限分明</span>
+            </div>
+            <div class="hero-feature">
+              <i class="bi bi-check-circle-fill"></i>
+              <span>公会福利丰厚，等级越高奖励越多</span>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual" data-aos="fade-left">
+          <div class="guild-icon-box">
+            <i class="bi bi-people-fill"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-label" data-aos="fade-up">Gallery</div>
+      <h2 class="section-title" data-aos="fade-up">公会风采</h2>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <!-- 占位图片，后续替换 -->
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>公会截图 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>公会基地</h4>
+                <p>会员们共同建造的公会领地</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>公会截图 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>公会活动</h4>
+                <p>每周举办的公会聚会</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>公会截图 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>公会对战</h4>
+                <p>激烈的公会联赛现场</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="container">
+      <div class="split-content">
+        <div class="split-text" data-aos="fade-right">
+          <div class="section-label">Organization</div>
+          <h2 class="section-title">四级职位体系<br>各司其职</h2>
+          <p class="section-desc">公会内设有会长、副会长、精英、成员四个等级，不同职位拥有不同权限，共同管理公会事务。</p>
+        </div>
+        <div class="split-visual" data-aos="fade-left">
+          <div class="rank-cards">
+            <div class="rank-card leader">
+              <div class="rank-name">会长</div>
+              <div class="rank-desc">公会创建者，拥有全部管理权限</div>
+            </div>
+            <div class="rank-card elder">
+              <div class="rank-name">副会长</div>
+              <div class="rank-desc">协助管理，可审批申请、踢人</div>
+            </div>
+            <div class="rank-card officer">
+              <div class="rank-name">精英</div>
+              <div class="rank-desc">骨干成员，可邀请玩家、管理仓库</div>
+            </div>
+            <div class="rank-card member">
+              <div class="rank-name">成员</div>
+              <div class="rank-desc">普通成员，享受公会基础福利</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="container">
+      <div class="split-content reverse">
+        <div class="split-text" data-aos="fade-left">
+          <div class="section-label">Features</div>
+          <h2 class="section-title">丰富的公会功能</h2>
+          <p class="section-desc">从日常交流到资源共享，从领地建设到公会对战，满足你对公会的所有想象。</p>
+        </div>
+        <div class="split-visual" data-aos="fade-right">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-chat-dots"></i></div>
+              <div class="feature-content">
+                <h4>公会聊天</h4>
+                <p>专属频道，和会友畅所欲言</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-house"></i></div>
+              <div class="feature-content">
+                <h4>公会领地</h4>
+                <p>建设专属基地，打造秘密据点</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-box-seam"></i></div>
+              <div class="feature-content">
+                <h4>公会仓库</h4>
+                <p>共享物资，资源互通有无</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-lightning"></i></div>
+              <div class="feature-content">
+                <h4>公会战争</h4>
+                <p>向其他公会宣战，为荣誉而战</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="container">
+      <div class="split-content">
+        <div class="split-text" data-aos="fade-right">
+          <div class="section-label">Why Join</div>
+          <h2 class="section-title">为什么要加入公会？</h2>
+          <p class="section-desc">一个人玩游戏固然自在，但有时候也会感到孤单。公会就像是游戏里的家，这里有会长大大罩着你，有老玩家带你飞，有萌新陪你一起成长。</p>
+        </div>
+        <div class="split-visual" data-aos="fade-left">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-heart"></i></div>
+              <div class="feature-content">
+                <h4>不再孤单</h4>
+                <p>遇到困难喊一声，马上就有人来帮忙</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-share"></i></div>
+              <div class="feature-content">
+                <h4>分享喜悦</h4>
+                <p>抓到稀有宝可梦，第一时间和会友分享</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-graph-up"></i></div>
+              <div class="feature-content">
+                <h4>共同成长</h4>
+                <p>老带新，萌新也能快速上手</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="container">
+      <div class="split-content reverse">
+        <div class="split-text" data-aos="fade-left">
+          <div class="section-label">Benefits</div>
+          <h2 class="section-title">公会专属福利</h2>
+          <p class="section-desc">加入公会不仅能交到朋友，还有实打实的福利！公会等级越高，福利越丰厚，大家一起努力升级公会，共同享受胜利的果实。</p>
+        </div>
+        <div class="split-visual" data-aos="fade-right">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-star"></i></div>
+              <div class="feature-content">
+                <h4>经验加成</h4>
+                <p>公会等级越高，成员获得的经验加成越多</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-gift"></i></div>
+              <div class="feature-content">
+                <h4>每日礼包</h4>
+                <p>公会成员每日可领取专属礼包</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-tag"></i></div>
+              <div class="feature-content">
+                <h4>专属称号</h4>
+                <p>公会名称显示在名字前，彰显身份</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="container">
+      <div class="split-content">
+        <div class="split-text" data-aos="fade-right">
+          <div class="section-label">Battle</div>
+          <h2 class="section-title">公会宝可梦对战</h2>
+          <p class="section-desc">公会不只是聊天和资源共享，更是并肩作战的战友！定期举办的公会对战活动，让你和会友们一起为公会荣誉而战。</p>
+        </div>
+        <div class="split-visual" data-aos="fade-left">
+          <div class="feature-list">
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-trophy"></i></div>
+              <div class="feature-content">
+                <h4>公会联赛</h4>
+                <p>公会之间的正式对决，积分排名，争夺赛季冠军</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-people"></i></div>
+              <div class="feature-content">
+                <h4>团队配合</h4>
+                <p>制定战术、分配角色，团队协作才能取胜</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-calendar-event"></i></div>
+              <div class="feature-content">
+                <h4>定期举办</h4>
+                <p>每周公会内训，每月公会联赛，活动不断</p>
+              </div>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon"><i class="bi bi-award"></i></div>
+              <div class="feature-content">
+                <h4>丰厚奖励</h4>
+                <p>获胜公会可获得专属称号、游戏币和稀有道具</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="split-section">
+    <div class="container">
+      <div class="stats-grid" data-aos="fade-up">
+        <div class="stat-box">
+          <div class="stat-num">50</div>
+          <div class="stat-label">公会人数上限</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">4</div>
+          <div class="stat-label">职位等级</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">N+</div>
+          <div class="stat-label">活跃公会</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title" data-aos="fade-up">准备好组建你的公会了吗？</h2>
+      <p class="cta-text" data-aos="fade-up">召集小伙伴，一起创造传奇</p>
+      <a href="guide.html" class="btn-primary" data-aos="fade-up">
+        <i class="bi bi-play-circle"></i> 立即加入服务器
+      </a>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    AOS.init({ duration: 800, once: true });
+    
+    // 轮播图功能
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const totalSlides = slides.length;
+    const slidesContainer = document.getElementById('carouselSlides');
+    const dotsContainer = document.getElementById('carouselDots');
+    
+    // 创建指示点
+    for (let i = 0; i < totalSlides; i++) {
+      const dot = document.createElement('button');
+      dot.className = 'carousel-dot' + (i === 0 ? ' active' : '');
+      dot.onclick = () => goToSlide(i);
+      dotsContainer.appendChild(dot);
+    }
+    
+    function updateCarousel() {
+      slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+      document.querySelectorAll('.carousel-dot').forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+      });
+    }
+    
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateCarousel();
+    }
+    
+    function prevSlide() {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+    }
+    
+    function goToSlide(index) {
+      currentSlide = index;
+      updateCarousel();
+    }
+    
+    // 自动轮播
+    setInterval(nextSlide, 5000);
+  </script>
+</body>
+</html>

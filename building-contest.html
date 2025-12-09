@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>建筑大比拼 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <link href="static/css/carousel.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: '中华薪火体';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+    }
+    
+    body {
+      font-family: '中华薪火体', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+    }
+    
+    /* 页面头部 */
+    .page-header {
+      background: #1c1814;
+      padding: 140px 0 80px;
+      text-align: center;
+    }
+    
+    .header-badge {
+      display: inline-block;
+      background: rgba(212, 165, 116, 0.15);
+      border: 1px solid rgba(212, 165, 116, 0.3);
+      padding: 8px 20px;
+      border-radius: 20px;
+      color: #d4a574;
+      font-size: 1rem;
+      margin-bottom: 25px;
+    }
+    
+    .page-title {
+      font-size: 4.5rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      letter-spacing: 8px;
+    }
+    
+    .page-subtitle {
+      font-size: 1.5rem;
+      color: #888;
+      letter-spacing: 3px;
+      margin-bottom: 1.5rem;
+    }
+    
+    .header-divider {
+      width: 80px;
+      height: 4px;
+      background: linear-gradient(90deg, transparent, #d4a574, transparent);
+      margin: 0 auto 2rem;
+    }
+    
+    .header-desc {
+      color: #999;
+      font-size: 1.2rem;
+      line-height: 2;
+      max-width: 700px;
+      margin: 0 auto 3rem;
+    }
+    
+    .header-stats {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      flex-wrap: wrap;
+      padding: 30px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    
+    .header-stat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .header-stat-num {
+      font-size: 2rem;
+      color: #d4a574;
+    }
+    
+    .header-stat-label {
+      color: #666;
+      font-size: 0.95rem;
+    }
+    
+    /* 内容区块 */
+    .section {
+      padding: 80px 0;
+    }
+    
+    .section-alt {
+      background: rgba(255,255,255,0.02);
+    }
+    
+    .section-title {
+      font-size: 2.2rem;
+      color: #d4a574;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .section-title i {
+      font-size: 1.8rem;
+    }
+    
+    .section-desc {
+      color: #999;
+      font-size: 1.15rem;
+      line-height: 2;
+      max-width: 800px;
+    }
+    
+    /* 介绍卡片 */
+    .intro-card {
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.1), rgba(184, 149, 110, 0.05));
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      border-radius: 16px;
+      padding: 40px;
+      margin-top: 40px;
+    }
+    
+    .intro-card h3 {
+      color: #d4a574;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .intro-card p {
+      color: #bbb;
+      font-size: 1.1rem;
+      line-height: 2;
+      margin-bottom: 1rem;
+    }
+    
+    .intro-card .highlight {
+      color: #d4a574;
+    }
+    
+    /* 风格欢迎区 */
+    .style-welcome {
+      margin-top: 60px;
+      text-align: center;
+    }
+    
+    .style-welcome-title {
+      font-size: 1.8rem;
+      color: #d4a574;
+      margin-bottom: 10px;
+    }
+    
+    .style-welcome-desc {
+      color: #888;
+      font-size: 1.1rem;
+      margin-bottom: 40px;
+    }
+    
+    .style-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+    
+    .style-item {
+      padding: 25px 15px;
+      border-left: 2px solid #d4a574;
+    }
+    
+    .style-name {
+      color: #d4a574;
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+    }
+    
+    .style-examples {
+      color: #777;
+      font-size: 0.95rem;
+      line-height: 1.8;
+    }
+    
+    .style-welcome-footer {
+      color: #999;
+      font-size: 1.1rem;
+    }
+    
+    @media (max-width: 992px) {
+      .style-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (max-width: 576px) {
+      .style-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    /* 流程步骤 */
+    .process-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 50px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    
+    .process-step {
+      flex: 1;
+      min-width: 150px;
+      text-align: center;
+      padding: 30px 20px;
+      background: rgba(40, 35, 30, 0.5);
+      border-radius: 12px;
+      position: relative;
+    }
+    
+    .process-step::after {
+      content: '→';
+      position: absolute;
+      right: -20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d4a574;
+      font-size: 1.5rem;
+    }
+    
+    .process-step:last-child::after {
+      display: none;
+    }
+    
+    .step-number {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      color: #1c1814;
+      margin: 0 auto 15px;
+    }
+    
+    .step-title {
+      color: #d4a574;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    
+    .step-desc {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    /* 奖励展示 */
+    .reward-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 40px;
+    }
+    
+    .reward-card {
+      background: rgba(40, 35, 30, 0.6);
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+    
+    .reward-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(212, 165, 116, 0.3);
+    }
+    
+    .reward-icon {
+      font-size: 3rem;
+      margin-bottom: 15px;
+    }
+    
+    .reward-rank {
+      font-size: 1.3rem;
+      color: #d4a574;
+      margin-bottom: 10px;
+    }
+    
+    .reward-prize {
+      color: #999;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+    
+    .reward-card.gold .reward-icon { color: #FFD700; }
+    .reward-card.silver .reward-icon { color: #C0C0C0; }
+    .reward-card.bronze .reward-icon { color: #CD7F32; }
+    .reward-card.special .reward-icon { color: #9B59B6; }
+    
+    /* 主题展示 */
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+    
+    .theme-card {
+      background: rgba(40, 35, 30, 0.5);
+      border-radius: 12px;
+      padding: 25px;
+      text-align: center;
+      transition: all 0.3s;
+    }
+    
+    .theme-card:hover {
+      background: rgba(212, 165, 116, 0.1);
+    }
+    
+    .theme-icon {
+      font-size: 2.5rem;
+      margin-bottom: 12px;
+    }
+    
+    .theme-name {
+      color: #d4a574;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    
+    .theme-desc {
+      color: #888;
+      font-size: 0.9rem;
+    }
+    
+    /* 规则列表 */
+    .rules-list {
+      margin-top: 30px;
+    }
+    
+    .rule-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      padding: 20px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    
+    .rule-item:last-child {
+      border-bottom: none;
+    }
+    
+    .rule-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(212, 165, 116, 0.15);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4a574;
+      flex-shrink: 0;
+    }
+    
+    .rule-content h4 {
+      color: #d4a574;
+      font-size: 1.1rem;
+      margin-bottom: 5px;
+    }
+    
+    .rule-content p {
+      color: #999;
+      font-size: 1rem;
+      margin: 0;
+    }
+    
+    /* CTA */
+    .cta-section {
+      padding: 100px 0;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(212, 165, 116, 0.08), transparent);
+    }
+    
+    .cta-title {
+      font-size: 2.5rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+    }
+    
+    .cta-text {
+      color: #888;
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .cta-section .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 40px;
+      background: linear-gradient(135deg, #d4a574, #b8956e);
+      color: #1c1814;
+      text-decoration: none;
+      font-size: 1.2rem;
+      transition: all 0.3s;
+      border-radius: 0;
+    }
+    
+    .cta-section .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(212, 165, 116, 0.3);
+    }
+    
+    /* 页面加载动画 */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #1c1814;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .page-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-content { text-align: center; }
+    .loader-icon {
+      font-size: 3rem;
+      color: #d4a574;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    .loader-text {
+      color: #d4a574;
+      font-size: 1.1rem;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+    .loader-bar {
+      width: 200px;
+      height: 3px;
+      background: rgba(212, 165, 116, 0.2);
+      border-radius: 3px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+    .loader-progress {
+      width: 30%;
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #b8956e);
+      border-radius: 3px;
+      animation: loading 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+    }
+    @keyframes loading {
+      0% { transform: translateX(-100%); }
+      50% { transform: translateX(250%); }
+      100% { transform: translateX(-100%); }
+    }
+  </style>
+</head>
+<body>
+  <!-- 页面加载动画 -->
+  <div class="page-loader" id="pageLoader">
+    <div class="loader-content">
+      <div class="loader-icon"><i class="bi bi-building"></i></div>
+      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-bar"><div class="loader-progress"></div></div>
+    </div>
+  </div>
+
+  <script src="static/js/navbar.js"></script>
+
+  <!-- 页面头部 -->
+  <header class="page-header">
+    <div class="container">
+      <h1 class="page-title" data-aos="fade-up">建筑大比拼</h1>
+      <p class="page-subtitle" data-aos="fade-up" data-aos-delay="200">用方块书写你的建筑梦想，让创意在这里绽放</p>
+      <div class="header-divider" data-aos="fade-up" data-aos-delay="250"></div>
+      <p class="header-desc" data-aos="fade-up" data-aos-delay="300">
+        每月一次的建筑盛宴，无论你是建筑萌新还是大神，都能在这里找到属于自己的舞台。<br>
+        展示才华、结交好友、赢取奖励——你的下一个杰作，就从这里开始！
+      </p>
+      <div class="header-stats" data-aos="fade-up" data-aos-delay="400">
+        <div class="header-stat">
+          <span class="header-stat-num">月赛</span>
+          <span class="header-stat-label">比赛周期</span>
+        </div>
+        <div class="header-stat">
+          <span class="header-stat-num">N+</span>
+          <span class="header-stat-label">参赛选手</span>
+        </div>
+        <div class="header-stat">
+          <span class="header-stat-num">丰厚</span>
+          <span class="header-stat-label">奖励奖品</span>
+        </div>
+        <div class="header-stat">
+          <span class="header-stat-num">∞</span>
+          <span class="header-stat-label">创意空间</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 活动介绍 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-info-circle"></i>
+        活动介绍
+      </div>
+      <p class="section-desc" data-aos="fade-up" data-aos-delay="100">
+        建筑大比拼是 GalaxyPokemon 服务器的招牌活动之一。每月我们都会举办一次建筑比赛，
+        让热爱建筑的玩家们有机会展示自己的才华，同时也能从其他大神的作品中获得灵感。
+      </p>
+      
+      <div class="intro-card" data-aos="fade-up" data-aos-delay="200">
+        <h3><i class="bi bi-lightbulb"></i> 为什么要参加？</h3>
+        <p>
+          也许你曾经在单机世界里默默建造，作品无人欣赏；也许你看着别人的建筑教程，
+          跃跃欲试却不知从何开始。<span class="highlight">建筑大比拼就是为你准备的舞台！</span>
+        </p>
+        <p>
+          在这里，你不需要是建筑大神，只需要有一颗热爱创造的心。我们见证过萌新从第一次参赛的小木屋，
+          成长为能独立完成宏伟城堡的建筑师。<span class="highlight">每一次比赛都是一次成长的机会。</span>
+        </p>
+        <p>
+          更重要的是，你的作品会被服务器里的所有人看到。那种被认可的成就感，
+          是任何奖励都无法替代的。<span class="highlight">来吧，让全服见证你的实力！</span>
+        </p>
+      </div>
+      
+      <div class="style-welcome" data-aos="fade-up" data-aos-delay="300">
+        <h3 class="style-welcome-title">热烈欢迎各派建筑大神</h3>
+        <p class="style-welcome-desc">无论你擅长哪种建筑风格，这里都有你的一席之地</p>
+        <div class="style-grid">
+          <div class="style-item">
+            <div class="style-name">中式风格</div>
+            <div class="style-examples">徽派马头墙 · 苏州园林 · 北京四合院 · 闽南红砖</div>
+          </div>
+          <div class="style-item">
+            <div class="style-name">欧式风格</div>
+            <div class="style-examples">哥特式教堂 · 巴洛克宫殿 · 地中海小镇 · 北欧木屋</div>
+          </div>
+          <div class="style-item">
+            <div class="style-name">日式风格</div>
+            <div class="style-examples">神社鸟居 · 枯山水 · 町屋街巷 · 雄伟天守</div>
+          </div>
+          <div class="style-item">
+            <div class="style-name">现代风格</div>
+            <div class="style-examples">摩天大楼 · 极简主义 · 赛博朋克 · 未来科幻</div>
+          </div>
+        </div>
+        <p class="style-welcome-footer">不管你是哪一派的建筑师，我们都期待在比赛中看到你的作品！</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 参赛流程 -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-signpost-split"></i>
+        参赛流程
+      </div>
+      <p class="section-desc" data-aos="fade-up" data-aos-delay="100">
+        参加比赛非常简单，只需要几个步骤就能开始你的建筑之旅。
+      </p>
+      
+      <div class="process-steps" data-aos="fade-up" data-aos-delay="200">
+        <div class="process-step">
+          <div class="step-number">1</div>
+          <div class="step-title">查看主题</div>
+          <div class="step-desc">每月初公布当月主题</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">2</div>
+          <div class="step-title">领取地块</div>
+          <div class="step-desc">在比赛区域选择空地</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">3</div>
+          <div class="step-title">创作建筑</div>
+          <div class="step-desc">在规定时间内完成作品</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">4</div>
+          <div class="step-title">提交作品</div>
+          <div class="step-desc">截止前确认提交</div>
+        </div>
+        <div class="process-step">
+          <div class="step-number">5</div>
+          <div class="step-title">等待评选</div>
+          <div class="step-desc">由评委和玩家投票</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 往期主题 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-palette"></i>
+        往期主题
+      </div>
+      <p class="section-desc" data-aos="fade-up" data-aos-delay="100">
+        每月的主题都不一样，从自然风光到科幻未来，从东方古韵到西方奇幻，总有一款适合你。
+      </p>
+      
+      <div class="theme-grid" data-aos="fade-up" data-aos-delay="200">
+        <div class="theme-card">
+          <div class="theme-icon">🏯</div>
+          <div class="theme-name">东方古韵</div>
+          <div class="theme-desc">亭台楼阁，古风建筑</div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-icon">🏰</div>
+          <div class="theme-name">中世纪城堡</div>
+          <div class="theme-desc">骑士与城堡的传说</div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-icon">🌳</div>
+          <div class="theme-name">自然和谐</div>
+          <div class="theme-desc">与自然融为一体</div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-icon">🚀</div>
+          <div class="theme-name">科幻未来</div>
+          <div class="theme-desc">想象未来的世界</div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-icon">🎄</div>
+          <div class="theme-name">节日庆典</div>
+          <div class="theme-desc">节日主题特别赛</div>
+        </div>
+        <div class="theme-card">
+          <div class="theme-icon">🎨</div>
+          <div class="theme-name">自由创作</div>
+          <div class="theme-desc">不限主题，自由发挥</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 奖励设置 -->
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-trophy"></i>
+        奖励设置
+      </div>
+      <p class="section-desc" data-aos="fade-up" data-aos-delay="100">
+        除了荣誉，我们还准备了丰厚的奖励等你来拿！
+      </p>
+      
+      <div class="reward-grid" data-aos="fade-up" data-aos-delay="200">
+        <div class="reward-card gold">
+          <div class="reward-icon">🥇</div>
+          <div class="reward-rank">冠军</div>
+          <div class="reward-prize">
+            专属称号「建筑大师」<br>
+            游戏币 10000<br>
+            作品永久展示
+          </div>
+        </div>
+        <div class="reward-card silver">
+          <div class="reward-icon">🥈</div>
+          <div class="reward-rank">亚军</div>
+          <div class="reward-prize">
+            专属称号「建筑达人」<br>
+            游戏币 5000<br>
+            作品展示一个月
+          </div>
+        </div>
+        <div class="reward-card bronze">
+          <div class="reward-icon">🥉</div>
+          <div class="reward-rank">季军</div>
+          <div class="reward-prize">
+            专属称号「建筑新星」<br>
+            游戏币 3000<br>
+            作品展示两周
+          </div>
+        </div>
+        <div class="reward-card special">
+          <div class="reward-icon">⭐</div>
+          <div class="reward-rank">人气奖</div>
+          <div class="reward-prize">
+            专属称号「人气之选」<br>
+            游戏币 2000<br>
+            神秘礼包一份
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 比赛规则 -->
+  <section class="section">
+    <div class="container">
+      <div class="section-title" data-aos="fade-up">
+        <i class="bi bi-journal-text"></i>
+        比赛规则
+      </div>
+      
+      <div class="rules-list" data-aos="fade-up" data-aos-delay="100">
+        <div class="rule-item">
+          <div class="rule-icon"><i class="bi bi-clock"></i></div>
+          <div class="rule-content">
+            <h4>时间限制</h4>
+            <p>每月1日公布主题，25日截止提交，月底公布结果。充足的时间让你精雕细琢。</p>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon"><i class="bi bi-rulers"></i></div>
+          <div class="rule-content">
+            <h4>尺寸要求</h4>
+            <p>建筑地块为 50×50 格，高度不限。在有限的空间里发挥无限的创意。</p>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon"><i class="bi bi-person"></i></div>
+          <div class="rule-content">
+            <h4>独立完成</h4>
+            <p>作品必须由参赛者独立完成，禁止使用外部建筑导入工具。真实展现你的实力。</p>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon"><i class="bi bi-box"></i></div>
+          <div class="rule-content">
+            <h4>材料自由</h4>
+            <p>可以使用服务器内所有可获取的方块，创意用料不受限制。</p>
+          </div>
+        </div>
+        <div class="rule-item">
+          <div class="rule-icon"><i class="bi bi-heart"></i></div>
+          <div class="rule-content">
+            <h4>友好竞争</h4>
+            <p>尊重每一位参赛者的作品，禁止恶意破坏或抄袭。让比赛充满正能量。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 轮播图区域 -->
+  <section class="carousel-section">
+    <div class="container">
+      <div class="section-intro" data-aos="fade-up">
+        <h2>往期作品展示</h2>
+        <p>精彩的建筑作品回顾</p>
+      </div>
+      <div class="carousel-container" data-aos="fade-up">
+        <div class="carousel-inner">
+          <div class="carousel-slides" id="carouselSlides">
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>建筑作品 1</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>冠军作品</h4>
+                <p>上期比赛冠军建筑</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>建筑作品 2</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>亚军作品</h4>
+                <p>精彩的建筑设计</p>
+              </div>
+            </div>
+            <div class="carousel-slide">
+              <div class="slide-placeholder">
+                <i class="bi bi-image"></i>
+                <span>建筑作品 3</span>
+              </div>
+              <div class="carousel-caption">
+                <h4>人气作品</h4>
+                <p>最受欢迎的建筑</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="carousel-btn prev" onclick="prevSlide()"><i class="bi bi-chevron-left"></i></button>
+        <button class="carousel-btn next" onclick="nextSlide()"><i class="bi bi-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title" data-aos="fade-up">准备好大展身手了吗？</h2>
+      <p class="cta-text" data-aos="fade-up" data-aos-delay="100">下一期建筑大比拼等你来战，用方块证明你的实力！</p>
+      <a href="guide.html" class="btn-primary" data-aos="fade-up" data-aos-delay="200">
+        <i class="bi bi-play-circle"></i> 立即加入服务器
+      </a>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="static/js/carousel.js"></script>
+  <script>
+    window.addEventListener('load', function() {
+      setTimeout(function() {
+        document.getElementById('pageLoader').classList.add('hidden');
+      }, 500);
+    });
+    AOS.init({ duration: 800, once: true });
+  </script>
+</body>
+</html>

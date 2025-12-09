@@ -1,0 +1,546 @@
+/* ========================================
+   响应式样式 - MC服务器官网
+   ======================================== */
+
+/* 大屏幕 */
+@media (min-width: 1400px) {
+  .container {
+    max-width: 1320px;
+  }
+  
+  .hero-title {
+    font-size: 5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 2.5rem;
+  }
+}
+
+/* 中等屏幕 - 平板横屏 */
+@media (max-width: 1199px) {
+  .hero-title {
+    font-size: 3.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.75rem;
+  }
+  
+  .section-title {
+    font-size: 2rem;
+  }
+  
+  .floating-card.card-1 {
+    left: 0;
+  }
+  
+  .floating-card.card-2 {
+    right: 0;
+  }
+}
+
+/* 平板竖屏 */
+@media (max-width: 991px) {
+  /* 导航栏 */
+  .glass-nav {
+    padding: 0.75rem 0;
+  }
+  
+  .navbar-collapse {
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(20px);
+    margin-top: 1rem;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--glass-border);
+  }
+  
+  .navbar-nav {
+    text-align: center;
+  }
+  
+  .navbar-nav .nav-link {
+    padding: 0.75rem 0 !important;
+    border-bottom: 1px solid var(--glass-border);
+  }
+  
+  .navbar-nav .nav-link::after {
+    display: none;
+  }
+  
+  .nav-buttons {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+  
+  /* Hero */
+  .hero-section {
+    min-height: auto;
+    padding: 120px 0 80px;
+  }
+  
+  .hero-title {
+    font-size: 3rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.5rem;
+  }
+  
+  .hero-desc {
+    font-size: 1rem;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .hero-buttons .btn {
+    width: 100%;
+    max-width: 280px;
+  }
+  
+  .server-ip-box {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 1rem;
+  }
+  
+  .hero-scroll-indicator {
+    display: none;
+  }
+  
+  /* Status */
+  .status-section {
+    padding: 3rem 0;
+  }
+  
+  .status-value {
+    font-size: 2rem;
+  }
+  
+  /* Features */
+  .features-section,
+  .about-section,
+  .team-section,
+  .contact-section {
+    padding: 4rem 0;
+  }
+  
+  /* About */
+  .about-image {
+    height: 300px;
+    margin-bottom: 3rem;
+  }
+  
+  .floating-card {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .floating-card.card-1 {
+    top: 10%;
+    left: 5%;
+  }
+  
+  .floating-card.card-2 {
+    top: 40%;
+    right: 5%;
+  }
+  
+  .floating-card.card-3 {
+    bottom: 5%;
+    left: 20%;
+  }
+  
+  .about-features {
+    grid-template-columns: 1fr;
+  }
+  
+  /* Footer */
+  .footer-section {
+    padding: 3rem 0 1.5rem;
+  }
+}
+
+/* 手机横屏 / 小平板 */
+@media (max-width: 767px) {
+  /* Hero */
+  .hero-title {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.25rem;
+  }
+  
+  .server-status-badge {
+    font-size: 0.75rem;
+    padding: 0.4rem 1rem;
+  }
+  
+  .ip-value {
+    font-size: 1rem;
+  }
+  
+  /* Section Headers */
+  .section-title {
+    font-size: 1.75rem;
+  }
+  
+  .section-desc {
+    font-size: 1rem;
+  }
+  
+  /* Status Cards */
+  .status-card {
+    padding: 1.5rem 1rem;
+  }
+  
+  .status-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+  }
+  
+  .status-value {
+    font-size: 1.75rem;
+  }
+  
+  .status-label {
+    font-size: 0.75rem;
+  }
+  
+  /* Feature Cards */
+  .feature-card {
+    padding: 1.5rem;
+  }
+  
+  .feature-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.5rem;
+  }
+  
+  /* About */
+  .about-image {
+    height: 250px;
+  }
+  
+  .floating-card {
+    display: none;
+  }
+  
+  /* Team */
+  .team-avatar {
+    width: 100px;
+    height: 100px;
+  }
+  
+  /* Contact */
+  .contact-card {
+    padding: 1rem;
+  }
+  
+  .contact-card-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1rem;
+  }
+  
+  .contact-form-wrapper {
+    padding: 1.5rem;
+  }
+  
+  /* Footer */
+  .footer-brand {
+    justify-content: center;
+  }
+  
+  .footer-desc {
+    text-align: center;
+  }
+  
+  .footer-social {
+    justify-content: center;
+  }
+  
+  .footer-title {
+    margin-top: 2rem;
+  }
+}
+
+/* 手机竖屏 */
+@media (max-width: 575px) {
+  /* Hero */
+  .hero-section {
+    padding: 100px 0 60px;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .hero-desc {
+    font-size: 0.9rem;
+  }
+  
+  .hero-buttons .btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+  
+  /* Status */
+  .status-section {
+    padding: 2rem 0;
+  }
+  
+  .status-card {
+    padding: 1rem;
+  }
+  
+  .status-icon {
+    width: 45px;
+    height: 45px;
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .status-value {
+    font-size: 1.5rem;
+  }
+  
+  /* Sections */
+  .features-section,
+  .about-section,
+  .team-section,
+  .contact-section {
+    padding: 3rem 0;
+  }
+  
+  .section-badge {
+    font-size: 0.65rem;
+    padding: 0.4rem 0.75rem;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+  }
+  
+  /* Feature Cards */
+  .feature-card {
+    padding: 1.25rem;
+  }
+  
+  .feature-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  
+  .feature-card h4 {
+    font-size: 1rem;
+  }
+  
+  .feature-card p {
+    font-size: 0.85rem;
+  }
+  
+  /* About */
+  .about-image {
+    height: 200px;
+    margin-bottom: 2rem;
+  }
+  
+  .about-feature-item {
+    font-size: 0.9rem;
+  }
+  
+  /* Team */
+  .team-card {
+    padding: 1.5rem;
+  }
+  
+  .team-avatar {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .team-role {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.75rem;
+  }
+  
+  .team-name {
+    font-size: 1rem;
+  }
+  
+  .team-desc {
+    font-size: 0.85rem;
+  }
+  
+  .social-link {
+    width: 35px;
+    height: 35px;
+    font-size: 0.9rem;
+  }
+  
+  /* Contact */
+  .contact-card-content h5 {
+    font-size: 0.9rem;
+  }
+  
+  .contact-card-content p {
+    font-size: 0.8rem;
+  }
+  
+  /* Footer */
+  .footer-section {
+    padding: 2rem 0 1rem;
+  }
+  
+  .footer-title {
+    font-size: 0.9rem;
+  }
+  
+  .footer-links a {
+    font-size: 0.9rem;
+  }
+  
+  .server-info-item {
+    font-size: 0.85rem;
+  }
+  
+  .footer-bottom p {
+    font-size: 0.8rem;
+  }
+  
+  .footer-note {
+    font-size: 0.7rem;
+  }
+  
+  /* Back to Top */
+  .back-to-top {
+    width: 45px;
+    height: 45px;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    font-size: 1rem;
+  }
+}
+
+/* 超小屏幕 */
+@media (max-width: 375px) {
+  .hero-title {
+    font-size: 1.75rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.9rem;
+  }
+  
+  .brand-text {
+    font-size: 1.25rem;
+  }
+  
+  .brand-badge {
+    font-size: 0.6rem;
+  }
+  
+  .section-title {
+    font-size: 1.25rem;
+  }
+  
+  .status-value {
+    font-size: 1.25rem;
+  }
+}
+
+/* 高度较小的设备（横屏手机） */
+@media (max-height: 600px) and (orientation: landscape) {
+  .hero-section {
+    min-height: auto;
+    padding: 80px 0 40px;
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1rem;
+  }
+  
+  .hero-desc {
+    margin-bottom: 1rem;
+  }
+  
+  .server-ip-box {
+    margin-top: 1.5rem !important;
+  }
+}
+
+/* 深色模式优化（如果系统支持） */
+@media (prefers-color-scheme: dark) {
+  /* 已经是深色主题，无需额外调整 */
+}
+
+/* 减少动画（用户偏好） */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .floating-card {
+    animation: none;
+  }
+  
+  .status-dot {
+    animation: none;
+  }
+  
+  .hero-scroll-indicator {
+    animation: none;
+  }
+}
+
+/* 打印样式 */
+@media print {
+  .glass-nav,
+  .back-to-top,
+  .hero-scroll-indicator,
+  #particles-js {
+    display: none !important;
+  }
+  
+  .hero-section {
+    min-height: auto;
+    padding: 2rem 0;
+  }
+  
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .section-title,
+  .hero-title,
+  .team-name,
+  .feature-card h4 {
+    color: black !important;
+  }
+}
