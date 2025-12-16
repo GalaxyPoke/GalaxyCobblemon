@@ -563,8 +563,8 @@
   <!-- 页面加载动画 -->
   <div class="page-loader" id="pageLoader">
     <div class="loader-content">
-      <div class="loader-icon"><i class="bi bi-controller"></i></div>
-      <div class="loader-text">GalaxyPokemon 加载中...</div>
+      <div class="loader-icon"><i class="bi bi-file-text"></i></div>
+      <div class="loader-text">榜文加载中...</div>
       <div class="loader-bar"><div class="loader-progress"></div></div>
     </div>
   </div>
@@ -574,6 +574,7 @@
 
   <!-- 导航栏（由navbar.js自动生成） -->
   <div id="navbar-placeholder"></div>
+  <script src="static/js/config.js"></script>
   <script src="static/js/navbar.js"></script>
 
   <!-- 榜文页面 -->
@@ -718,7 +719,7 @@
     async function loadBangwen() {
       const container = document.getElementById('bangwenList');
       try {
-        const res = await fetch('https://galaxycobblemon-api.onrender.com/api/announcements?limit=20');
+        const res = await fetch(`${window.API_CONFIG.apiUrl}/announcements?limit=20`);
         const data = await res.json();
         
         if (data.announcements && data.announcements.length > 0) {
@@ -806,7 +807,7 @@
     // 显示公告详情
     async function showBangwenDetail(id) {
       try {
-        const res = await fetch(`https://galaxycobblemon-api.onrender.com/api/announcements/${id}`);
+        const res = await fetch(`${window.API_CONFIG.apiUrl}/announcements/${id}`);
         const a = await res.json();
         
         // 动态创建模态框

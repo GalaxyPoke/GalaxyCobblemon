@@ -1,0 +1,1396 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新手剧情 - GalaxyPokemon</title>
+  <link rel="preload" href="static/font/中华薪火体.ttf" as="font" type="font/ttf" crossorigin>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link href="static/css/style.css" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'ZhongHuaXinHuo';
+      src: url('static/font/中华薪火体.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+      font-display: swap;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'ZhongHuaXinHuo', 'Noto Sans SC', sans-serif;
+      background: #1c1814;
+      color: #e0e0e0;
+      line-height: 1.8;
+    }
+
+    /* 标题页 - 占满一屏 */
+    .title-hero-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1c1814;
+      position: relative;
+      padding-top: 80px;
+    }
+
+    .title-hero-content {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .title-main {
+      font-family: 'ZhongHuaXinHuo', serif;
+      font-size: 5rem;
+      color: #fff;
+      letter-spacing: 12px;
+      margin: 0 0 1.5rem;
+      line-height: 1.3;
+    }
+
+    .title-main span {
+      color: #d4a574;
+    }
+
+    .title-sub {
+      font-family: 'ZhongHuaXinHuo', serif;
+      font-size: 1.25rem;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 4px;
+      margin: 0;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(212,165,116,0.5);
+      font-size: 1.5rem;
+      animation: bounce 2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* 故事页 - 每段占半屏 */
+    .story-page {
+      min-height: 60vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #1c1814;
+      position: relative;
+    }
+
+    .story-page-content {
+      text-align: center;
+      padding: 2rem;
+      max-width: 800px;
+    }
+
+    .story-page-content p {
+      font-family: 'ZhongHuaXinHuo', serif;
+      font-size: 1.5rem;
+      color: rgba(255,255,255,0.7);
+      line-height: 2.2;
+      margin: 0.5rem 0;
+      letter-spacing: 3px;
+    }
+
+    .story-page-content p.highlight {
+      color: #d4a574;
+    }
+
+    .story-page-content p.large {
+      font-size: 2rem;
+      margin: 1rem 0;
+    }
+
+    /* 引言页特殊样式 */
+    .story-page.quote-page .quote-text {
+      font-size: 1.75rem;
+      color: rgba(255,255,255,0.9);
+      font-style: italic;
+    }
+
+    .story-page.quote-page .quote-author {
+      font-size: 1.1rem;
+      color: #d4a574;
+      margin-top: 2rem;
+      letter-spacing: 2px;
+    }
+
+    /* Hero 区域 */
+    .story-hero {
+      min-height: 70vh;
+      background: linear-gradient(180deg, rgba(28,24,20,0.3) 0%, #1c1814 100%),
+                  url('static/image/story-bg.jpg') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      position: relative;
+      padding-top: 100px;
+    }
+
+    .hero-content {
+      text-align: center;
+    }
+
+    .hero-badge-xinghuo {
+      font-family: 'ZhongHuaXinHuo', serif;
+      display: inline-block;
+      background: transparent;
+      border: 1px solid rgba(212,165,116,0.5);
+      color: #d4a574;
+      font-size: 1rem;
+      padding: 0.5rem 2rem;
+      letter-spacing: 4px;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-title {
+      font-family: 'ZhongHuaXinHuo', serif;
+      font-size: 4rem;
+      color: #fff;
+      letter-spacing: 8px;
+      margin-bottom: 1rem;
+    }
+
+    .hero-title span {
+      color: #d4a574;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 2px;
+    }
+
+    /* 章节区域 */
+    .chapter-section {
+      padding: 5rem 0;
+      background: #1c1814;
+    }
+
+    .scene-title {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .scene-badge {
+      display: inline-block;
+      background: rgba(212,165,116,0.1);
+      border: 1px solid rgba(212,165,116,0.3);
+      color: #d4a574;
+      padding: 0.25rem 1rem;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+
+    .scene-title h2 {
+      font-family: 'ZhongHuaXinHuo', serif;
+      font-size: 2rem;
+      color: #fff;
+      letter-spacing: 4px;
+    }
+
+    .scene-location {
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .scene-location i {
+      color: #d4a574;
+    }
+
+    .dialogue-box {
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    .dialogue-item {
+      margin-bottom: 1.5rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .dialogue-item:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .dialogue-item.narration p {
+      color: rgba(255,255,255,0.6);
+      font-style: italic;
+      text-align: center;
+    }
+
+    .dialogue-item.narration.highlight p {
+      color: #d4a574;
+    }
+
+    .dialogue-item .speaker {
+      font-weight: 500;
+      color: #d4a574;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+    }
+
+    .dialogue-item.player .speaker {
+      color: #6495ed;
+    }
+
+    .dialogue-item p {
+      color: rgba(255,255,255,0.85);
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .highlight-text {
+      color: #d4a574;
+      font-weight: 500;
+    }
+
+    /* 教学任务区域 */
+    .tutorial-section {
+      padding: 5rem 0;
+      background: linear-gradient(180deg, #1c1814 0%, #252019 100%);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: rgba(212,165,116,0.1);
+      border: 1px solid rgba(212,165,116,0.3);
+      color: #d4a574;
+      padding: 0.25rem 1rem;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      margin-bottom: 1rem;
+    }
+
+    .start-title {
+      font-family: 'ZhongHuaXinHuo', serif;
+      font-size: 2.5rem;
+      color: #fff;
+      letter-spacing: 4px;
+      margin-bottom: 1rem;
+    }
+
+    .section-subtitle {
+      color: rgba(255,255,255,0.6);
+      font-size: 1rem;
+    }
+
+    .tutorial-category {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .category-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .category-icon {
+      width: 50px;
+      height: 50px;
+      background: rgba(212,165,116,0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4a574;
+      font-size: 1.5rem;
+    }
+
+    .category-info h3 {
+      font-size: 1.25rem;
+      color: #fff;
+      margin: 0;
+    }
+
+    .category-info p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      margin: 0;
+    }
+
+    .task-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .task-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 8px;
+      padding: 1.25rem;
+      transition: all 0.3s;
+    }
+
+    .task-card:hover {
+      border-color: rgba(212,165,116,0.3);
+      transform: translateY(-2px);
+    }
+
+    .task-icon {
+      width: 40px;
+      height: 40px;
+      background: rgba(212,165,116,0.1);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #d4a574;
+      margin-bottom: 1rem;
+    }
+
+    .task-content h4 {
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .task-content p {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+      margin: 0;
+    }
+
+    .task-reward {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .task-reward span {
+      font-size: 0.8rem;
+      color: #d4a574;
+    }
+
+    /* 开始冒险 */
+    .start-section {
+      padding: 5rem 0;
+      text-align: center;
+      background: #1c1814;
+    }
+
+    .start-desc {
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 2rem;
+    }
+
+    .btn-start {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: #d4a574;
+      color: #1c1814;
+      padding: 1rem 2.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .btn-start:hover {
+      background: #c49564;
+      color: #1c1814;
+      transform: translateY(-2px);
+    }
+
+    /* Footer */
+    .footer-section {
+      background: #151210;
+      padding: 2rem 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .footer-bottom {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.85rem;
+    }
+
+    .footer-note {
+      font-size: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .title-main {
+        font-size: 3rem;
+        letter-spacing: 6px;
+      }
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      .story-page-content p {
+        font-size: 1.2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- 导航栏占位 -->
+  <nav id="navbar"></nav>
+
+  <!-- 标题页 - 占满一屏 -->
+  <section class="title-hero-section">
+    <div class="title-hero-content">
+      <h1 class="title-main" data-aos="fade-up">嘿，<span>好久不见</span></h1>
+      <p class="title-sub" data-aos="fade-up" data-aos-delay="200">我们现在也是顶天立地的超人了</p>
+      <div class="scroll-hint" data-aos="fade-up" data-aos-delay="400">
+        <i class="bi bi-chevron-down"></i>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第一段 - 关于现在 -->
+  <section class="story-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up">长大后的你，过得还好吗？</p>
+      <p data-aos="fade-up" data-aos-delay="100">笑容多了，还是担子重了？</p>
+      <p data-aos="fade-up" data-aos-delay="200">肩上的担子，是不是比当年的书包重了太多？</p>
+      <p data-aos="fade-up" data-aos-delay="300">房贷、车贷、父母的身体、孩子的未来...</p>
+    </div>
+  </section>
+
+  <!-- 第二段 - 心累 -->
+  <section class="story-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up">深夜加班回家的路上，看着万家灯火，</p>
+      <p data-aos="fade-up" data-aos-delay="100">会不会突然觉得累？</p>
+      <p data-aos="fade-up" data-aos-delay="200" class="highlight">不是身体累，是心累。</p>
+      <p data-aos="fade-up" data-aos-delay="300">累到不想说话，累到只想一个人待着。</p>
+    </div>
+  </section>
+
+  <!-- 第三段 - 多久没笑 -->
+  <section class="story-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up">你有多久，</p>
+      <p data-aos="fade-up" data-aos-delay="100" class="highlight large">没有真正笑过了？</p>
+      <p data-aos="fade-up" data-aos-delay="200">那种发自内心的，像小时候一样的笑。</p>
+    </div>
+  </section>
+
+  <!-- 第四段 - 小时候 -->
+  <section class="story-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up">小时候，快乐很简单。</p>
+      <p data-aos="fade-up" data-aos-delay="100">一根冰棍，一集动画，</p>
+      <p data-aos="fade-up" data-aos-delay="200">和伙伴疯跑的下午。</p>
+      <p data-aos="fade-up" data-aos-delay="300">放学铃一响就往家跑，</p>
+      <p data-aos="fade-up" data-aos-delay="400">书包在身后一颠一颠，</p>
+      <p data-aos="fade-up" data-aos-delay="500">就怕错过片头曲的第一个音符。</p>
+    </div>
+  </section>
+
+  <!-- 第五段 - 那时候相信 -->
+  <section class="story-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up">那时候总认为，</p>
+      <p data-aos="fade-up" data-aos-delay="100">只要足够努力，就能成为想成为的人。</p>
+      <p data-aos="fade-up" data-aos-delay="200">相信麦当能找到彩虹海，</p>
+      <p data-aos="fade-up" data-aos-delay="300" class="highlight">也相信自己能成为宝可梦大师。</p>
+    </div>
+  </section>
+
+  <!-- 第六段 - 长大后 -->
+  <section class="story-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up">那时候觉得，长大真好，</p>
+      <p data-aos="fade-up" data-aos-delay="100">可以做好多想做的事。</p>
+      <p data-aos="fade-up" data-aos-delay="300" class="highlight">后来才发现，</p>
+      <p data-aos="fade-up" data-aos-delay="400" class="highlight">我们得到了很多，也弄丢了很多。</p>
+    </div>
+  </section>
+
+  <!-- 第七段 - 弄丢了 -->
+  <section class="story-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up" class="highlight">弄丢了无忧无虑，</p>
+      <p data-aos="fade-up" data-aos-delay="100" class="highlight">弄丢了天真烂漫，</p>
+      <p data-aos="fade-up" data-aos-delay="200" class="highlight">弄丢了那个相信一切皆有可能的自己。</p>
+    </div>
+  </section>
+
+  <!-- 第八段 - 那个孩子 -->
+  <section class="story-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up">但那个孩子，从未离开。</p>
+      <p data-aos="fade-up" data-aos-delay="100">他在心里某个角落，</p>
+      <p data-aos="fade-up" data-aos-delay="200">安静地等你。</p>
+    </div>
+  </section>
+
+  <!-- 第九段 - 结尾 -->
+  <section class="story-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up">等你累了、倦了、想歇一歇的时候，</p>
+      <p data-aos="fade-up" data-aos-delay="100">他会轻轻拍拍你的肩膀——</p>
+      <p data-aos="fade-up" data-aos-delay="300" class="highlight large">「嘿，要不要回去看看？」</p>
+      <p data-aos="fade-up" data-aos-delay="500" class="highlight large">「回到那个下午。」</p>
+    </div>
+  </section>
+
+  <!-- 第十段 - 雷欧幻像引言 -->
+  <section class="story-page quote-page">
+    <div class="story-page-content">
+      <p data-aos="fade-up" class="quote-text">「谨以此游，纪念我们的童年，</p>
+      <p data-aos="fade-up" data-aos-delay="100" class="quote-text">那是一段小有遗憾的幸福时光。」</p>
+      <p data-aos="fade-up" data-aos-delay="300" class="quote-author">—— 雷欧幻像</p>
+    </div>
+  </section>
+
+  <!-- Hero 区域 - 童年回忆 -->
+  <section class="story-hero">
+    <div class="container">
+      <div class="hero-content" data-aos="fade-up">
+        <div class="hero-badge-xinghuo">2006 · 童年重来</div>
+        <h1 class="hero-title">新手<span>剧情</span></h1>
+        <p class="hero-subtitle">那一年，你还是个守在电视机前的孩子，等待着动画片的播出...</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 第一章 - 穿越觉醒 -->
+  <section class="chapter-section">
+    <div class="container">
+      <div class="dialogue-scene" data-aos="fade-up">
+        <div class="scene-title">
+          <span class="scene-badge">第一章</span>
+          <h2>方块世界的觉醒</h2>
+        </div>
+        
+        <div class="scene-location">
+          <i class="bi bi-geo-alt"></i>
+          <span>新手场景：教学小岛 · 大木博士研究所</span>
+        </div>
+        
+        <div class="dialogue-box">
+          <div class="dialogue-item narration" data-aos="fade-up">
+            <p>意识渐渐清醒，你发现自己躺在一片柔软的草地上。</p>
+            <p>睁开眼，入目的是一片蔚蓝的天空...和方块状的云朵？</p>
+          </div>
+          
+          <div class="dialogue-item player" data-aos="fade-up">
+            <div class="speaker">你</div>
+            <p>"这是...什么地方？"</p>
+          </div>
+          
+          <div class="dialogue-item narration" data-aos="fade-up">
+            <p>一只黄色的小家伙蹦到你面前，歪着脑袋看着你。</p>
+            <p>圆圆的脸颊，尖尖的耳朵，还有那标志性的闪电尾巴——</p>
+            <p>虽然是方块状的，但你一眼就认出了它。</p>
+          </div>
+          
+          <div class="dialogue-item player" data-aos="fade-up">
+            <div class="speaker">你</div>
+            <p>"皮...皮卡丘？！"</p>
+          </div>
+          
+          <div class="dialogue-item narration" data-aos="fade-up">
+            <p>就在你惊讶得说不出话时，一个爽朗的笑声从身后传来。</p>
+          </div>
+          
+          <div class="dialogue-item npc" data-aos="fade-up">
+            <div class="speaker">???</div>
+            <p>"哈哈哈，看来又有一位训练家醒过来了！"</p>
+          </div>
+          
+          <div class="dialogue-item narration" data-aos="fade-up">
+            <p>你转过身，看到一位穿着白大褂的老人正笑眯眯地看着你。</p>
+            <p>花白的头发，慈祥的面容，还有那熟悉的研究所...</p>
+            <p>这张脸，你在电视上看过无数次。</p>
+          </div>
+          
+          <div class="dialogue-item player" data-aos="fade-up">
+            <div class="speaker">你</div>
+            <p>"您是...大木博士？！"</p>
+          </div>
+          
+          <div class="dialogue-item npc" data-aos="fade-up">
+            <div class="speaker">大木博士</div>
+            <p>"正是博士我。没想到吧？小时候在电视里看到的我，现在就站在你面前。"</p>
+          </div>
+          
+          <div class="dialogue-item npc" data-aos="fade-up">
+            <div class="speaker">大木博士</div>
+            <p>"说来话长。前些日子，我的洛托姆图鉴突然检测到一个奇怪的信号——来自一个叫 <span class="highlight-text">Minecraft</span> 的世界。"</p>
+          </div>
+          
+          <div class="dialogue-item npc" data-aos="fade-up">
+            <div class="speaker">大木博士</div>
+            <p>"我请帝牙卢卡帮忙打开了时空通道，然后就发现了这个神奇的地方。这里的宝可梦和我们那边有些不同，它们都是方块状的，我们称之为 <span class="highlight-text">Cobblemon</span>。"</p>
+          </div>
+          
+          <div class="dialogue-item player" data-aos="fade-up">
+            <div class="speaker">你</div>
+            <p>"所以我真的...穿越了？"</p>
+          </div>
+          
+          <div class="dialogue-item npc" data-aos="fade-up">
+            <div class="speaker">大木博士</div>
+            <p>"可以这么说。你是被选中的训练家之一。"</p>
+          </div>
+          
+          <div class="dialogue-item npc" data-aos="fade-up">
+            <div class="speaker">大木博士</div>
+            <p>"看到这座小岛了吗？这是我一个方块一个方块亲手搭建的，专门用来帮助像你这样的新人熟悉这个世界。咳咳...可把老腰累坏了。"</p>
+          </div>
+          
+          <div class="dialogue-item narration" data-aos="fade-up">
+            <p>大木博士揉了揉腰，脸上却带着满足的笑容。</p>
+          </div>
+          
+          <div class="dialogue-item npc" data-aos="fade-up">
+            <div class="speaker">大木博士</div>
+            <p>"好了，闲话少说。既然来到了这个世界，就让我来教你如何成为一名真正的宝可梦训练家吧！"</p>
+          </div>
+          
+          <div class="dialogue-item narration" data-aos="fade-up">
+            <p>大木博士转身走向研究所，示意你跟上。</p>
+            <p>阳光洒在这片方块构成的世界上，一切都显得那么不真实，却又那么令人期待。</p>
+            <p>你的冒险，正式开始了。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 教学任务区域 -->
+  <section class="tutorial-section">
+    <div class="container">
+      <div class="text-center mb-5" data-aos="fade-up">
+        <div class="hero-badge">TUTORIAL</div>
+        <h2 class="start-title">教学任务</h2>
+        <p class="section-subtitle">大木博士将引导你完成以下任务，熟悉 Cobblemon 与 Minecraft 的核心玩法</p>
+      </div>
+      
+      <!-- 宝可梦基础 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-star-fill"></i></div>
+          <div class="category-info">
+            <h3>宝可梦基础</h3>
+            <p>了解宝可梦的核心数值系统</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-bar-chart-fill"></i></div>
+            <div class="task-content">
+              <h4>种族值</h4>
+              <p>了解宝可梦的基础能力值，每个种类都有固定的种族值分配</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：宝可梦图鉴</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-gem"></i></div>
+            <div class="task-content">
+              <h4>个体值 (IV)</h4>
+              <p>每只宝可梦独特的天赋值，影响最终能力上限</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：IV检测器</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-graph-up"></i></div>
+            <div class="task-content">
+              <h4>努力值 (EV)</h4>
+              <p>通过战斗获得的隐藏数值，可针对性培养</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：EV训练手册</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-yin-yang"></i></div>
+            <div class="task-content">
+              <h4>性格系统</h4>
+              <p>25种性格影响能力成长，选择适合的性格很重要</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：性格薄荷</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 捕捉与培养 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-bullseye"></i></div>
+          <div class="category-info">
+            <h3>捕捉与培养</h3>
+            <p>学习如何捕捉和培养你的宝可梦</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-circle-fill"></i></div>
+            <div class="task-content">
+              <h4>精灵球制作</h4>
+              <p>收集材料制作各种精灵球，不同球有不同效果</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：精灵球×10</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-crosshair"></i></div>
+            <div class="task-content">
+              <h4>捕捉技巧</h4>
+              <p>学习如何提高捕捉成功率的技巧</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：超级球×5</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-arrow-up-circle-fill"></i></div>
+            <div class="task-content">
+              <h4>进化条件</h4>
+              <p>了解不同宝可梦的进化方式和条件</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：经验糖果</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 对战入门 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-lightning-charge-fill"></i></div>
+          <div class="category-info">
+            <h3>对战入门</h3>
+            <p>掌握宝可梦对战的基础知识</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-shield-fill-check"></i></div>
+            <div class="task-content">
+              <h4>属性克制</h4>
+              <p>18种属性之间的克制关系是对战的核心</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：属性图鉴</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-book-fill"></i></div>
+            <div class="task-content">
+              <h4>技能学习</h4>
+              <p>了解技能机的使用和技能遗传机制</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：技能机随机包</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-trophy-fill"></i></div>
+            <div class="task-content">
+              <h4>首次对战</h4>
+              <p>与训练师小刚进行你的第一场正式对战</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：初学者徽章</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="task-content">
+              <h4>队伍搭配</h4>
+              <p>学习如何构建一支平衡的宝可梦队伍</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：队伍扩展槽</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cobblemon 进阶 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-gear-fill"></i></div>
+          <div class="category-info">
+            <h3>Cobblemon 进阶</h3>
+            <p>掌握 Cobblemon 模组的特色功能</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-pc-display"></i></div>
+            <div class="task-content">
+              <h4>PC 存储系统</h4>
+              <p>使用 PC 存储和管理你的宝可梦，按 R 键打开队伍界面</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：PC 扩展卡</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+            <div class="task-content">
+              <h4>治疗与恢复</h4>
+              <p>使用治疗机或床休息来恢复宝可梦的 HP 和状态</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：便携治疗机</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-egg-fill"></i></div>
+            <div class="task-content">
+              <h4>宝可梦繁殖</h4>
+              <p>了解牧场方块和繁殖机制，培育完美个体</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：牧场方块</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-box-seam-fill"></i></div>
+            <div class="task-content">
+              <h4>化石复原</h4>
+              <p>收集化石并使用化石机复原远古宝可梦</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：随机化石</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cobblemon 探索 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-compass-fill"></i></div>
+          <div class="category-info">
+            <h3>世界探索</h3>
+            <p>探索 Minecraft 世界中的宝可梦生态</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-tree-fill"></i></div>
+            <div class="task-content">
+              <h4>生态群系</h4>
+              <p>不同生态群系会刷新不同类型的宝可梦</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：生态图鉴</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-moon-stars-fill"></i></div>
+            <div class="task-content">
+              <h4>时间与天气</h4>
+              <p>某些宝可梦只在特定时间或天气下出现</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：时间沙漏</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-stars"></i></div>
+            <div class="task-content">
+              <h4>闪光宝可梦</h4>
+              <p>极其稀有的异色宝可梦，遇见概率约 1/4096</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：闪光护符</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-gem"></i></div>
+            <div class="task-content">
+              <h4>传说宝可梦</h4>
+              <p>完成特殊条件召唤传说中的宝可梦</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：传说线索</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cobblemon 物品 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-bag-fill"></i></div>
+          <div class="category-info">
+            <h3>物品与道具</h3>
+            <p>了解 Cobblemon 中的各种实用道具</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-capsule"></i></div>
+            <div class="task-content">
+              <h4>药水与回复</h4>
+              <p>制作各种药水来治疗和强化你的宝可梦</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：超级药水×5</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-disc-fill"></i></div>
+            <div class="task-content">
+              <h4>技能机制作</h4>
+              <p>使用技能机制作台来制作各种技能机</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：技能机制作台</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-droplet-fill"></i></div>
+            <div class="task-content">
+              <h4>进化道具</h4>
+              <p>火之石、水之石等进化石的获取与使用</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：随机进化石</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-hand-index-fill"></i></div>
+            <div class="task-content">
+              <h4>携带物品</h4>
+              <p>让宝可梦携带道具获得战斗加成</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：讲究头带</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 快捷键与操作 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-keyboard-fill"></i></div>
+          <div class="category-info">
+            <h3>快捷键与操作</h3>
+            <p>熟悉 Cobblemon 的操作方式</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-r-circle-fill"></i></div>
+            <div class="task-content">
+              <h4>R 键 - 队伍界面</h4>
+              <p>按 R 键打开宝可梦队伍界面，查看和管理你的宝可梦</p>
+            </div>
+            <div class="task-reward">
+              <span>基础操作</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-shift-fill"></i></div>
+            <div class="task-content">
+              <h4>Shift+R - 放出宝可梦</h4>
+              <p>按住 Shift 再按 R 可以放出/收回当前选中的宝可梦</p>
+            </div>
+            <div class="task-reward">
+              <span>基础操作</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-mouse-fill"></i></div>
+            <div class="task-content">
+              <h4>右键互动</h4>
+              <p>对着野生宝可梦右键可以查看信息，对着自己的宝可梦右键可以骑乘</p>
+            </div>
+            <div class="task-reward">
+              <span>基础操作</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-arrow-left-right"></i></div>
+            <div class="task-content">
+              <h4>滚轮切换</h4>
+              <p>在队伍界面使用滚轮可以快速切换当前选中的宝可梦</p>
+            </div>
+            <div class="task-reward">
+              <span>基础操作</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 宝可梦骑乘 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-bicycle"></i></div>
+          <div class="category-info">
+            <h3>宝可梦骑乘</h3>
+            <p>骑乘宝可梦探索世界</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-speedometer2"></i></div>
+            <div class="task-content">
+              <h4>陆地骑乘</h4>
+              <p>骑乘烈焰马、坐骑山羊等宝可梦在陆地快速移动</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：骑乘鞍</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-water"></i></div>
+            <div class="task-content">
+              <h4>水上骑乘</h4>
+              <p>骑乘拉普拉斯、暴鲤龙等宝可梦在水面航行</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：冲浪板</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-cloud-fill"></i></div>
+            <div class="task-content">
+              <h4>飞行骑乘</h4>
+              <p>骑乘喷火龙、比雕等宝可梦在天空翱翔</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：飞行护目镜</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-arrow-down-circle-fill"></i></div>
+            <div class="task-content">
+              <h4>潜水骑乘</h4>
+              <p>骑乘特定宝可梦潜入深海探索水下世界</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：潜水面罩</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 特殊进化 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-arrow-repeat"></i></div>
+          <div class="category-info">
+            <h3>特殊进化方式</h3>
+            <p>了解各种特殊的进化条件</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-arrow-up-short"></i></div>
+            <div class="task-content">
+              <h4>等级进化</h4>
+              <p>最常见的进化方式，达到指定等级自动进化</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：经验糖果L</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-gem"></i></div>
+            <div class="task-content">
+              <h4>进化石进化</h4>
+              <p>使用火之石、水之石、雷之石等道具触发进化</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：进化石礼包</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-arrow-left-right"></i></div>
+            <div class="task-content">
+              <h4>通信进化</h4>
+              <p>与其他玩家交换宝可梦触发进化，如鬼斯通→耿鬼</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：连接绳</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-heart-fill"></i></div>
+            <div class="task-content">
+              <h4>亲密度进化</h4>
+              <p>提高宝可梦亲密度后升级进化，如皮丘→皮卡丘</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：安抚之铃</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-sun-fill"></i></div>
+            <div class="task-content">
+              <h4>时间进化</h4>
+              <p>在特定时间段升级进化，如伊布→太阳伊布(白天)</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：日之石</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-geo-alt-fill"></i></div>
+            <div class="task-content">
+              <h4>地点进化</h4>
+              <p>在特定地点升级进化，如磁怪→自爆磁怪</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：磁铁</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 对战策略 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-trophy-fill"></i></div>
+          <div class="category-info">
+            <h3>对战策略进阶</h3>
+            <p>成为对战高手的必备知识</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-speedometer"></i></div>
+            <div class="task-content">
+              <h4>先制技能</h4>
+              <p>电光一闪、子弹拳等先制技能可以无视速度先出手</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：先制爪</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-shield-shaded"></i></div>
+            <div class="task-content">
+              <h4>特性系统</h4>
+              <p>每只宝可梦都有特性，合理利用特性可以扭转战局</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：特性胶囊</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-cloud-sun-fill"></i></div>
+            <div class="task-content">
+              <h4>天气战术</h4>
+              <p>利用晴天、雨天、沙暴、冰雹等天气强化队伍</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：天气岩石</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-layers-fill"></i></div>
+            <div class="task-content">
+              <h4>场地效果</h4>
+              <p>电气场地、精神场地等可以为队伍提供增益</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：场地扩展器</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-arrow-clockwise"></i></div>
+            <div class="task-content">
+              <h4>换人技巧</h4>
+              <p>学会预判对手行动，合理换人获取优势</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：逃脱按键</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-lightning-fill"></i></div>
+            <div class="task-content">
+              <h4>极巨化/超极巨化</h4>
+              <p>在特定场合使用极巨化获得强大的极巨招式</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：极巨腕带</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Minecraft 联动 -->
+      <div class="tutorial-category" data-aos="fade-up">
+        <div class="category-header">
+          <div class="category-icon"><i class="bi bi-box-fill"></i></div>
+          <div class="category-info">
+            <h3>Minecraft 联动</h3>
+            <p>Cobblemon 与 Minecraft 的完美结合</p>
+          </div>
+        </div>
+        <div class="task-grid">
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-minecart-loaded"></i></div>
+            <div class="task-content">
+              <h4>矿石采集</h4>
+              <p>挖掘特殊矿石获取制作精灵球的材料</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：铁镐</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-tree-fill"></i></div>
+            <div class="task-content">
+              <h4>杏果树</h4>
+              <p>种植杏果树获取不同颜色的杏果，用于制作精灵球</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：杏果种子包</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-hammer"></i></div>
+            <div class="task-content">
+              <h4>锻造系统</h4>
+              <p>使用铁砧和锤子锻造精灵球盖和底座</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：铁锤</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-fire"></i></div>
+            <div class="task-content">
+              <h4>熔炉冶炼</h4>
+              <p>使用熔炉冶炼矿石和杏果制作精灵球组件</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：高级熔炉</span>
+            </div>
+            <div class="task-reward">
+              <span>奖励：商店许可证</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-house-heart-fill"></i></div>
+            <div class="task-content">
+              <h4>家园系统</h4>
+              <p>建造属于自己的家园，装饰你的宝可梦乐园</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：家园地契</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-people-fill"></i></div>
+            <div class="task-content">
+              <h4>公会系统</h4>
+              <p>加入或创建公会，与伙伴一起冒险</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：公会徽章</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-calendar-event-fill"></i></div>
+            <div class="task-content">
+              <h4>每日任务</h4>
+              <p>完成每日任务获取丰厚奖励</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：每日宝箱</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-trophy"></i></div>
+            <div class="task-content">
+              <h4>道馆挑战</h4>
+              <p>挑战各地道馆，收集徽章成为冠军</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：挑战券</span>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-icon"><i class="bi bi-star-fill"></i></div>
+            <div class="task-content">
+              <h4>活动系统</h4>
+              <p>参与限时活动获取稀有宝可梦和道具</p>
+            </div>
+            <div class="task-reward">
+              <span>奖励：活动积分</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 开始冒险 -->
+  <section class="start-section">
+    <div class="container" data-aos="fade-up">
+      <h2 class="start-title">准备好了吗？</h2>
+      <p class="start-desc">加入服务器，开始你的宝可梦大师之路</p>
+      <a href="guide.html" class="btn-start">
+        <i class="bi bi-play-fill"></i>
+        开始冒险
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer-section">
+    <div class="container">
+      <div class="footer-bottom text-center">
+        <p>&copy; 2024 GalaxyPokemon. All rights reserved.</p>
+        <p class="footer-note">
+          本站与 Mojang Studios 和 The Pokémon Company 无关。
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="static/js/navbar.js"></script>
+  <script>
+    AOS.init({
+      duration: 800,
+      once: true
+    });
+  </script>
+</body>
+</html>

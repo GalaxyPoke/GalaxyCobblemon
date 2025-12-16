@@ -688,8 +688,9 @@
     </div>
   </div>
 
+  <script src="static/js/config.js"></script>
   <script>
-    const API_URL = 'https://galaxycobblemon-api.onrender.com/api';
+    const API_URL = window.API_CONFIG.apiUrl;
     
     // 检查登录状态
     const token = localStorage.getItem('playerToken');
@@ -701,6 +702,8 @@
     }
 
     async function verifyAndShowProfile() {
+      const cachedName = localStorage.getItem('playerName');
+      
       try {
         const res = await fetch(`${API_URL}/player/profile`, {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -710,12 +713,19 @@
           const data = await res.json();
           showLoggedIn(data);
         } else {
+          // 验证失败，清除登录状态
           localStorage.removeItem('playerToken');
+          localStorage.removeItem('playerName');
           document.getElementById('loginBox').classList.remove('d-none');
         }
       } catch (e) {
         console.error('验证失败:', e);
-        document.getElementById('loginBox').classList.remove('d-none');
+        // 网络错误时，如果有缓存的用户名，仍然显示个人资料界面
+        if (cachedName) {
+          showLoggedIn({ username: cachedName });
+        } else {
+          document.getElementById('loginBox').classList.remove('d-none');
+        }
       }
     }
 

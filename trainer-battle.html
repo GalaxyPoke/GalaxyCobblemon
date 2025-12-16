@@ -721,14 +721,8 @@
   </style>
 </head>
 <body>
-  <!-- 页面加载动画 -->
-  <div class="page-loader" id="pageLoader">
-    <div class="loader-content">
-      <div class="loader-icon"><i class="bi bi-lightning-charge-fill"></i></div>
-      <div class="loader-text">GalaxyPokemon 加载中...</div>
-      <div class="loader-bar"><div class="loader-progress"></div></div>
-    </div>
-  </div>
+  <script src="static/js/page-loader.js"></script>
+  <script>PageLoader.init('bi-lightning-charge-fill', '训练师对战');</script>
 
   <script src="static/js/navbar.js"></script>
 

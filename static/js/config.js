@@ -1,11 +1,11 @@
-// API 配置
-// 本地开发时使用 localhost，部署后改成 Render 地址
-const API_BASE_URL = window.location.hostname === 'localhost' 
-  ? 'https://galaxycobblemon-api.onrender.com'
-  : 'https://你的render地址.onrender.com';  // 部署后修改这里
+// API 配置 - 只需修改这里即可全站生效
+// 本地开发：http://localhost:3001
+// 线上部署：https://galaxycobblemon-api.onrender.com
+const API_BASE_URL = 'http://localhost:3001';
 
 // 导出配置
 window.API_CONFIG = {
   baseUrl: API_BASE_URL,
+  apiUrl: `${API_BASE_URL}/api`,
   api: (path) => `${API_BASE_URL}/api${path}`
 };

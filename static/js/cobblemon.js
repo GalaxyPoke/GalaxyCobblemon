@@ -1447,7 +1447,7 @@ async function loadMoves() {
   if (movesLoading) return;
   movesLoading = true;
   
-  list.innerHTML = '<div class="loading-indicator"><div class="spinner"></div><p>正在加载招式数据...</p><p class="loading-progress">0 / 900+</p></div>';
+  list.innerHTML = '<div class="loading-indicator"><div class="loading-icon"><i class="bi bi-lightning-charge"></i></div><p>招式图鉴</p><p class="loading-progress">0 / 900+</p></div>';
   
   try {
     // 获取所有招式列表
@@ -1645,7 +1645,7 @@ async function loadAbilities() {
   if (abilitiesLoading) return;
   abilitiesLoading = true;
   
-  list.innerHTML = '<div class="loading-indicator"><div class="spinner"></div><p>正在加载特性数据...</p><p class="loading-progress">0 / 300+</p></div>';
+  list.innerHTML = '<div class="loading-indicator"><div class="loading-icon"><i class="bi bi-star"></i></div><p>特性图鉴</p><p class="loading-progress">0 / 300+</p></div>';
   
   try {
     const response = await fetch('https://pokeapi.co/api/v2/ability?limit=400');

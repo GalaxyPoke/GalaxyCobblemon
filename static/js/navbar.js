@@ -24,6 +24,7 @@ const navConfig = {
   
   // 玩法下拉菜单
   gameplayMenu: [
+    { name: '新手剧情', href: 'story.html', icon: 'bi-journal-text' },
     { name: '商业街', href: 'gameplay.html', icon: 'bi-shop' },
     { name: '建筑大比拼', href: 'building-contest.html', icon: 'bi-building' },
     { name: '公会系统', href: 'guild.html', icon: 'bi-people-fill' },
@@ -45,8 +46,6 @@ const navConfig = {
     { name: '游戏图鉴', href: 'pokemon-games.html', icon: 'bi-controller' },
     { name: '热门宝可梦', href: 'trending.html', icon: 'bi-fire' },
     { name: 'Cobblemon百科', href: 'cobblemon.html', icon: 'bi-journal-richtext' },
-    { name: '对战模拟器', href: 'battle-simulator.html', icon: 'bi-lightning-charge' },
-    { name: '队伍构建器', href: 'team-builder.html', icon: 'bi-people-fill' },
     { divider: true },
     { name: '入服教程', href: 'guide.html', icon: 'bi-signpost-2' }
   ],
@@ -109,9 +108,30 @@ function generateNavbar() {
     return `<a href="${item.href}" class="btn ${btnClass} btn-sm me-2">${icon}${item.name}</a>`;
   }).join('\n          ');
 
-  // 玩家登录状态
+  // 玩家登录状态（含通知图标和私信图标）
   const playerLoginHtml = `
     <div class="player-status" id="playerStatus">
+      <div class="message-bell" id="messageBell" style="display:none;">
+        <a href="messages.html" class="notification-icon" title="私信">
+          <i class="bi bi-envelope"></i>
+          <span class="notification-badge" id="messageBadge" style="display:none;">0</span>
+        </a>
+      </div>
+      <div class="notification-bell" id="notificationBell" style="display:none;">
+        <a href="#" onclick="toggleNotificationPanel(event)" class="notification-icon">
+          <i class="bi bi-bell"></i>
+          <span class="notification-badge" id="notificationBadge" style="display:none;">0</span>
+        </a>
+        <div class="notification-panel" id="notificationPanel">
+          <div class="notification-header">
+            <span>消息通知</span>
+            <a href="#" onclick="markAllRead(event)">全部已读</a>
+          </div>
+          <div class="notification-list" id="notificationList">
+            <div class="notification-empty">暂无通知</div>
+          </div>
+        </div>
+      </div>
       <a href="login.html" class="player-link" id="playerLink">
         <img src="https://mc-heads.net/avatar/MHF_Steve/32" alt="头像" class="player-avatar" id="navPlayerAvatar">
         <span class="player-name" id="navPlayerName">未登录</span>
@@ -181,6 +201,7 @@ function checkPlayerLogin() {
   const avatarEl = document.getElementById('navPlayerAvatar');
   const nameEl = document.getElementById('navPlayerName');
   const linkEl = document.getElementById('playerLink');
+  const bellEl = document.getElementById('notificationBell');
   
   if (token && playerName && avatarEl && nameEl) {
     // 已登录
@@ -188,12 +209,171 @@ function checkPlayerLogin() {
     nameEl.textContent = playerName;
     nameEl.style.color = '#d4a574';
     
+    // 显示通知铃铛
+    if (bellEl) {
+      bellEl.style.display = 'block';
+      loadNotifications();
+    }
+    
+    // 显示私信图标
+    const msgBellEl = document.getElementById('messageBell');
+    if (msgBellEl) {
+      msgBellEl.style.display = 'block';
+      loadUnreadMessages();
+    }
+    
     // 点击跳转到个人中心
     if (linkEl) {
       linkEl.href = 'login.html';
     }
   }
 }
+
+// 加载未读私信数量
+async function loadUnreadMessages() {
+  const token = localStorage.getItem('playerToken');
+  if (!token || !window.API_CONFIG) return;
+  
+  try {
+    const res = await fetch(`${window.API_CONFIG.apiUrl}/forum/messages/unread/count`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    if (!res.ok) return;
+    
+    const data = await res.json();
+    const badgeEl = document.getElementById('messageBadge');
+    
+    if (badgeEl && data.count > 0) {
+      badgeEl.textContent = data.count > 99 ? '99+' : data.count;
+      badgeEl.style.display = 'block';
+    }
+  } catch (e) {
+    console.error('加载私信数量失败:', e);
+  }
+}
+
+// 通知系统
+async function loadNotifications() {
+  const token = localStorage.getItem('playerToken');
+  if (!token || !window.API_CONFIG) return;
+  
+  try {
+    const res = await fetch(`${window.API_CONFIG.apiUrl}/forum/notifications`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    
+    if (!res.ok) return;
+    
+    const data = await res.json();
+    const badgeEl = document.getElementById('notificationBadge');
+    const listEl = document.getElementById('notificationList');
+    
+    // 更新未读数量
+    if (badgeEl) {
+      if (data.unreadCount > 0) {
+        badgeEl.textContent = data.unreadCount > 99 ? '99+' : data.unreadCount;
+        badgeEl.style.display = 'block';
+      } else {
+        badgeEl.style.display = 'none';
+      }
+    }
+    
+    // 渲染通知列表
+    if (listEl) {
+      if (data.notifications.length === 0) {
+        listEl.innerHTML = '<div class="notification-empty">暂无通知</div>';
+      } else {
+        listEl.innerHTML = data.notifications.slice(0, 10).map(n => `
+          <div class="notification-item ${n.is_read ? '' : 'unread'}" onclick="openNotification(${n.id}, '${n.link}')">
+            <div class="notification-icon-type">
+              <i class="bi ${getNotificationIcon(n.type)}"></i>
+            </div>
+            <div class="notification-content">
+              <div class="notification-title">${n.title}</div>
+              <div class="notification-text">${n.content}</div>
+              <div class="notification-time">${formatNotificationTime(n.created_at)}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+  } catch (e) {
+    console.error('加载通知失败:', e);
+  }
+}
+
+function getNotificationIcon(type) {
+  const icons = {
+    reply: 'bi-chat-dots',
+    like: 'bi-heart-fill',
+    mention: 'bi-at',
+    system: 'bi-bell'
+  };
+  return icons[type] || 'bi-bell';
+}
+
+function formatNotificationTime(dateStr) {
+  if (!dateStr) return '';
+  const date = new Date(dateStr.replace(' ', 'T') + 'Z');
+  const now = new Date();
+  const diff = now - date;
+  
+  if (isNaN(diff) || diff < 0) return '刚刚';
+  if (diff < 60000) return '刚刚';
+  if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+  if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+  return Math.floor(diff / 86400000) + '天前';
+}
+
+function toggleNotificationPanel(e) {
+  e.preventDefault();
+  const panel = document.getElementById('notificationPanel');
+  if (panel) {
+    panel.classList.toggle('show');
+  }
+}
+
+async function openNotification(id, link) {
+  const token = localStorage.getItem('playerToken');
+  if (!token || !window.API_CONFIG) return;
+  
+  // 标记为已读
+  try {
+    await fetch(`${window.API_CONFIG.apiUrl}/forum/notifications/${id}/read`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+  } catch (e) {}
+  
+  // 跳转
+  if (link) {
+    window.location.href = link;
+  }
+}
+
+async function markAllRead(e) {
+  e.preventDefault();
+  const token = localStorage.getItem('playerToken');
+  if (!token || !window.API_CONFIG) return;
+  
+  try {
+    await fetch(`${window.API_CONFIG.apiUrl}/forum/notifications/read-all`, {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    loadNotifications();
+  } catch (e) {}
+}
+
+// 点击外部关闭通知面板
+document.addEventListener('click', function(e) {
+  const bell = document.getElementById('notificationBell');
+  const panel = document.getElementById('notificationPanel');
+  if (bell && panel && !bell.contains(e.target)) {
+    panel.classList.remove('show');
+  }
+});
 
 // DOM加载完成后初始化
 if (document.readyState === 'loading') {

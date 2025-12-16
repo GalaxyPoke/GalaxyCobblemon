@@ -633,14 +633,8 @@
   </style>
 </head>
 <body>
-  <!-- 页面加载动画 -->
-  <div class="page-loader" id="pageLoader">
-    <div class="loader-content">
-      <div class="loader-icon"><i class="bi bi-music-note-beamed"></i></div>
-      <div class="loader-text">调音中...</div>
-      <div class="loader-bar"><div class="loader-progress"></div></div>
-    </div>
-  </div>
+  <script src="static/js/page-loader.js"></script>
+  <script>PageLoader.init('bi-music-note-beamed', '地区音乐');</script>
 
   <!-- 导航栏 -->
   <div id="navbar-placeholder"></div>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>用户主页 - GalaxyPokemon</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="static/css/style.css">
+  <style>
+    :root {
+      --primary-light: #d4a574;
+    }
+
+    .profile-page {
+      padding-top: 100px;
+      min-height: 100vh;
+    }
+
+    .profile-header {
+      background: rgba(28, 24, 20, 0.8);
+      border: 1px solid rgba(212, 165, 116, 0.15);
+      padding: 40px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .profile-avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 12px;
+      border: 2px solid rgba(212, 165, 116, 0.3);
+    }
+
+    .profile-info h1 {
+      color: #d4a574;
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      letter-spacing: 3px;
+    }
+
+    .profile-stats {
+      display: flex;
+      gap: 30px;
+      margin-top: 15px;
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      color: #d4a574;
+      font-weight: bold;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .profile-tabs {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(212, 165, 116, 0.1);
+      padding-bottom: 15px;
+    }
+
+    .profile-tab {
+      background: transparent;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 1rem;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      letter-spacing: 2px;
+    }
+
+    .profile-tab:hover {
+      color: rgba(255,255,255,0.8);
+    }
+
+    .profile-tab.active {
+      color: #d4a574;
+      border-bottom: 2px solid #d4a574;
+    }
+
+    .post-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .post-item {
+      background: rgba(28, 24, 20, 0.6);
+      border: 1px solid rgba(212, 165, 116, 0.1);
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .post-item:hover {
+      border-color: rgba(212, 165, 116, 0.3);
+      transform: translateX(5px);
+    }
+
+    .post-item-title {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .post-item-meta {
+      display: flex;
+      gap: 20px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.85rem;
+    }
+
+    .post-item-meta i {
+      margin-right: 5px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 60px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.5);
+      text-decoration: none;
+      margin-bottom: 20px;
+      transition: color 0.3s;
+    }
+
+    .back-btn:hover {
+      color: #d4a574;
+    }
+
+    .tag-cloud {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 20px 0;
+    }
+
+    .tag-item {
+      background: rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      color: #d4a574;
+      padding: 6px 15px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .tag-item:hover {
+      background: rgba(212, 165, 116, 0.2);
+    }
+
+    .level-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin: 10px 0;
+    }
+
+    .level-badge {
+      background: linear-gradient(135deg, #d4a574, #c49464);
+      color: #1c1814;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .exp-bar {
+      flex: 1;
+      max-width: 200px;
+      height: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .exp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #f0c896);
+      transition: width 0.5s;
+    }
+
+    .exp-text {
+      color: rgba(255,255,255,0.5);
+      font-size: 0.75rem;
+    }
+
+    .checkin-btn {
+      background: linear-gradient(135deg, #d4a574, #c49464);
+      border: none;
+      color: #1c1814;
+      padding: 8px 20px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .checkin-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(212, 165, 116, 0.3);
+    }
+
+    .checkin-btn:disabled {
+      background: rgba(255,255,255,0.1);
+      color: rgba(255,255,255,0.4);
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .badge-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .badge-item {
+      background: rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .badge-icon {
+      font-size: 1rem;
+    }
+
+    .badge-name {
+      color: rgba(255,255,255,0.7);
+    }
+
+    .profile-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 10px;
+    }
+
+    .profile-btn {
+      background: rgba(212, 165, 116, 0.1);
+      border: 1px solid rgba(212, 165, 116, 0.3);
+      color: #d4a574;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .profile-btn:hover {
+      background: rgba(212, 165, 116, 0.2);
+    }
+
+    /* 私信弹窗 */
+    .message-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .message-modal.show {
+      display: flex;
+    }
+
+    .message-box {
+      background: rgba(28, 24, 20, 0.98);
+      border: 1px solid rgba(212, 165, 116, 0.2);
+      width: 90%;
+      max-width: 500px;
+      padding: 25px;
+    }
+
+    .message-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .message-title {
+      color: #d4a574;
+      font-size: 1.2rem;
+    }
+
+    .message-close {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .message-textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(212, 165, 116, 0.15);
+      color: #fff;
+      padding: 12px;
+      min-height: 120px;
+      resize: vertical;
+      margin-bottom: 15px;
+    }
+
+    .message-send {
+      background: linear-gradient(135deg, #d4a574, #c49464);
+      border: none;
+      color: #1c1814;
+      padding: 12px 25px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="static/js/page-loader.js"></script>
+  <script>PageLoader.init('bi-person', '用户主页');</script>
+
+  <div id="particles-js"></div>
+
+  <div id="navbar-placeholder"></div>
+  <script src="static/js/config.js"></script>
+  <script src="static/js/navbar.js"></script>
+
+  <section class="profile-page">
+    <div class="container">
+      <a href="forum.html" class="back-btn">
+        <i class="bi bi-arrow-left"></i> 返回论坛
+      </a>
+
+      <div class="profile-header" data-aos="fade-up">
+        <img id="profileAvatar" src="https://mc-heads.net/avatar/MHF_Steve/120" class="profile-avatar" alt="">
+        <div class="profile-info">
+          <h1 id="profileName">加载中...</h1>
+          <div class="level-info" id="levelInfo"></div>
+          <div class="profile-stats">
+            <div class="stat-item">
+              <div class="stat-value" id="statPosts">0</div>
+              <div class="stat-label">帖子</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="statReplies">0</div>
+              <div class="stat-label">回复</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="statLikes">0</div>
+              <div class="stat-label">获赞</div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-value" id="statPoints">0</div>
+              <div class="stat-label">积分</div>
+            </div>
+          </div>
+          <div class="badge-list" id="badgeList"></div>
+        </div>
+        <div class="profile-actions" id="profileActions"></div>
+      </div>
+
+      <div class="profile-tabs" data-aos="fade-up" data-aos-delay="100">
+        <button class="profile-tab active" onclick="switchTab('posts')">发布的帖子</button>
+        <button class="profile-tab" onclick="switchTab('favorites')">收藏的帖子</button>
+      </div>
+
+      <div id="contentArea" data-aos="fade-up" data-aos-delay="200">
+        <div class="post-list" id="postList">
+          <div class="empty-state">
+            <i class="bi bi-hourglass-split"></i>
+            <p>加载中...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+  <script>
+    AOS.init({ duration: 800, once: true });
+
+    const API_URL = `${window.API_CONFIG.apiUrl}/forum`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const username = urlParams.get('user');
+    let currentTab = 'posts';
+
+    if (!username) {
+      window.location.href = 'forum.html';
+    }
+
+    // 初始化粒子
+    if (typeof particlesJS !== 'undefined') {
+      particlesJS('particles-js', {
+        particles: {
+          number: { value: 20 },
+          color: { value: '#d4a574' },
+          opacity: { value: 0.3 },
+          size: { value: 2 },
+          move: { enable: true, speed: 0.5 }
+        }
+      });
+    }
+
+    // 加载用户信息
+    async function loadProfile() {
+      document.getElementById('profileName').textContent = username;
+      document.getElementById('profileAvatar').src = `https://mc-heads.net/avatar/${username}/120`;
+
+      // 加载统计
+      try {
+        const res = await fetch(`${API_URL}/user/${username}/stats`);
+        const stats = await res.json();
+        document.getElementById('statPosts').textContent = stats.posts || 0;
+        document.getElementById('statReplies').textContent = stats.replies || 0;
+        document.getElementById('statLikes').textContent = stats.likes || 0;
+      } catch (e) {
+        console.error('加载统计失败:', e);
+      }
+
+      loadBadges();
+      loadProfileActions();
+      loadLevelInfo();
+      loadPosts();
+    }
+    
+    // 加载勋章
+    async function loadBadges() {
+      try {
+        const res = await fetch(`${API_URL}/user/${username}/badges`);
+        const badges = await res.json();
+        const container = document.getElementById('badgeList');
+        
+        if (badges.length === 0) {
+          container.innerHTML = '';
+          return;
+        }
+        
+        container.innerHTML = badges.map(b => `
+          <div class="badge-item" title="${b.badge_name}">
+            <span class="badge-icon">${b.badge_icon}</span>
+            <span class="badge-name">${b.badge_name}</span>
+          </div>
+        `).join('');
+      } catch (e) {}
+    }
+    
+    // 加载操作按钮
+    function loadProfileActions() {
+      const currentUser = localStorage.getItem('playerName');
+      const container = document.getElementById('profileActions');
+      
+      if (currentUser && currentUser !== username) {
+        container.innerHTML = `
+          <button class="profile-btn" onclick="openMessageModal()">
+            <i class="bi bi-envelope"></i> 私信
+          </button>
+        `;
+      } else if (currentUser === username) {
+        container.innerHTML = `
+          <button class="checkin-btn" id="checkinBtn" onclick="doCheckin()">
+            <i class="bi bi-calendar-check"></i> 签到
+          </button>
+          <button class="profile-btn" onclick="checkBadges()">
+            <i class="bi bi-award"></i> 检查勋章
+          </button>
+        `;
+      }
+    }
+    
+    // 加载等级信息
+    async function loadLevelInfo() {
+      try {
+        const res = await fetch(`${API_URL}/user/${username}/points`);
+        const data = await res.json();
+        
+        document.getElementById('statPoints').textContent = data.points || 0;
+        
+        const levelInfo = document.getElementById('levelInfo');
+        const today = new Date().toISOString().split('T')[0];
+        const checkedIn = data.last_checkin === today;
+        
+        levelInfo.innerHTML = `
+          <span class="level-badge">Lv.${data.level} ${data.levelName}</span>
+          <div class="exp-bar">
+            <div class="exp-fill" style="width: ${data.expProgress}%"></div>
+          </div>
+          <span class="exp-text">${data.exp}/${data.nextLevelExp || 'MAX'} EXP</span>
+          ${data.continuous_checkins > 0 ? `<span class="exp-text">连续签到 ${data.continuous_checkins} 天</span>` : ''}
+        `;
+        
+        // 更新签到按钮状态
+        const checkinBtn = document.getElementById('checkinBtn');
+        if (checkinBtn && checkedIn) {
+          checkinBtn.disabled = true;
+          checkinBtn.innerHTML = '<i class="bi bi-check-lg"></i> 已签到';
+        }
+      } catch (e) {
+        console.error('加载等级信息失败:', e);
+      }
+    }
+    
+    // 签到
+    async function doCheckin() {
+      const token = localStorage.getItem('playerToken');
+      if (!token) {
+        showToast('请先登录', 'warning');
+        return;
+      }
+      
+      try {
+        const res = await fetch(`${API_URL}/checkin`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        const data = await res.json();
+        
+        if (res.ok) {
+          showToast(`签到成功！+${data.points}积分 +${data.exp}经验`, 'success');
+          if (data.levelUp) {
+            setTimeout(() => showToast(`恭喜升级到 Lv.${data.level} ${data.levelName}！`, 'success'), 1500);
+          }
+          loadLevelInfo();
+        } else {
+          showToast(data.error || '签到失败', 'error');
+        }
+      } catch (e) {
+        showToast('签到失败', 'error');
+      }
+    }
+
+    // 加载帖子
+    async function loadPosts() {
+      const listEl = document.getElementById('postList');
+      
+      try {
+        const res = await fetch(`${API_URL}/user/${username}/posts`);
+        const data = await res.json();
+        
+        if (data.posts.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <i class="bi bi-file-text"></i>
+              <p>暂无帖子</p>
+            </div>
+          `;
+          return;
+        }
+
+        listEl.innerHTML = data.posts.map(p => `
+          <div class="post-item" onclick="viewPost(${p.id})">
+            <div class="post-item-title">
+              ${p.pinned ? '<i class="bi bi-pin-fill" style="color:#d4a574;margin-right:5px;"></i>' : ''}
+              ${p.featured ? '<i class="bi bi-star-fill" style="color:#f1c40f;margin-right:5px;"></i>' : ''}
+              ${p.title}
+            </div>
+            <div class="post-item-meta">
+              <span><i class="bi bi-clock"></i>${formatTime(p.created_at)}</span>
+              <span><i class="bi bi-eye"></i>${p.views}</span>
+              <span><i class="bi bi-chat"></i>${p.replies || 0}</span>
+              <span><i class="bi bi-heart"></i>${p.likes}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <i class="bi bi-exclamation-circle"></i>
+            <p>加载失败</p>
+          </div>
+        `;
+      }
+    }
+
+    // 加载收藏
+    async function loadFavorites() {
+      const listEl = document.getElementById('postList');
+      const token = localStorage.getItem('playerToken');
+      const currentUser = localStorage.getItem('playerName');
+      
+      // 只有本人可以查看收藏
+      if (currentUser !== username) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <i class="bi bi-lock"></i>
+            <p>收藏列表仅本人可见</p>
+          </div>
+        `;
+        return;
+      }
+
+      if (!token) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <i class="bi bi-person-x"></i>
+            <p>请先登录</p>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/favorites`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const posts = await res.json();
+        
+        if (posts.length === 0) {
+          listEl.innerHTML = `
+            <div class="empty-state">
+              <i class="bi bi-bookmark"></i>
+              <p>暂无收藏</p>
+            </div>
+          `;
+          return;
+        }
+
+        listEl.innerHTML = posts.map(p => `
+          <div class="post-item" onclick="viewPost(${p.id})">
+            <div class="post-item-title">${p.title}</div>
+            <div class="post-item-meta">
+              <span><i class="bi bi-person"></i>${p.author}</span>
+              <span><i class="bi bi-clock"></i>${formatTime(p.created_at)}</span>
+              <span><i class="bi bi-eye"></i>${p.views}</span>
+              <span><i class="bi bi-heart"></i>${p.likes}</span>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        listEl.innerHTML = `
+          <div class="empty-state">
+            <i class="bi bi-exclamation-circle"></i>
+            <p>加载失败</p>
+          </div>
+        `;
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.profile-tab').forEach(t => t.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      if (tab === 'posts') {
+        loadPosts();
+      } else if (tab === 'favorites') {
+        loadFavorites();
+      }
+    }
+
+    function viewPost(id) {
+      window.location.href = `forum-post.html?id=${id}`;
+    }
+
+    function formatTime(dateStr) {
+      if (!dateStr) return '刚刚';
+      const date = new Date(dateStr.replace(' ', 'T') + 'Z');
+      const now = new Date();
+      const diff = now - date;
+      
+      if (isNaN(diff) || diff < 0) return '刚刚';
+      if (diff < 60000) return '刚刚';
+      if (diff < 3600000) return Math.floor(diff / 60000) + '分钟前';
+      if (diff < 86400000) return Math.floor(diff / 3600000) + '小时前';
+      if (diff < 604800000) return Math.floor(diff / 86400000) + '天前';
+      return date.toLocaleDateString('zh-CN');
+    }
+
+    // 私信功能
+    function openMessageModal() {
+      document.getElementById('messageModal').classList.add('show');
+    }
+    
+    function closeMessageModal() {
+      document.getElementById('messageModal').classList.remove('show');
+    }
+    
+    async function sendMessage() {
+      const content = document.getElementById('messageContent').value.trim();
+      const token = localStorage.getItem('playerToken');
+      
+      if (!content) {
+        showToast('请输入私信内容', 'warning');
+        return;
+      }
+      
+      if (!token) {
+        showToast('请先登录', 'warning');
+        return;
+      }
+      
+      try {
+        const res = await fetch(`${API_URL}/messages`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ receiver: username, content })
+        });
+        
+        if (res.ok) {
+          showToast('发送成功', 'success');
+          document.getElementById('messageContent').value = '';
+          closeMessageModal();
+        } else {
+          const data = await res.json();
+          showToast(data.error || '发送失败', 'error');
+        }
+      } catch (e) {
+        showToast('发送失败', 'error');
+      }
+    }
+    
+    // 检查勋章
+    async function checkBadges() {
+      const token = localStorage.getItem('playerToken');
+      
+      try {
+        const res = await fetch(`${API_URL}/user/${username}/check-badges`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (res.ok) {
+          showToast('勋章检查完成', 'success');
+          loadBadges();
+        }
+      } catch (e) {
+        showToast('检查失败', 'error');
+      }
+    }
+    
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `<span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
+
+    loadProfile();
+  </script>
+  
+  <!-- 私信弹窗 -->
+  <div class="message-modal" id="messageModal">
+    <div class="message-box">
+      <div class="message-header">
+        <span class="message-title">发送私信给 ${username}</span>
+        <button class="message-close" onclick="closeMessageModal()">&times;</button>
+      </div>
+      <textarea class="message-textarea" id="messageContent" placeholder="请输入私信内容..."></textarea>
+      <button class="message-send" onclick="sendMessage()">发送</button>
+    </div>
+  </div>
+</body>
+
+</html>

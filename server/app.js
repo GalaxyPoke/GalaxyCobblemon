@@ -8,21 +8,16 @@ const database = require('./db/database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// 中间件
-app.use(cors({
-  origin: [
-    'http://localhost:5500',
-    'http://127.0.0.1:5500',
-    /\.netlify\.app$/,  // 允许所有 Netlify 子域名
-    process.env.FRONTEND_URL
-  ].filter(Boolean),
-  credentials: true
-}));
+// 中间件 - 允许所有来源（本地开发用）
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // 静态文件 - 上传的图片
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// 静态文件 - 前端页面
+app.use(express.static(path.join(__dirname, '..')));
 
 // 健康检查
 app.get('/api/health', (req, res) => {

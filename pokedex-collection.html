@@ -838,14 +838,8 @@
   </style>
 </head>
 <body>
-  <!-- 页面加载动画 -->
-  <div class="page-loader" id="pageLoader">
-    <div class="loader-content">
-      <div class="loader-icon"><i class="bi bi-circle-half"></i></div>
-      <div class="loader-text">加载图鉴数据中...</div>
-      <div class="loader-bar"><div class="loader-progress"></div></div>
-    </div>
-  </div>
+  <script src="static/js/page-loader.js"></script>
+  <script>PageLoader.init('bi-circle-half', '图鉴收集');</script>
 
   <!-- 导航栏 -->
   <div id="navbar-placeholder"></div>

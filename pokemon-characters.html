@@ -627,16 +627,8 @@
   </style>
 </head>
 <body>
-  <!-- 页面加载动画 -->
-  <div class="page-loader" id="pageLoader">
-    <div class="loader-content">
-      <div class="loader-icon"><i class="bi bi-people"></i></div>
-      <div class="loader-text">正在加载人物图鉴...</div>
-      <div class="loader-bar">
-        <div class="loader-progress"></div>
-      </div>
-    </div>
-  </div>
+  <script src="static/js/page-loader.js"></script>
+  <script>PageLoader.init('bi-people', '人物图鉴');</script>
 
   <!-- 导航栏占位 -->
   <div class="nav-placeholder"></div>
