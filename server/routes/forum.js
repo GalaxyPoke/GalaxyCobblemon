@@ -593,8 +593,8 @@ router.get('/stats', (req, res) => {
     const postCount = db.prepare('SELECT COUNT(*) as count FROM forum_posts').get();
     const replyCount = db.prepare('SELECT COUNT(*) as count FROM forum_replies').get();
     
-    // 按分类统计
-    const categories = ['discussion', 'question', 'share', 'suggestion'];
+    // 按分类统计 - 支持所有板块
+    const categories = ['discussion', 'question', 'share', 'suggestion', 'guide', 'bug', 'trade', 'team'];
     const categoryStats = {};
     categories.forEach(cat => {
       const count = db.prepare('SELECT COUNT(*) as count FROM forum_posts WHERE category = ?').get(cat);

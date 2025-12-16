@@ -98,7 +98,7 @@
       border-bottom: 1px solid rgba(212,165,116,0.1);
     }
 
-    /* 分类列表 */
+    /* 分类列表 - 升级版 */
     .category-list {
       list-style: none;
       padding: 0;
@@ -109,31 +109,127 @@
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 15px;
-      margin-bottom: 5px;
-      border-radius: 8px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      border-radius: 10px;
       cursor: pointer;
-      transition: all 0.3s;
-      color: rgba(255,255,255,0.6);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      color: rgba(255,255,255,0.7);
+      background: rgba(255,255,255,0.02);
+      border: 1px solid transparent;
+      position: relative;
+      overflow: hidden;
     }
 
-    .category-item:hover,
+    .category-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--category-color, #d4a574);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .category-item:hover {
+      background: rgba(212,165,116,0.08);
+      border-color: rgba(212,165,116,0.15);
+      transform: translateX(4px);
+    }
+
+    .category-item:hover::before,
+    .category-item.active::before {
+      opacity: 1;
+    }
+
     .category-item.active {
-      background: rgba(212,165,116,0.1);
+      background: rgba(212,165,116,0.12);
+      border-color: rgba(212,165,116,0.25);
       color: var(--primary-light);
     }
 
+    .category-icon-wrapper {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--category-color, rgba(212,165,116,0.2));
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .category-item:hover .category-icon-wrapper {
+      transform: scale(1.1);
+    }
+
     .category-item i {
-      font-size: 1.1rem;
-      width: 24px;
+      font-size: 1rem;
+      color: #fff;
+    }
+
+    .category-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .category-name {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .category-desc {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .category-count {
-      margin-left: auto;
-      background: rgba(255,255,255,0.1);
-      padding: 2px 8px;
-      border-radius: 10px;
+      background: rgba(255,255,255,0.08);
+      padding: 4px 10px;
+      border-radius: 12px;
       font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.6);
+      transition: all 0.3s;
+    }
+
+    .category-item:hover .category-count,
+    .category-item.active .category-count {
+      background: var(--category-color, rgba(212,165,116,0.3));
+      color: #fff;
+    }
+
+    /* 分类颜色定义 */
+    .category-item[data-category="all"] { --category-color: rgba(212,165,116,0.8); }
+    .category-item[data-category="discussion"] { --category-color: #5dade2; }
+    .category-item[data-category="question"] { --category-color: #f39c12; }
+    .category-item[data-category="share"] { --category-color: #2ecc71; }
+    .category-item[data-category="suggestion"] { --category-color: #9b59b6; }
+    .category-item[data-category="guide"] { --category-color: #e74c3c; }
+    .category-item[data-category="bug"] { --category-color: #e91e63; }
+    .category-item[data-category="trade"] { --category-color: #00bcd4; }
+    .category-item[data-category="team"] { --category-color: #ff9800; }
+
+    /* 分类分组标题 */
+    .category-group-title {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.35);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      padding: 12px 16px 6px;
+      margin-top: 8px;
+    }
+
+    .category-group-title:first-child {
+      margin-top: 0;
+      padding-top: 0;
     }
 
     /* 发帖按钮 - MineCraft徽章风格 */
@@ -804,10 +900,13 @@
     }
 
     .custom-select-option {
-      padding: 12px 16px;
+      padding: 10px 16px;
       color: rgba(255,255,255,0.7);
       cursor: pointer;
       transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .custom-select-option:hover {
@@ -818,6 +917,27 @@
     .custom-select-option.selected {
       background: rgba(212,165,116,0.15);
       color: #d4a574;
+    }
+
+    .option-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .select-group-label {
+      padding: 10px 16px 6px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.4);
+      letter-spacing: 1px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: 4px;
+    }
+
+    .select-group-label:first-child {
+      border-top: none;
+      margin-top: 0;
     }
 
     .upload-btn {
@@ -1000,6 +1120,333 @@
     .checkin-points {
       color: rgba(255,255,255,0.5);
       font-size: 0.85rem;
+    }
+
+    /* 经验条 */
+    .exp-bar-container {
+      margin: 12px 0;
+      padding: 0 5px;
+    }
+
+    .exp-bar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .exp-bar-label {
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .exp-bar-value {
+      font-size: 0.75rem;
+      color: #d4a574;
+      font-weight: 500;
+    }
+
+    .exp-bar-track {
+      height: 8px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .exp-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #d4a574, #f0c896);
+      border-radius: 4px;
+      transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+    }
+
+    .exp-bar-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      animation: expShine 2s infinite;
+    }
+
+    @keyframes expShine {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .exp-info-btn {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.4);
+      cursor: pointer;
+      padding: 2px 6px;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .exp-info-btn:hover {
+      color: #d4a574;
+    }
+
+    /* 经验等级介绍弹窗 */
+    .exp-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+      animation: fadeIn 0.3s;
+      backdrop-filter: blur(5px);
+    }
+
+    .exp-modal-content {
+      background: linear-gradient(180deg, #1c1814 0%, #151210 100%);
+      border: 1px solid rgba(212, 165, 116, 0.25);
+      border-radius: 16px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s;
+    }
+
+    .exp-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid rgba(212,165,116,0.15);
+    }
+
+    .exp-modal-title {
+      color: #d4a574;
+      font-size: 1.3rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .exp-modal-close {
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.5);
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+
+    .exp-modal-close:hover {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+
+    .exp-current-info {
+      background: rgba(212,165,116,0.08);
+      border: 1px solid rgba(212,165,116,0.2);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .exp-current-level {
+      font-size: 1.5rem;
+      color: #d4a574;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .exp-current-stats {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      color: rgba(255,255,255,0.6);
+      font-size: 0.9rem;
+    }
+
+    .exp-current-stats span {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .exp-progress-detail {
+      margin: 15px 0;
+    }
+
+    .exp-progress-text {
+      text-align: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.85rem;
+      margin-top: 8px;
+    }
+
+    .exp-level-list {
+      margin-top: 20px;
+    }
+
+    .exp-level-list-title {
+      color: rgba(255,255,255,0.7);
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .exp-level-card {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 10px;
+      margin-bottom: 12px;
+      padding: 14px 16px;
+      transition: all 0.3s;
+    }
+
+    .exp-level-card:hover {
+      background: rgba(212,165,116,0.05);
+      border-color: rgba(212,165,116,0.15);
+    }
+
+    .exp-level-card.current {
+      background: rgba(212,165,116,0.1);
+      border-color: rgba(212,165,116,0.3);
+      position: relative;
+    }
+
+    .exp-level-card.current::before {
+      content: '当前';
+      position: absolute;
+      top: -8px;
+      right: 12px;
+      background: linear-gradient(135deg, #d4a574, #c49464);
+      color: #1c1814;
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .exp-level-card.unlocked {
+      opacity: 0.7;
+    }
+
+    .exp-level-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .exp-level-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .exp-level-badge {
+      color: #d4a574;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .exp-level-name {
+      color: rgba(255,255,255,0.9);
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .exp-level-req {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.8rem;
+    }
+
+    .exp-level-benefits {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .benefit-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.5);
+      transition: all 0.3s;
+    }
+
+    .benefit-tag i {
+      font-size: 0.7rem;
+    }
+
+    .benefit-tag.active {
+      background: rgba(212,165,116,0.1);
+      border-color: rgba(212,165,116,0.2);
+      color: #d4a574;
+    }
+
+    .benefit-tag.active i {
+      color: #2ecc71;
+    }
+
+    .exp-tips {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255,255,255,0.02);
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .exp-tips-title {
+      color: rgba(255,255,255,0.6);
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .exp-tips-list {
+      margin: 0;
+      padding-left: 20px;
+      color: rgba(255,255,255,0.5);
+      font-size: 0.8rem;
+      line-height: 1.8;
+    }
+
+    .exp-tips-list li {
+      margin-bottom: 4px;
+    }
+
+    .exp-tips-list strong {
+      color: #d4a574;
     }
 
     .checkin-sidebar-btn {
@@ -1242,6 +1689,22 @@
               <div class="checkin-level" id="checkinLevel">Lv.1 新手训练师</div>
               <div class="checkin-points">积分: <span id="checkinPoints">0</span></div>
             </div>
+            <!-- 经验条 -->
+            <div class="exp-bar-container">
+              <div class="exp-bar-header">
+                <span class="exp-bar-label">经验值</span>
+                <button class="exp-info-btn" onclick="showExpModal()">
+                  <i class="bi bi-info-circle"></i> 等级说明
+                </button>
+              </div>
+              <div class="exp-bar-track">
+                <div class="exp-bar-fill" id="expBarFill" style="width: 0%;"></div>
+              </div>
+              <div class="exp-bar-header" style="margin-top: 4px; margin-bottom: 0;">
+                <span class="exp-bar-value" id="expValue">0 / 100</span>
+                <span class="exp-bar-value" id="expPercent">0%</span>
+              </div>
+            </div>
             <div id="checkinBtnArea">
               <button class="checkin-sidebar-btn" id="sidebarCheckinBtn" onclick="doCheckin()">
                 <i class="bi bi-calendar-check"></i> 每日签到
@@ -1252,30 +1715,105 @@
           <div class="sidebar-card" style="margin-top: 20px;">
             <h3 class="sidebar-title">板块分类</h3>
             <ul class="category-list">
+              <!-- 全部 -->
               <li class="category-item active" data-category="all">
-                <i class="bi bi-grid"></i>
-                <span>全部帖子</span>
-                <span class="category-count">128</span>
+                <div class="category-icon-wrapper">
+                  <i class="bi bi-grid-3x3-gap-fill"></i>
+                </div>
+                <div class="category-info">
+                  <div class="category-name">全部帖子</div>
+                  <div class="category-desc">浏览所有板块内容</div>
+                </div>
+                <span class="category-count">0</span>
               </li>
+
+              <!-- 交流区 -->
+              <div class="category-group-title">💬 交流区</div>
               <li class="category-item" data-category="discussion">
-                <i class="bi bi-chat-dots"></i>
-                <span>综合讨论</span>
-                <span class="category-count">45</span>
+                <div class="category-icon-wrapper">
+                  <i class="bi bi-chat-heart-fill"></i>
+                </div>
+                <div class="category-info">
+                  <div class="category-name">综合讨论</div>
+                  <div class="category-desc">聊天吹水、日常分享</div>
+                </div>
+                <span class="category-count">0</span>
               </li>
               <li class="category-item" data-category="question">
-                <i class="bi bi-question-circle"></i>
-                <span>问题求助</span>
-                <span class="category-count">32</span>
-              </li>
-              <li class="category-item" data-category="share">
-                <i class="bi bi-share"></i>
-                <span>作品分享</span>
-                <span class="category-count">28</span>
+                <div class="category-icon-wrapper">
+                  <i class="bi bi-patch-question-fill"></i>
+                </div>
+                <div class="category-info">
+                  <div class="category-name">问题求助</div>
+                  <div class="category-desc">遇到问题？来这里提问</div>
+                </div>
+                <span class="category-count">0</span>
               </li>
               <li class="category-item" data-category="suggestion">
-                <i class="bi bi-lightbulb"></i>
-                <span>建议反馈</span>
-                <span class="category-count">23</span>
+                <div class="category-icon-wrapper">
+                  <i class="bi bi-lightbulb-fill"></i>
+                </div>
+                <div class="category-info">
+                  <div class="category-name">建议反馈</div>
+                  <div class="category-desc">服务器改进建议</div>
+                </div>
+                <span class="category-count">0</span>
+              </li>
+
+              <!-- 游戏区 -->
+              <div class="category-group-title">🎮 游戏区</div>
+              <li class="category-item" data-category="guide">
+                <div class="category-icon-wrapper">
+                  <i class="bi bi-book-fill"></i>
+                </div>
+                <div class="category-info">
+                  <div class="category-name">攻略教程</div>
+                  <div class="category-desc">宝可梦攻略、玩法教学</div>
+                </div>
+                <span class="category-count">0</span>
+              </li>
+              <li class="category-item" data-category="share">
+                <div class="category-icon-wrapper">
+                  <i class="bi bi-image-fill"></i>
+                </div>
+                <div class="category-info">
+                  <div class="category-name">作品分享</div>
+                  <div class="category-desc">截图、建筑、视频展示</div>
+                </div>
+                <span class="category-count">0</span>
+              </li>
+              <li class="category-item" data-category="trade">
+                <div class="category-icon-wrapper">
+                  <i class="bi bi-arrow-left-right"></i>
+                </div>
+                <div class="category-info">
+                  <div class="category-name">交易市场</div>
+                  <div class="category-desc">宝可梦交换、物品交易</div>
+                </div>
+                <span class="category-count">0</span>
+              </li>
+              <li class="category-item" data-category="team">
+                <div class="category-icon-wrapper">
+                  <i class="bi bi-people-fill"></i>
+                </div>
+                <div class="category-info">
+                  <div class="category-name">组队招募</div>
+                  <div class="category-desc">找队友、组建公会</div>
+                </div>
+                <span class="category-count">0</span>
+              </li>
+
+              <!-- 反馈区 -->
+              <div class="category-group-title">🔧 反馈区</div>
+              <li class="category-item" data-category="bug">
+                <div class="category-icon-wrapper">
+                  <i class="bi bi-bug-fill"></i>
+                </div>
+                <div class="category-info">
+                  <div class="category-name">BUG反馈</div>
+                  <div class="category-desc">发现BUG？请在这里报告</div>
+                </div>
+                <span class="category-count">0</span>
               </li>
             </ul>
           </div>
@@ -1417,6 +1955,23 @@
       { text: '莫愁前路无知己，天下谁人不识君。', author: '高适', title: '别董大' }
     ];
     
+    // 等级配置（古代官职风格，与后端同步）
+    const LEVEL_CONFIG = [
+      { level: 1, name: '白丁', exp: 0, benefits: ['基础发帖功能', '每日签到'] },
+      { level: 2, name: '童生', exp: 100, benefits: ['解锁头像框', '评论无需审核'] },
+      { level: 3, name: '秀才', exp: 300, benefits: ['专属称号颜色', '每日签到双倍积分'] },
+      { level: 4, name: '举人', exp: 600, benefits: ['发帖可置顶申请', '解锁更多表情包'] },
+      { level: 5, name: '贡士', exp: 1000, benefits: ['专属贡士徽章', '私信功能解锁'] },
+      { level: 6, name: '进士', exp: 1500, benefits: ['发帖字数上限提升', '可创建投票帖'] },
+      { level: 7, name: '翰林', exp: 2500, benefits: ['专属翰林头像框', '精华帖申请优先'] },
+      { level: 8, name: '侍郎', exp: 4000, benefits: ['论坛活动优先参与', '专属侍郎称号'] },
+      { level: 9, name: '尚书', exp: 6000, benefits: ['尚书专属勋章', '可举荐精华帖'] },
+      { level: 10, name: '太傅', exp: 10000, benefits: ['最高荣誉太傅徽章', '论坛荣誉墙展示', '专属太傅皮肤'] }
+    ];
+
+    // 当前用户经验数据（用于弹窗显示）
+    let currentUserExpData = null;
+
     // 加载签到卡片
     async function loadCheckinCard() {
       const token = localStorage.getItem('playerToken');
@@ -1430,8 +1985,14 @@
         const res = await fetch(`${window.API_CONFIG.apiUrl}/forum/user/${playerName}/points`);
         const data = await res.json();
         
+        // 保存数据用于弹窗
+        currentUserExpData = data;
+        
         document.getElementById('checkinLevel').textContent = `Lv.${data.level} ${data.levelName}`;
         document.getElementById('checkinPoints').textContent = data.points || 0;
+        
+        // 更新经验条
+        updateExpBar(data);
         
         const today = new Date().toISOString().split('T')[0];
         const btnArea = document.getElementById('checkinBtnArea');
@@ -1461,6 +2022,111 @@
           }
         }
       } catch (e) {}
+    }
+
+    // 更新经验条
+    function updateExpBar(data) {
+      const expBarFill = document.getElementById('expBarFill');
+      const expValue = document.getElementById('expValue');
+      const expPercent = document.getElementById('expPercent');
+      
+      if (!expBarFill || !expValue || !expPercent) return;
+      
+      const currentExp = data.exp || 0;
+      const nextLevelExp = data.nextLevelExp;
+      const currentLevelExp = LEVEL_CONFIG.find(l => l.level === data.level)?.exp || 0;
+      
+      if (nextLevelExp) {
+        // 计算当前等级内的进度
+        const expInLevel = currentExp - currentLevelExp;
+        const expNeeded = nextLevelExp - currentLevelExp;
+        const progress = Math.min(Math.floor((expInLevel / expNeeded) * 100), 100);
+        
+        expBarFill.style.width = `${progress}%`;
+        expValue.textContent = `${currentExp} / ${nextLevelExp}`;
+        expPercent.textContent = `${progress}%`;
+      } else {
+        // 满级
+        expBarFill.style.width = '100%';
+        expValue.textContent = `${currentExp} (MAX)`;
+        expPercent.textContent = '100%';
+      }
+    }
+
+    // 显示经验等级介绍弹窗
+    function showExpModal() {
+      const data = currentUserExpData || { level: 1, levelName: '新手训练师', exp: 0, points: 0, nextLevelExp: 100 };
+      
+      const currentLevelExp = LEVEL_CONFIG.find(l => l.level === data.level)?.exp || 0;
+      const expInLevel = data.exp - currentLevelExp;
+      const expNeeded = data.nextLevelExp ? data.nextLevelExp - currentLevelExp : 0;
+      const progress = data.nextLevelExp ? Math.min(Math.floor((expInLevel / expNeeded) * 100), 100) : 100;
+      
+      const levelListHtml = LEVEL_CONFIG.map(l => `
+        <div class="exp-level-card ${l.level === data.level ? 'current' : ''} ${l.level < data.level ? 'unlocked' : ''}">
+          <div class="exp-level-header">
+            <div class="exp-level-left">
+              <span class="exp-level-badge">Lv.${l.level}</span>
+              <span class="exp-level-name">${l.name}</span>
+            </div>
+            <span class="exp-level-req">${l.exp === 0 ? '起始等级' : `${l.exp} 经验`}</span>
+          </div>
+          <div class="exp-level-benefits">
+            ${l.benefits.map(b => `<span class="benefit-tag ${l.level <= data.level ? 'active' : ''}"><i class="bi bi-check-circle${l.level <= data.level ? '-fill' : ''}"></i> ${b}</span>`).join('')}
+          </div>
+        </div>
+      `).join('');
+      
+      const modal = document.createElement('div');
+      modal.className = 'exp-modal';
+      modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+      modal.innerHTML = `
+        <div class="exp-modal-content">
+          <div class="exp-modal-header">
+            <div class="exp-modal-title">
+              <i class="bi bi-trophy"></i> 等级系统
+            </div>
+            <button class="exp-modal-close" onclick="this.closest('.exp-modal').remove()">&times;</button>
+          </div>
+          
+          <div class="exp-current-info">
+            <div class="exp-current-level">Lv.${data.level} ${data.levelName}</div>
+            <div class="exp-current-stats">
+              <span><i class="bi bi-star-fill"></i> ${data.exp || 0} 经验</span>
+              <span><i class="bi bi-coin"></i> ${data.points || 0} 积分</span>
+            </div>
+            <div class="exp-progress-detail">
+              <div class="exp-bar-track" style="height: 10px; margin-top: 15px;">
+                <div class="exp-bar-fill" style="width: ${progress}%;"></div>
+              </div>
+              <div class="exp-progress-text">
+                ${data.nextLevelExp ? `距离下一级还需 ${data.nextLevelExp - data.exp} 经验` : '已达到最高等级！'}
+              </div>
+            </div>
+          </div>
+          
+          <div class="exp-level-list">
+            <div class="exp-level-list-title">
+              <i class="bi bi-list-stars"></i> 等级列表
+            </div>
+            ${levelListHtml}
+          </div>
+          
+          <div class="exp-tips">
+            <div class="exp-tips-title">
+              <i class="bi bi-lightbulb"></i> 获取经验的方式
+            </div>
+            <ul class="exp-tips-list">
+              <li><strong>每日签到</strong>：基础 +10 经验，连续签到额外奖励</li>
+              <li><strong>发布帖子</strong>：每篇帖子 +5 经验</li>
+              <li><strong>回复帖子</strong>：每条回复 +2 经验</li>
+              <li><strong>获得点赞</strong>：每个赞 +1 经验</li>
+              <li><strong>帖子被精华</strong>：+50 经验</li>
+            </ul>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
     }
     
     // 签到
@@ -1585,10 +2251,33 @@
                   <i class="bi bi-chevron-down"></i>
                 </div>
                 <div class="custom-select-options">
-                  <div class="custom-select-option selected" data-value="discussion" onclick="selectCategory(this)">综合讨论</div>
-                  <div class="custom-select-option" data-value="question" onclick="selectCategory(this)">问题求助</div>
-                  <div class="custom-select-option" data-value="share" onclick="selectCategory(this)">作品分享</div>
-                  <div class="custom-select-option" data-value="suggestion" onclick="selectCategory(this)">建议反馈</div>
+                  <div class="select-group-label">💬 交流区</div>
+                  <div class="custom-select-option selected" data-value="discussion" onclick="selectCategory(this)">
+                    <span class="option-dot" style="background:#5dade2;"></span>综合讨论
+                  </div>
+                  <div class="custom-select-option" data-value="question" onclick="selectCategory(this)">
+                    <span class="option-dot" style="background:#f39c12;"></span>问题求助
+                  </div>
+                  <div class="custom-select-option" data-value="suggestion" onclick="selectCategory(this)">
+                    <span class="option-dot" style="background:#9b59b6;"></span>建议反馈
+                  </div>
+                  <div class="select-group-label">🎮 游戏区</div>
+                  <div class="custom-select-option" data-value="guide" onclick="selectCategory(this)">
+                    <span class="option-dot" style="background:#e74c3c;"></span>攻略教程
+                  </div>
+                  <div class="custom-select-option" data-value="share" onclick="selectCategory(this)">
+                    <span class="option-dot" style="background:#2ecc71;"></span>作品分享
+                  </div>
+                  <div class="custom-select-option" data-value="trade" onclick="selectCategory(this)">
+                    <span class="option-dot" style="background:#00bcd4;"></span>交易市场
+                  </div>
+                  <div class="custom-select-option" data-value="team" onclick="selectCategory(this)">
+                    <span class="option-dot" style="background:#ff9800;"></span>组队招募
+                  </div>
+                  <div class="select-group-label">🔧 反馈区</div>
+                  <div class="custom-select-option" data-value="bug" onclick="selectCategory(this)">
+                    <span class="option-dot" style="background:#e91e63;"></span>BUG反馈
+                  </div>
                 </div>
               </div>
             </div>
